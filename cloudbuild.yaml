@@ -10,6 +10,6 @@ steps:
         if [[ "${BRANCH_NAME}" != "main" ]]; then
           SUFFIX = ".${BUILD_ID}"
         fi
-        make REGISTRY=${_REGISTRY} IMAGE_SUFFIX=${SUFFIX}  push
+        make REGISTRY=${_REGISTRY} IMAGE_SUFFIX=$${SUFFIX}  push
 
 logsBucket: "gs://cloud-build-dev.starr-data.us"

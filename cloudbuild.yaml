@@ -8,7 +8,7 @@ steps:
       - |-
         pip install -r src/main/docker/requirements.txt --user
         if [[ "${BRANCH_NAME}" != "main" ]]; then
-          SUFFIX = ".${BUILD_ID}"
+          SUFFIX=".${BUILD_ID}"
         fi
         make REGISTRY=${_REGISTRY} IMAGE_SUFFIX=$${SUFFIX}  push
 

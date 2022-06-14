@@ -1,5 +1,5 @@
 # Google Cloud SDK docker image with GCP Python libs and helper tools
-FROM google/cloud-sdk:${GCLOUD_SDK_VERSION:-367.0.0} AS build
+FROM google/cloud-sdk:367.0.0 AS build
 
 WORKDIR /code
 ADD . /code

@@ -1,15 +1,8 @@
 steps:
-  - name: docker
-    entrypoint: "/bin/bash"
-    args:
-      - "-eEuo"
-      - "pipefail"
-      - "-c"
-      - |-
-        pip install -r src/main/docker/requirements.txt
-        if [[ "${BRANCH_NAME}" != "main" ]]; then
-          SUFFIX=".${BUILD_ID}"
-        fi
-        make REGISTRY=${_REGISTRY} IMAGE_SUFFIX=$${SUFFIX}  push
+  # Docker Build
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "${_ARTIFACT_REGISTRY_REPO}/wdl-kit:1.0.0${_SUFFIX}", "-t", "${_ARTIFACT_REGISTRY_REPO}/wdl-kit:${SHORT_SHA}", "-t", "${_ARTIFACT_REGISTRY_REPO}/wdl-kit:${BUILD_ID}", "."]
 
-logsBucket: "gs://cloud-build-dev.starr-data.us"
+  # Docker push to Google Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "-a", "${_ARTIFACT_REGISTRY_REPO}/wdl-kit"]

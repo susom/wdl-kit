@@ -7,12 +7,11 @@ use_plugin("python.flake8")
 # use_plugin("python.unittest")
 # use_plugin("python.coverage")
 use_plugin("python.distutils")
-use_plugin("pypi:pybuilder_docker")
 
 name = "wdl-kit"
 default_task = "publish"
 description = "A WDL toolkit with a focus on ETL and Cloud integration"
-version = "{0}".format(os.environ.get("WDL_KIT_VERSION", "0.0.1dev0"))
+version = "1.0.0" + os.environ.get("_SUFFIX")
 
 
 @init

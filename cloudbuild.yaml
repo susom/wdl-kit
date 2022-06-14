@@ -1,0 +1,12 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    entrypoint: make
+    env:
+      - REGISTRY=$_REGISTRY
+      - BUILD=$SHORT_SHA
+    args:
+      - lint
+      - test
+      - all-container
+      - DBG_MAKEFILE=1
+timeout: 300s

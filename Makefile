@@ -29,8 +29,9 @@ pipinstall: $(TARGET)
 # Installs processed WDL files to WDL_DIR (might need root)
 install: $(TARGETDIR) $(OBJECTS)
 
-push:
+push: $(TARGET)
 	docker tag $(IMAGE) $(REGISTRY)/$(IMAGE)
+	docker push $(REGISTRY)/$(IMAGE)
 
 $(TARGETDIR):
 	install -m 0755 -d $(TARGETDIR)

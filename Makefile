@@ -1,5 +1,6 @@
 TARGET = wdl-kit
-VERSION = 1.0.0
+IMAGE_SUFFIX = .dev0
+VERSION = 1.0.0$(IMAGE_SUFFIX)
 IMAGE = $(TARGET):$(VERSION)
 REGISTRY = UNSET # set by CICD
 WDL_DIR = /usr/local

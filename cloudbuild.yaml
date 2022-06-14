@@ -1,9 +1,14 @@
 steps:
+  # Install dependencies
+  - name: python
+    entrypoint: pip
+    args: ["install", "-r", "src/main/docker/requirements.txt", "--user"]
+
   - name: gcr.io/cloud-builders/docker
     entrypoint: make
     env:
       - REGISTRY=$_REGISTRY
-      - BUILD=$SHORT_SHA
+      - IMAGE_SUFFIX=.$SHORT_SHA
     args:
       - push
 logsBucket: "gs://cloud-build-dev.starr-data.us"

@@ -2,8 +2,10 @@ steps:
   - name: python
     entrypoint: "/bin/bash"
     args:
+      - "-eEuo"
+      - "pipefail"
       - "-c"
-      - |
+      - |-
         pip install -r src/main/docker/requirements.txt --user
         if [[ "${BRANCH_NAME}" != "main" ]]; then
           SUFFIX = ".${BUILD_ID}"

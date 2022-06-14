@@ -6,7 +6,7 @@ steps:
       - "pipefail"
       - "-c"
       - |-
-        pip install -r src/main/docker/requirements.txt --user
+        pip install -r src/main/docker/requirements.txt
         if [[ "${BRANCH_NAME}" != "main" ]]; then
           SUFFIX=".${BUILD_ID}"
         fi

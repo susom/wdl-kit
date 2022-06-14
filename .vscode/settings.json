@@ -1,0 +1,20 @@
+{
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.factorypath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/__pycache__": true,
+        "**/.pybuilder": true,
+        "**/target": true,
+        "**/pyproject.toml": true,
+        "**/setup.py": true,
+        "**/venv": true
+    },
+    "Prettier-SQL.closeParenNewline": false,
+    "Prettier-SQL.breakBeforeBooleanOperator": true,
+    "Prettier-SQL.SQLFlavourOverride": "bigquery",
+    "Prettier-SQL.tabSizeOverride": 2,
+    "Prettier-SQL.tabulateAlias": true,
+    "editor.find.autoFindInSelection": "always"
+}

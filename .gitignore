@@ -4,3 +4,6 @@ venv/
 .pybuilder/
 target/
 __pycache__/
+setup.py
+pyproject.toml
+**/*.log

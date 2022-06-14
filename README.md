@@ -1,13 +1,20 @@
-# JSON-GCP (jGCP)
-## WDL-GCP interface utility
+# WDL-kit
+## A WDL toolkit with a focus on ETL and Cloud integration
 
-jGCP is a dockerized JSON frontend to various Google Cloud Platform (GCP) products. The input and output are JSON GCP API Resources.
+WDL-kit is a collection of dockerized utilities to simplify the creation of ETL-like workflows in the Workflow Definition Language. 
 
-## TODO:
-* Support for more GCP products
+## Features
 
-## Philosophy
-We needed a method of calling GCP API's via WDL. WDL requires all commands to be dockerized, so the natural inclination
+### YAML-to-WDL
+
+### Google Cloud
+
+### Slack
+
+### Mailgun
+
+## Background
+We needed a method of calling GCP API's via WDL. Most WDL workflow engines require commands to be dockerized, so the natural inclination
 would be to write WDL tasks that call the command line utilities from the `google/cloud-sdk` docker image. 
 
 ### Cloud-SDK Docker Example
@@ -43,9 +50,9 @@ WDL tasks should return either data or a data reference (in this case). We could
 * The task is dependent on the arguments for `bq mk`. Future versions of the `bq` command may break the task. 
 * All parameters need to be sensitive to shell escaping rules
 
-### jGCP Example
+### WDL-kit Example
 
-Here is an example of the same task, this time using jGCP:
+Here is an example of the same task, this time using WDL-kit:
 
 ```WDL
 task CreateDataset {

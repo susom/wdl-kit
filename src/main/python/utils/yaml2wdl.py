@@ -1,3 +1,17 @@
+# Copyright 2022 The Board of Trustees of The Leland Stanford Junior University.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import argparse
 import yaml
 import json
@@ -15,7 +29,20 @@ task GetYaml {{{inputs}
 
 
 def main(args=None):
+    """
+    A simple YAML to WDL pre-processor. Creates a .wdl file from .yaml input, containing
+    a single task 'GetYaml' which returns an output File 'yaml' which contains the YAML
+    converted JSON. Use this for embedding large input files in your WDL workflows which
+    you want as part of the workflow code (not as workflow inputs).
 
+    Supports simple string substitution. If the input yaml has ~{foo} then the GetYaml
+    task will have an input variable called "foo" available for substition.
+
+    This exists to address two limitations of WDL:
+    * WDL can only import .wdl files
+    * WDL doesn't support multi-line strings (especially painful for SQL ETL code)
+
+    """
     parser = argparse.ArgumentParser(description="YAML to WDL pre-processor")
 
     parser.add_argument('--version', type=str, default='development',

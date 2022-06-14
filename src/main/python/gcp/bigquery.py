@@ -1,3 +1,22 @@
+# Copyright 2022 The Board of Trustees of The Leland Stanford Junior University.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from google.cloud.bigquery import DEFAULT_RETRY
+from google.cloud import bigquery, exceptions
+from dataclasses_json import dataclass_json
+from boltons.iterutils import remap
+from importlib_metadata import version
 import argparse
 import json
 import os
@@ -7,9 +26,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
 
-from dataclasses_json import dataclass_json
-from google.cloud import bigquery, exceptions
-from google.cloud.bigquery import DEFAULT_RETRY
+__version__ = version('wdl-kit')
 
 
 @dataclass_json
@@ -127,6 +144,140 @@ def delete_dataset(config: DeleteDatasetConfig):
     dataset_ref = bigquery.DatasetReference.from_api_repr(config.datasetRef)
     client.delete_dataset(dataset_ref, timeout=30, not_found_ok=config.notFoundOk,
                           delete_contents=config.deleteContents)
+
+
+@dataclass_json
+@dataclass
+class ExtractTableConfig():
+    # https://cloud.google.com/bigquery/docs/reference/rest/v2/Job#jobconfigurationextract
+    # table to extract from
+    sourceTable: dict
+    # destination bucket to place the extract files
+    destinationUri: str
+    # Name of the destination file
+    fileName: str
+    # file format that the extract should be
+    fileFormat: str
+    # location of the source table
+    location: str
+
+
+def extract_table(config: ExtractTableConfig):
+    client = bigquery.Client()
+
+    destination_uri = config.destinationUri + "/" + config.fileName
+    table = bigquery.Table.from_api_repr(config.sourceTable)
+
+    job_config = bigquery.ExtractJobConfig(
+        destination_format=config.fileFormat)
+
+    extract_job = client.extract_table(
+        table,
+        destination_uri,
+        job_config=job_config,
+        location=config.location,
+    )
+    extract_job.result()
+
+    # Call the Job REST API, as query_job.to_api_repr() is missing statistics
+    extra_params = {"projection": "full"}
+    path = "/projects/{}/jobs/{}".format(extract_job.project,
+                                         extract_job.job_id)
+    span_attributes = {
+        "path": path, "job_id": extract_job.job_id, "location": extract_job.location}
+    job_result = client._call_api(retry=DEFAULT_RETRY, span_name="BigQuery.getJob",
+                                  span_attributes=span_attributes, method="GET", path=path, query_params=extra_params)
+
+    # Write job information to job.json
+    with open('job.json', 'w') as job_result_file:
+        json.dump(job_result, job_result_file, indent=2, sort_keys=True)
+
+
+@dataclass_json
+@dataclass
+class LoadTableConfig():
+    # https://cloud.google.com/bigquery/docs/reference/rest/v2/Job#jobconfigurationload
+    # For loading data from a file
+    sourceFile: str
+    # TODO: Implment sourceURI loading (gs://... )
+    # sourceUri: Optional[str] = None
+    # destination (TableReference)
+    destination: dict
+    # Source schema fields
+    schemaFields: Optional[List[dict]] = None
+    # source format, defaults to CSV
+    format: str = "CSV"
+    # Number of rows to skip from input file
+    skipLeadingRows: int = 0
+    # Field delimiter for CSV (defaults ,)
+    fieldDelimiter: str = ","
+    # Quoting character
+    quoteCharacter: str = '"'
+    # Table create disposition
+    createDisposition: str = "CREATE_IF_NEEDED"
+    # Table write disposition
+    writeDisposition: str = "WRITE_EMPTY"
+    # Autodetect schema
+    autodetect: Optional[bool] = None
+    # Location of where to run the job, must be same as destination table, defaults to US
+    location: str = "US"
+
+
+def load_table(config: LoadTableConfig):
+    client = bigquery.Client()
+
+    job_config = bigquery.LoadJobConfig()
+    job_config.source_format = config.format
+    job_config.skip_leading_rows = config.skipLeadingRows
+    job_config.field_delimiter = config.fieldDelimiter
+    job_config.write_disposition = config.writeDisposition
+    job_config.create_disposition = config.createDisposition
+    job_config.quote_character = config.quoteCharacter
+
+    if config.schemaFields is not None:
+        fields: List[bigquery.SchemaField] = []
+        # WDL will force a 'null' value to structs where you didn't even specify a value,
+        # and this breaks from_api_repr() in various ways (eg. expecting [] not None/null)
+        schemaFields = remap(config.schemaFields,
+                             visit=lambda p, k, v: v is not None)
+        for schema in schemaFields:
+            fields.append(bigquery.SchemaField.from_api_repr(schema))
+        job_config.schema = fields
+
+    if config.autodetect is not None:
+        job_config.autodetect = config.autodetect
+
+    table_ref = bigquery.TableReference.from_api_repr(config.destination)
+
+    # For now, we assume loading from a local file
+    with open(config.sourceFile, 'rb') as source_file:
+        load_job = client.load_table_from_file(source_file,
+                                               table_ref,
+                                               job_config=job_config, rewind=True,
+                                               location=config.location,
+                                               )
+
+    load_job.result()
+
+    # Call the Job REST API, as query_job.to_api_repr() is missing statistics
+    extra_params = {"projection": "full"}
+    path = "/projects/{}/jobs/{}".format(load_job.project,
+                                         load_job.job_id)
+    span_attributes = {
+        "path": path, "job_id": load_job.job_id, "location": load_job.location}
+    job_result = client._call_api(retry=DEFAULT_RETRY, span_name="BigQuery.getJob",
+                                  span_attributes=span_attributes, method="GET", path=path, query_params=extra_params)
+
+    # Write job information to job.json
+    with open('job.json', 'w') as job_result_file:
+        json.dump(job_result, job_result_file, indent=2, sort_keys=True)
+
+    # Write the destination table to table.json
+    with open('table.json', 'w') as dest_table_file:
+        # If no destination, this will be a BQ temp table
+        table_info = client.get_table(table_ref)
+        json.dump(table_info.to_api_repr(),
+                  dest_table_file, indent=2, sort_keys=True)
 
 
 @dataclass_json
@@ -261,8 +412,10 @@ def main(args=None):
     parser.add_argument('--credentials', metavar='KEY.JSON', type=str,
                         help='JSON credentials file (default: infer from environment)')
 
-    parser.add_argument('command', choices=['query', 'create_table', 'copy_table', 'create_dataset',
+    parser.add_argument('command', choices=['query', 'create_table', 'copy_table', 'load_table', 'extract_table', 'create_dataset',
                                             'delete_dataset'], type=str.lower, help='command to execute')
+
+    parser.add_argument('--version', action='version', version=__version__)
 
     parser.add_argument('config', help='JSON configuration file for command')
     args = parser.parse_args()
@@ -285,6 +438,12 @@ def main(args=None):
 
     if args.command == "copy_table":
         copy_table(config=CopyTableConfig.from_json(config))
+
+    if args.command == "extract_table":
+        extract_table(config=ExtractTableConfig.from_json(config))
+
+    if args.command == "load_table":
+        load_table(config=LoadTableConfig.from_json(config))
 
     if args.command == "query":
         query(config=QueryConfig.from_json(config))

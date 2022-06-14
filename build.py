@@ -1,4 +1,5 @@
 #   -*- coding: utf-8 -*-
+import os
 from pybuilder.core import use_plugin, init, task
 
 use_plugin("python.core")
@@ -8,19 +9,22 @@ use_plugin("python.flake8")
 use_plugin("python.distutils")
 use_plugin("pypi:pybuilder_docker")
 
-name = "wdl-utils"
+name = "wdl-kit"
 default_task = "publish"
-version = "0.1.0"
+description = "A WDL toolkit with a focus on ETL and Cloud integration"
+version = "{0}".format(os.environ.get("WDL_KIT_VERSION", "0.0.1dev0"))
 
 
 @init
 def initialize(project):
     project.set_property('distutils_console_scripts', [
-        "jbq = jgcp.bigquery:main",
+        "wbq = gcp.bigquery:main",
+        "wgcs = gcp.gcs:main",
         "yaml2wdl = utils.yaml2wdl:main",
         "slacker = utils.slacker:main",
         "mailer = utils.mailer:main"
     ])
+
     # -- In case resources are ever needed, this is how to include them
     # -- use_plugin("copy_resources")
     # project.get_property("copy_resources_glob").append(

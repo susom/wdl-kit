@@ -1,0 +1,13 @@
+{
+    "recommendations": [
+        "inferrinizzard.prettier-sql-vscode",
+        "exodiusstudios.comment-anchors",
+        "ms-python.vscode-pylance",
+        "ms-python.python",
+        "redhat.vscode-yaml",
+        "bierner.markdown-preview-github-styles",
+        "asciidoctor.asciidoctor-vscode",
+        "huisben.yaml-string-sql",
+        "ms-vscode.makefile-tools"
+    ]
+}

@@ -7,4 +7,4 @@ steps:
   - name: "gcr.io/cloud-builders/docker:20.10.14"
     args: ["push", "-a", "${_ARTIFACT_REGISTRY_REPO}/wdl-kit"]
 
-logsBucket: "gs://cloud-build-dev.starr-data.us"
+logsBucket: "${_LOGSBUCKET}"

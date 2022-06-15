@@ -1,5 +1,7 @@
 version development
 
+# version 1.0.0
+
 #
 # Datasets
 # https://cloud.google.com/bigquery/docs/reference/rest/v2/datasets

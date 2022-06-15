@@ -67,13 +67,13 @@ task CreateDataset {
       dataset: dataset
     }
     command {
-      jgcp create_dataset ~{write_json(config)}
+      wbq create_dataset ~{write_json(config)}
     }
     output {
       Dataset createdDataset = read_json(stdout())
     }
     runtime {
-      docker: "jgcp:latest"
+      docker: "wdl-kit:1.0.0"
     }
 }
 ```
@@ -112,7 +112,7 @@ struct Dataset {
 Note that DatasetReference is another Struct, just like the actual GCP [Dataset](https://cloud.google.com/bigquery/docs/reference/rest/v2/datasets) resource.
 
 #### Python code
-Here is the entirety of the `create_dataset` method in jGCP:
+Here is the entirety of the `create_dataset` method in wdl-kit:
 
 ```python
 def create_dataset(config: CreateDatasetConfig) -> dict:
@@ -134,12 +134,15 @@ The method is 4 lines of code(!):
 
 The GCP Python `from_api_repr` and `to_api_repr` methods do all the heavy lifting for us.
 
-#### Building Python
+#### Building WDL-kit
 
-You'll need to install the modules in /src/main/docker/requirements.txt if you are building jgcp
 ```shell
-cd /apps/jgcp/src/main/docker
 pip3 install -r requirements.txt
+pyb install
+# Install the command-line tools locally (outside of docker)
+pip3 install target/dist/wdl-kit-1.0.0/dist/wdl-kit-1.0.0.tar.gz
+# Create the docker image (for WDL workflows)
+docker build --no-cache . -t wdl-kit:1.0.0
 ```
 
 If your terminal in VSCode has "venv" in front of it do the following:

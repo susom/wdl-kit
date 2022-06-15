@@ -1,11 +1,4 @@
 TARGET = wdl-kit
-IMAGE_SUFFIX = .dev0
-VERSION = 1.0.0$(IMAGE_SUFFIX)
-IMAGE = $(TARGET):$(VERSION)
-REGISTRY = UNSET # set by CICD
-WDL_DIR = /usr/local
-
-export WDL_KIT_VERSION = $(VERSION)
 
 TARGETDIR = $(WDL_DIR)/$(TARGET)/$(VERSION)
 WDLSRC = src/main/wdl

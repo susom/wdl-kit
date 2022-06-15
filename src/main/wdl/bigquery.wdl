@@ -70,6 +70,7 @@ task Query {
 
       Int cpu = 1
       String memory = "128 MB"
+      String dockerImage = "wdl-kit:1.0.0"
     }
 
     QueryConfig config = object {
@@ -102,7 +103,7 @@ task Query {
     }
 
     runtime {
-      docker: "wdl-kit:1.0.0"
+      docker: dockerImage
       cpu: cpu
       memory: memory
     }
@@ -131,6 +132,7 @@ task CreateTable {
 
       Int cpu = 1
       String memory = "128 MB"
+      String dockerImage = "wdl-kit:1.0.0"
     }
 
     CreateTableConfig config = object {
@@ -147,7 +149,7 @@ task CreateTable {
     }
 
     runtime {
-      docker: "wdl-kit:1.0.0"
+      docker: dockerImage
       cpu: cpu
       memory: memory
     }
@@ -181,6 +183,7 @@ task CopyTable {
 
       Int cpu = 1
       String memory = "128 MB"
+      String dockerImage = "wdl-kit:1.0.0"
     }
 
     CopyTableConfig config = object {
@@ -199,7 +202,7 @@ task CopyTable {
     }
 
     runtime {
-      docker: "wdl-kit:1.0.0"
+      docker: dockerImage
       cpu: cpu
       memory: memory
     }
@@ -235,6 +238,7 @@ task ExtractTable {
 
     Int cpu = 1
     String memory = "128 MB"
+    String dockerImage = "wdl-kit:1.0.0"
   }
 
   ExtractTableConfig config = object {
@@ -254,7 +258,7 @@ task ExtractTable {
   }
 
   runtime {
-    docker: "wdl-kit:1.0.0"
+    docker: dockerImage
     cpu: cpu
     memory: memory
   }
@@ -305,6 +309,7 @@ task LoadTable {
     String location = "US"
     Int cpu = 1
     String memory = "128 MB"
+    String dockerImage = "wdl-kit:1.0.0"
   }
 
   LoadTableConfig config = object {
@@ -329,7 +334,7 @@ task LoadTable {
   }
 
   runtime {
-    docker: "wdl-kit:1.0.0"
+    docker: dockerImage
     cpu: cpu
     memory: memory
   }
@@ -362,6 +367,7 @@ task CreateDataset {
 
       Int cpu = 1
       String memory = "128 MB"
+      String dockerImage = "wdl-kit:1.0.0"
     }
 
     CreateDatasetConfig config = object {
@@ -379,7 +385,7 @@ task CreateDataset {
     }
 
     runtime {
-      docker: "wdl-kit:1.0.0"
+      docker: dockerImage
       cpu: cpu
       memory: memory
     }
@@ -411,6 +417,7 @@ task DeleteDataset {
 
       Int cpu = 1
       String memory = "128 MB"
+      String dockerImage = "wdl-kit:1.0.0"
     }
 
     DeleteDatasetConfig config = object {
@@ -428,7 +435,7 @@ task DeleteDataset {
     }
 
     runtime {
-      docker: "wdl-kit:1.0.0"
+      docker: dockerImage
       cpu: cpu
       memory: memory
     }

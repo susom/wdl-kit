@@ -38,6 +38,7 @@ task Compose {
 
       Int cpu = 1
       String memory = "128 MB"
+      String dockerImage = "wdl-kit:1.0.0"
     }
 
     ComposeConfig config = object {
@@ -56,7 +57,7 @@ task Compose {
     }
 
     runtime {
-      docker: "wdl-kit:1.0.0"
+      docker: dockerImage
       cpu: cpu
       memory: memory
     }
@@ -99,6 +100,7 @@ task Download {
       Boolean keepPrefix = false
       Int cpu = 1
       String memory = "128 MB"
+      String dockerImage = "wdl-kit:1.0.0"
     }
 
     DownloadConfig config = object {
@@ -118,7 +120,7 @@ task Download {
     }
 
     runtime {
-      docker: "wdl-kit:1.0.0"
+      docker: dockerImage
       cpu: cpu
       memory: memory
     }

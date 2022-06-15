@@ -27,6 +27,7 @@ task StringReplace {
     input {
         String toReplace
         File? replacements
+        String dockerImage = "wdl-kit:1.0.0"
     }
 
     command <<<
@@ -42,7 +43,7 @@ task StringReplace {
     >>>
 
     runtime {
-        docker: "wdl-kit:1.0.0"
+        docker: dockerImage
     }
 
     output {
@@ -54,6 +55,7 @@ task Slacker {
     input {
         SlackConfig? slackConfig
         String replacedMessage
+        String dockerImage = "wdl-kit:1.0.0"
     }
 
     parameter_meta {
@@ -62,11 +64,11 @@ task Slacker {
     }
 
     command <<<
-        slacker ~{"--project_id=" + config.apiProjectId} ~{"--credentials=" + config.credentials} ~{"--slack_uri=" + select_first([slackConfig]).tokenUri} ~{"--channel=" + select_first([slackConfig]).channel} ~{"--message=" + "\"" + replacedMessage + "\""}
+        slacker ~{"--slack_uri=" + select_first([slackConfig]).tokenUri} ~{"--channel=" + select_first([slackConfig]).channel} ~{"--message=" + "\"" + replacedMessage + "\""}
     >>>
     
     runtime {
-        docker: "wdl-kit:1.0.0"
+        docker: dockerImage
     }
 }
 
@@ -74,14 +76,15 @@ task Mailer {
     input {
         MailerConfig? mailerConfig
         String replacedMessage
+        String dockerImage = "wdl-kit:1.0.0"
     } 
 
     command <<<
-        mailer ~{"--project_id=" + config.apiProjectId} ~{"--credentials=" + config.credentials} ~{"--mailgun_api_url=" + select_first([mailerConfig]).apiUrl} ~{"--mailgun_api_uri=" + select_first([mailerConfig]).apiUri} ~{"--mailto=" + "\"" + select_first([mailerConfig]).mailTo + "\"" }  ~{"--message=" + "\"" + replacedMessage + "\""} ~{"--subject=" + "\"" + select_first([mailerConfig]).subject + "\""} ~{"--sender=" + select_first([mailerConfig]).sender}
+        mailer ~{"--mailgun_api_url=" + select_first([mailerConfig]).apiUrl} ~{"--mailgun_api_uri=" + select_first([mailerConfig]).apiUri} ~{"--mailto=" + "\"" + select_first([mailerConfig]).mailTo + "\"" }  ~{"--message=" + "\"" + replacedMessage + "\""} ~{"--subject=" + "\"" + select_first([mailerConfig]).subject + "\""} ~{"--sender=" + select_first([mailerConfig]).sender}
     >>>
 
     runtime {
-        docker: "wdl-kit:1.0.0"
+        docker: dockerImage
     }
 }
 
@@ -89,8 +92,9 @@ task ZipCompress {
     input {
         Array[File] sourceFiles
         String destinationFile
-        Int? cpu = 1
-        String? memory = "1024MB"
+        Int cpu = 1
+        String memory = "1024MB"
+        String dockerImage = "wdl-kit:1.0.0"
     }
 
     command {
@@ -104,7 +108,7 @@ task ZipCompress {
     }
 
     runtime {
-        docker: "wdl-kit:1.0.0"
+        docker: dockerImage
         cpu: cpu
         memory: memory
     }

@@ -266,7 +266,10 @@ task ExtractTable {
 
 
 struct LoadTableConfig {
-  File sourceFile
+  File? sourceFile
+  String? sourceUris
+  String? sourceBucket
+  String? sourceBucketFolder
   TableReference destination
   Array[TableFieldSchema]? schemaFields
   String format 
@@ -283,6 +286,9 @@ task LoadTable {
     credentials: { description: "Optional JSON credential file" }
     projectId: { description: "Default project to use for API requests" }
     sourceFile: { description: "Local file containing data to load" }
+    sourceUris: { description: "Uri containing data to load" }
+    sourceBucket: { description: "Bucket containing data to load" }
+    sourceBucketFolder: { description: "Bucket folder containing data to load" }
     destination: { description: "TableReference destination" }
     schemaFields: { description: "Array of TableFieldSchema for destination table" }
     format: { description: "Format of source data, defaults to CSV"}
@@ -298,22 +304,28 @@ task LoadTable {
   input {
     File? credentials
     String projectId
-    File sourceFile
+    File? sourceFile
+    String? sourceUris
+    String? sourceBucket
+    String? sourceBucketFolder
     TableReference destination
     Array[TableFieldSchema]? schemaFields
-    String format = "CSV"
+    String format
     Int skipLeadingRows = 0
     String createDisposition = "CREATE_IF_NEEDED"
     String writeDisposition = "WRITE_EMPTY"
-    Boolean autodetect = true
+    Boolean autodetect = false
     String location = "US"
+    String dockerImage
     Int cpu = 1
     String memory = "128 MB"
-    String dockerImage = "wdl-kit:1.0.0"
   }
 
   LoadTableConfig config = object {
     sourceFile: sourceFile,
+    sourceUris: sourceUris,
+    sourceBucket: sourceBucket,
+    sourceBucketFolder: sourceBucketFolder,
     destination: destination, 
     schemaFields: schemaFields,
     format: format,
@@ -330,7 +342,6 @@ task LoadTable {
 
   output {
     File job = "job.json"
-    Table table = read_json("table.json")
   }
 
   runtime {

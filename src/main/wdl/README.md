@@ -1,0 +1,1 @@
+WDL files in this directory have ${WDL_KIT_VERSION} variables embedded, which is replaced with the actual version during Make.

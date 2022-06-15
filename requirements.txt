@@ -9,3 +9,4 @@ PyYAML==6.0
 slack_sdk==3.15.2
 boltons==21.0.0
 importlib_metadata
+bump2version==1.0.1

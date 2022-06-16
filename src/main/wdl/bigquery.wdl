@@ -269,7 +269,8 @@ struct LoadTableConfig {
   File? sourceFile
   String? sourceUris
   String? sourceBucket
-  String? sourceBucketFolder
+  String? sourcePrefix
+  String? sourceDelimiter
   TableReference destination
   Array[TableFieldSchema]? schemaFields
   String format 
@@ -288,7 +289,8 @@ task LoadTable {
     sourceFile: { description: "Local file containing data to load" }
     sourceUris: { description: "Uri containing data to load" }
     sourceBucket: { description: "Bucket containing data to load" }
-    sourceBucketFolder: { description: "Bucket folder containing data to load" }
+    sourcePrefix: { description: "Bucket prefix containing data to load" }
+    sourceDelimiter: { description: "Bucket delimiter containing data to load" }
     destination: { description: "TableReference destination" }
     schemaFields: { description: "Array of TableFieldSchema for destination table" }
     format: { description: "Format of source data, defaults to CSV"}
@@ -307,7 +309,8 @@ task LoadTable {
     File? sourceFile
     String? sourceUris
     String? sourceBucket
-    String? sourceBucketFolder
+    String? sourcePrefix
+    String? sourceDelimiter
     TableReference destination
     Array[TableFieldSchema]? schemaFields
     String format
@@ -325,7 +328,8 @@ task LoadTable {
     sourceFile: sourceFile,
     sourceUris: sourceUris,
     sourceBucket: sourceBucket,
-    sourceBucketFolder: sourceBucketFolder,
+    sourcePrefix: sourcePrefix,
+    sourceDelimiter: sourceDelimiter,
     destination: destination, 
     schemaFields: schemaFields,
     format: format,
@@ -342,6 +346,7 @@ task LoadTable {
 
   output {
     File job = "job.json"
+    Table table = read_json("table.json")
   }
 
   runtime {
@@ -350,6 +355,7 @@ task LoadTable {
     memory: memory
   }
 }
+
 
 
 struct CreateDatasetConfig {

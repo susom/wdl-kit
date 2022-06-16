@@ -206,7 +206,8 @@ class LoadTableConfig():
 
     # loading from bucket & folder
     sourceBucket: Optional[str] = None
-    sourceBucketFolder: Optional[str] = None
+    sourcePrefix: Optional[str] = None
+    sourceDelimiter: Optional[str] = None
 
     # Source schema fields
     schemaFields: Optional[List[dict]] = None
@@ -229,20 +230,20 @@ class LoadTableConfig():
     location: str = "US"
 
 # get files from bucket/folder
-def get_bucketfiles(bucketName, bucketFolder, fileFormat):
+def get_bucketfiles(bucketName, sourcePrefix, sourceDelimiter) -> List[str]:
     importUris: List[str] = []
     storageClient = storage.Client()
     bucket = storageClient.get_bucket(bucketName)
-    blobs = bucket.list_blobs(prefix=bucketFolder)
+    blobs = bucket.list_blobs(prefix=sourcePrefix, delimiter=sourceDelimiter)
+    blob: storage.Blob
     for blob in blobs:
-        if blob.name.find("."+fileFormat.lower()) != -1:
-            importUris.append(f"gs://{bucketName}/{blob.name}")
+        importUris.append(f"gs://{blob.bucket.name}/{blob.name}")
     return importUris
 
 
 def load_table(config: LoadTableConfig):
 
-    if not config.sourceFile and not config.sourceUris and not config.sourceBucket and not config.sourceBucketFolder:
+    if not config.sourceFile and not config.sourceUris and not config.sourceBucket and not config.sourcePrefix:
         raise Exception("Loading source is required") 
 
     client = bigquery.Client()
@@ -285,15 +286,15 @@ def load_table(config: LoadTableConfig):
                                                )
     else:
         # get Uris from bucket folder for multiple file loading
-        if config.sourceBucket is not None and config.sourceBucketFolder is not None:
-            importUris = get_bucketfiles(config.sourceBucket, config.sourceBucketFolder, config.format)
+        if config.sourceBucket is not None and config.sourcePrefix is not None:
+            importUris = get_bucketfiles(config.sourceBucket, config.sourcePrefix, config.sourceDelimiter)
       
-            for fileUri in importUris:
-                load_job = client.load_table_from_uri(fileUri, 
-                                                    table_ref,
-                                                    job_config=job_config, 
-                                                    location=config.location, 
-                                                    )
+            # for fileUri in importUris:
+            load_job = client.load_table_from_uri(importUris, 
+                                                table_ref,
+                                                job_config=job_config, 
+                                                location=config.location, 
+                                                )
         else:
             # https://cloud.google.com/bigquery/docs/samples/bigquery-load-table-gcs-csv
             # loading from a local file
@@ -320,6 +321,14 @@ def load_table(config: LoadTableConfig):
     # Write job information to job.json
     with open('job.json', 'w') as job_result_file:
         json.dump(job_result, job_result_file, indent=2, sort_keys=True)
+
+    # Write the destination table to table.json
+    with open('table.json', 'w') as dest_table_file:
+        # If no destination, this will be a BQ temp table
+        table_info = client.get_table(table_ref)
+        json.dump(table_info.to_api_repr(),
+                  dest_table_file, indent=2, sort_keys=True)
+
 
 
 @dataclass_json

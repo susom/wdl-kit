@@ -200,13 +200,13 @@ class LoadTableConfig():
     # destination (TableReference)
     destination: dict
     # For loading data from a file
-    sourceFile: str = ""
+    sourceFile: Optional[str] = None
     # loading from bucket uri (gs://... )
     sourceUris: Optional[str] = None
 
     # loading from bucket & folder
-    sourceBucket: str = ""
-    sourceBucketFolder: str = ""
+    sourceBucket: Optional[str] = None
+    sourceBucketFolder: Optional[str] = None
 
     # Source schema fields
     schemaFields: Optional[List[dict]] = None
@@ -277,7 +277,7 @@ def load_table(config: LoadTableConfig):
 
     # https://cloud.google.com/bigquery/docs/samples/bigquery-load-table-gcs-avro
     # source loading from Uri gs://
-    if config.sourceUris:
+    if config.sourceUris is not None:
         load_job = client.load_table_from_uri(config.sourceUris, 
                                                table_ref,
                                                job_config=job_config, 
@@ -285,7 +285,7 @@ def load_table(config: LoadTableConfig):
                                                )
     else:
         # get Uris from bucket folder for multiple file loading
-        if config.sourceBucket and config.sourceBucketFolder:
+        if config.sourceBucket is not None and config.sourceBucketFolder is not None:
             importUris = get_bucketfiles(config.sourceBucket, config.sourceBucketFolder, config.format)
       
             for fileUri in importUris:
@@ -297,7 +297,7 @@ def load_table(config: LoadTableConfig):
         else:
             # https://cloud.google.com/bigquery/docs/samples/bigquery-load-table-gcs-csv
             # loading from a local file
-            if config.sourceFile:
+            if config.sourceFile is not None:
                 with open(config.sourceFile, 'rb') as source_file:
                     load_job = client.load_table_from_file(source_file,
                                                         table_ref,

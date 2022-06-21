@@ -11,7 +11,7 @@ use_plugin("python.distutils")
 name = "wdl-kit"
 default_task = "publish"
 description = "A WDL toolkit with a focus on ETL and Cloud integration"
-version = "1.0.0"
+version = "1.1.0"
 
 
 @init

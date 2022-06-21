@@ -29,5 +29,5 @@ def initialize(project):
     # project.get_property("copy_resources_glob").append(
     #     "src/main/resources/*.txt")
     # project.set_property("copy_resources_target", "$dir_dist")
-    # # In docker this is /usr/local/share/jgcp
-    # project.install_file("share/jgcp", "src/main/resources/example.txt")
+    # # In docker this is /usr/local/share/wdl-kit
+    # project.install_file("share/wdl-kit", "src/main/resources/example.txt")

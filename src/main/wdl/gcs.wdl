@@ -30,7 +30,7 @@ task Compose {
 
     input {
       File? credentials
-      String projectId
+      String? projectId
       String destination
       String sourcePrefix
       String? sourceDelimiter
@@ -49,7 +49,7 @@ task Compose {
     }
 
     command {
-      jgcs ${"--project_id=" + projectId} ${"--credentials=" + credentials} compose ~{write_json(config)}
+      wgcs ${"--project_id=" + projectId} ${"--credentials=" + credentials} compose ~{write_json(config)}
     }
 
     output {
@@ -92,7 +92,7 @@ task Download {
 
     input {
       File? credentials
-      String projectId
+      String? projectId
       String sourceBucket
       String sourcePrefix
       String? sourceDelimiter
@@ -112,7 +112,7 @@ task Download {
     }
 
     command {
-      jgcs ${"--project_id=" + projectId} ${"--credentials=" + credentials} download ~{write_json(config)}
+      wgcs ${"--project_id=" + projectId} ${"--credentials=" + credentials} download ~{write_json(config)}
     }
 
     output {

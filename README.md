@@ -5,14 +5,38 @@ WDL-kit is a collection of dockerized utilities to simplify the creation of ETL-
 
 ## Features
 
-### YAML-to-WDL
+* YAML-to-WDL
+  
+  Converts .yaml files into .wdl tasks. This is primarily a workaround for the WDL language not supporting multi-line strings, which is problematic for SQL ETL workflows. 
 
-### Google Cloud
+* Google Cloud
 
-### Slack
+  Wrappers for BigQuery, Google Cloud Storage, etc. 
 
-### Mailgun
+* Slack
 
+  Wrapper for sending Slack messages
+
+* MailGun
+
+  Wrapper for sending mail via MailGun
+
+
+## Building WDL-kit
+
+Create docker image (for use in WDL workflows):
+
+`make docker`
+
+Install into local pip: (installs yaml2wdl, etc.)
+
+`make install`
+
+You can also build & install directly from GitHub:
+
+`pip3 install git+https://github.com/susom/wdl-kit`
+
+---
 ## Background
 We needed a method of calling GCP API's via WDL. Most WDL workflow engines require commands to be dockerized, so the natural inclination
 would be to write WDL tasks that call the command line utilities from the `google/cloud-sdk` docker image. 
@@ -24,7 +48,7 @@ natural implementation:
 ```WDL
 task CreateDataset {
     input {
-      File? credentials
+      File credentials
       String projectId
       String dataset
       String description = ""
@@ -67,13 +91,13 @@ task CreateDataset {
       dataset: dataset
     }
     command {
-      jgcp create_dataset ~{write_json(config)}
+      wbq create_dataset ~{write_json(config)}
     }
     output {
       Dataset createdDataset = read_json(stdout())
     }
     runtime {
-      docker: "jgcp:latest"
+      docker: "wdl-kit:1.0.0"
     }
 }
 ```
@@ -112,7 +136,7 @@ struct Dataset {
 Note that DatasetReference is another Struct, just like the actual GCP [Dataset](https://cloud.google.com/bigquery/docs/reference/rest/v2/datasets) resource.
 
 #### Python code
-Here is the entirety of the `create_dataset` method in jGCP:
+Here is the entirety of the `create_dataset` method in wdl-kit:
 
 ```python
 def create_dataset(config: CreateDatasetConfig) -> dict:
@@ -133,15 +157,8 @@ The method is 4 lines of code(!):
 * Return the created Dataset resource (which WDL Serializes back to a Dataset Struct)
 
 The GCP Python `from_api_repr` and `to_api_repr` methods do all the heavy lifting for us.
-
-#### Building Python
-
-You'll need to install the modules in /src/main/docker/requirements.txt if you are building jgcp
-```shell
-cd /apps/jgcp/src/main/docker
-pip3 install -r requirements.txt
-```
-
+---
+#### Notes
 If your terminal in VSCode has "venv" in front of it do the following:
 * Upgrade to python 3.9.9 via pyenv
 * Add the following into your .bashrc

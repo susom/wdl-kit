@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from google.cloud.bigquery import DEFAULT_RETRY
-from google.cloud import bigquery, exceptions
+from google.cloud import bigquery, exceptions, storage
 from dataclasses_json import dataclass_json
 from boltons.iterutils import remap
 from importlib_metadata import version
@@ -197,15 +197,22 @@ def extract_table(config: ExtractTableConfig):
 @dataclass
 class LoadTableConfig():
     # https://cloud.google.com/bigquery/docs/reference/rest/v2/Job#jobconfigurationload
-    # For loading data from a file
-    sourceFile: str
-    # TODO: Implment sourceURI loading (gs://... )
-    # sourceUri: Optional[str] = None
     # destination (TableReference)
     destination: dict
+    # For loading data from a file
+    sourceFile: Optional[str] = None
+    # loading from bucket uri (gs://... )
+    sourceUris: Optional[str] = None
+
+    # loading from bucket & folder
+    sourceBucket: Optional[str] = None
+    sourcePrefix: Optional[str] = None
+    sourceDelimiter: Optional[str] = None
+
     # Source schema fields
     schemaFields: Optional[List[dict]] = None
-    # source format, defaults to CSV
+    
+    # source format can be CSV, NEWLINE_DELIMITED_JSON, AVRO, defaults to CSV
     format: str = "CSV"
     # Number of rows to skip from input file
     skipLeadingRows: int = 0
@@ -213,26 +220,46 @@ class LoadTableConfig():
     fieldDelimiter: str = ","
     # Quoting character
     quoteCharacter: str = '"'
-    # Table create disposition
+    # Table create disposition [ CREATE_IF_NEEDED | CREATE_NEVER ]
     createDisposition: str = "CREATE_IF_NEEDED"
-    # Table write disposition
+    # Table write disposition [ WRITE_TRUNCATE | WRITE_APPEND | WRITE_EMPTY ]
     writeDisposition: str = "WRITE_EMPTY"
     # Autodetect schema
     autodetect: Optional[bool] = None
     # Location of where to run the job, must be same as destination table, defaults to US
     location: str = "US"
 
+# get files from bucket/folder
+def get_bucketfiles(bucketName, sourcePrefix, sourceDelimiter) -> List[str]:
+    importUris: List[str] = []
+    storageClient = storage.Client()
+    bucket = storageClient.get_bucket(bucketName)
+    blobs = bucket.list_blobs(prefix=sourcePrefix, delimiter=sourceDelimiter)
+    blob: storage.Blob
+    for blob in blobs:
+        importUris.append(f"gs://{blob.bucket.name}/{blob.name}")
+    return importUris
+
 
 def load_table(config: LoadTableConfig):
+
+    if not config.sourceFile and not config.sourceUris and not config.sourceBucket and not config.sourcePrefix:
+        raise Exception("Loading source is required") 
+
     client = bigquery.Client()
 
     job_config = bigquery.LoadJobConfig()
     job_config.source_format = config.format
-    job_config.skip_leading_rows = config.skipLeadingRows
-    job_config.field_delimiter = config.fieldDelimiter
+  
+    # Only CSV has config for field delimiter, quote character and skip leading row
+    if config.format.lower() == "csv":
+        job_config.field_delimiter = config.fieldDelimiter
+        job_config.quote_character = config.quoteCharacter
+        job_config.skip_leading_rows = config.skipLeadingRows
+
     job_config.write_disposition = config.writeDisposition
     job_config.create_disposition = config.createDisposition
-    job_config.quote_character = config.quoteCharacter
+    
 
     if config.schemaFields is not None:
         fields: List[bigquery.SchemaField] = []
@@ -249,14 +276,37 @@ def load_table(config: LoadTableConfig):
 
     table_ref = bigquery.TableReference.from_api_repr(config.destination)
 
-    # For now, we assume loading from a local file
-    with open(config.sourceFile, 'rb') as source_file:
-        load_job = client.load_table_from_file(source_file,
+    # https://cloud.google.com/bigquery/docs/samples/bigquery-load-table-gcs-avro
+    # source loading from Uri gs://
+    if config.sourceUris is not None:
+        load_job = client.load_table_from_uri(config.sourceUris, 
                                                table_ref,
-                                               job_config=job_config, rewind=True,
-                                               location=config.location,
+                                               job_config=job_config, 
+                                               location=config.location, 
                                                )
+    else:
+        # get Uris from bucket folder for multiple file loading
+        if config.sourceBucket is not None and config.sourcePrefix is not None:
+            importUris = get_bucketfiles(config.sourceBucket, config.sourcePrefix, config.sourceDelimiter)
+      
+            # for fileUri in importUris:
+            load_job = client.load_table_from_uri(importUris, 
+                                                table_ref,
+                                                job_config=job_config, 
+                                                location=config.location, 
+                                                )
+        else:
+            # https://cloud.google.com/bigquery/docs/samples/bigquery-load-table-gcs-csv
+            # loading from a local file
+            if config.sourceFile is not None:
+                with open(config.sourceFile, 'rb') as source_file:
+                    load_job = client.load_table_from_file(source_file,
+                                                        table_ref,
+                                                        job_config=job_config, rewind=True,
+                                                        location=config.location,
+                                                        )
 
+                                                    
     load_job.result()
 
     # Call the Job REST API, as query_job.to_api_repr() is missing statistics
@@ -278,6 +328,7 @@ def load_table(config: LoadTableConfig):
         table_info = client.get_table(table_ref)
         json.dump(table_info.to_api_repr(),
                   dest_table_file, indent=2, sort_keys=True)
+
 
 
 @dataclass_json

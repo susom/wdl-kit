@@ -7,12 +7,11 @@ use_plugin("python.flake8")
 # use_plugin("python.unittest")
 # use_plugin("python.coverage")
 use_plugin("python.distutils")
-use_plugin("pypi:pybuilder_docker")
 
 name = "wdl-kit"
 default_task = "publish"
 description = "A WDL toolkit with a focus on ETL and Cloud integration"
-version = "{0}".format(os.environ.get("WDL_KIT_VERSION", "0.0.1dev0"))
+version = "1.0.0"
 
 
 @init
@@ -30,5 +29,5 @@ def initialize(project):
     # project.get_property("copy_resources_glob").append(
     #     "src/main/resources/*.txt")
     # project.set_property("copy_resources_target", "$dir_dist")
-    # # In docker this is /usr/local/share/jgcp
-    # project.install_file("share/jgcp", "src/main/resources/example.txt")
+    # # In docker this is /usr/local/share/wdl-kit
+    # project.install_file("share/wdl-kit", "src/main/resources/example.txt")

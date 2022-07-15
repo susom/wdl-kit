@@ -1,0 +1,1 @@
+* ({uri-jira}/STAR-5883[STAR-5883]) - BigQuery tool now defaults to Priority.BATCH, to avoid > 100 interactive job quota cancellations

@@ -171,4 +171,23 @@ fi
 export PATH=$(pyenv root)/shims:$PATH
 ```
 
-
+## Release process
+This package uses 'bumpversion' to keep version numbers consistent. For example, to bump the minor version number on the dev branch (say after a new release version)... 
+```bash
+git checkout dev
+git pull
+bumpversion minor
+```
+and you will see the changed versions reflected locally in git:
+```bash
+	modified:   .bumpversion.cfg
+	modified:   Dockerfile
+	modified:   Makefile
+	modified:   README.md
+	modified:   build.py
+	modified:   cloudbuild.yaml
+	modified:   src/main/wdl/bigquery.wdl
+	modified:   src/main/wdl/common.wdl
+	modified:   src/main/wdl/gcs.wdl
+	modified:   src/main/wdl/structs.wdl
+```

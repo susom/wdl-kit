@@ -1,0 +1,11 @@
+= WDL-Kit Changelog
+:uri-repo: https://github.com/susom/wdl-kit
+:uri-jira: https://stanfordmed.atlassian.net/browse
+:icons: font
+:star: icon:star[role=red]
+ifndef::icons[]
+:star: &#9733;
+endif::[]
+
+== Release 2022-08-02 (v1.1.0)
+* ({uri-jira}/STAR-5883[STAR-5883]) - BigQuery tool now defaults to Priority.BATCH, to avoid > 100 interactive job quota cancellations

@@ -44,7 +44,7 @@ task Query {
       drop: { description: "Drop any existing destination table before executing query (default)" }
       createDisposition: { description: "One of [ (CREATE_IF_NEEDED), CREATE_NEVER ]" }
       writeDisposition: { description: "One of [ WRITE_APPEND, WRITE_TRUNCATE, (WRITE_EMPTY) ]" }
-      queryPriority: { description: "Query priority [ INTERACTIVE, BATCH ]" }
+      queryPriority: { description: "Query priority [ INTERACTIVE, (BATCH) ]" }
       useQueryCache: { description: "Use BigQuery query cache if possible (default: no)" }
     }
 
@@ -65,12 +65,12 @@ task Query {
       EncryptionConfiguration? destinationEncryptionConfiguration
       String createDisposition = "CREATE_IF_NEEDED"
       String writeDisposition = "WRITE_EMPTY"
-      String queryPriority = "INTERACTIVE"
+      String queryPriority = "BATCH"
       Boolean useQueryCache = true
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.0.0"
+      String dockerImage = "wdl-kit:1.1.0"
     }
 
     QueryConfig config = object {
@@ -132,7 +132,7 @@ task CreateTable {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.0.0"
+      String dockerImage = "wdl-kit:1.1.0"
     }
 
     CreateTableConfig config = object {
@@ -183,7 +183,7 @@ task CopyTable {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.0.0"
+      String dockerImage = "wdl-kit:1.1.0"
     }
 
     CopyTableConfig config = object {
@@ -238,7 +238,7 @@ task ExtractTable {
 
     Int cpu = 1
     String memory = "128 MB"
-    String dockerImage = "wdl-kit:1.0.0"
+    String dockerImage = "wdl-kit:1.1.0"
   }
 
   ExtractTableConfig config = object {
@@ -384,7 +384,7 @@ task CreateDataset {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.0.0"
+      String dockerImage = "wdl-kit:1.1.0"
     }
 
     CreateDatasetConfig config = object {
@@ -434,7 +434,7 @@ task DeleteDataset {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.0.0"
+      String dockerImage = "wdl-kit:1.1.0"
     }
 
     DeleteDatasetConfig config = object {

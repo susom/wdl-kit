@@ -5,12 +5,12 @@ use_plugin("python.unittest")
 use_plugin("python.flake8")
 #use_plugin("python.coverage")
 use_plugin("python.distutils")
-use_plugin("python.install_dependencies")
+
 
 name = "wdl-kit"
 default_task = "publish"
 summary = "A WDL toolkit with a focus on ETL and Cloud integration"
-version = "1.2.0"
+version = "1.1.0"
 url = "https://github.com/susom/wdl-kit"
 authors = [Author("SHC Research IT Team Sapphire","rit-oss-admin@stanford.edu"),
            Author("Joe Mesterhazy","jmesterh@stanford.edu"),

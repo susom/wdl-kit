@@ -36,6 +36,10 @@ You can also build & install directly from GitHub:
 
 `pip3 install git+https://github.com/susom/wdl-kit`
 
+Or install directly from PyPi:
+
+`pip3 install stanford-wdl-kit`
+
 ---
 ## Background
 We needed a method of calling GCP API's via WDL. Most WDL workflow engines require commands to be dockerized, so the natural inclination
@@ -97,7 +101,7 @@ task CreateDataset {
       Dataset createdDataset = read_json(stdout())
     }
     runtime {
-      docker: "wdl-kit:1.1.0"
+      docker: "wdl-kit:1.2.0"
     }
 }
 ```
@@ -171,4 +175,23 @@ fi
 export PATH=$(pyenv root)/shims:$PATH
 ```
 
-
+## Release process
+This package uses 'bumpversion' to keep version numbers consistent. For example, to bump the minor version number on the dev branch (say after a new release version)... 
+```bash
+git checkout dev
+git pull
+bumpversion minor
+```
+and you will see the changed versions reflected locally in git:
+```bash
+	modified:   .bumpversion.cfg
+	modified:   Dockerfile
+	modified:   Makefile
+	modified:   README.md
+	modified:   build.py
+	modified:   cloudbuild.yaml
+	modified:   src/main/wdl/bigquery.wdl
+	modified:   src/main/wdl/common.wdl
+	modified:   src/main/wdl/gcs.wdl
+	modified:   src/main/wdl/structs.wdl
+```

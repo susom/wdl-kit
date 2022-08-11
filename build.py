@@ -3,21 +3,22 @@ from pybuilder.core import Author, use_plugin, init
 use_plugin("python.core")
 use_plugin("python.unittest")
 use_plugin("python.flake8")
-#use_plugin("python.coverage")
+# use_plugin("python.coverage")
 use_plugin("python.distutils")
-
 
 name = "stanford-wdl-kit"
 default_task = "publish"
 summary = "A WDL toolkit with a focus on ETL and Cloud integration"
 version = "1.2.0"
 url = "https://github.com/susom/wdl-kit"
-authors = [Author("Darren Guan", "dguan@stanford.edu"),   
-           Author("Joe Mesterhazy","jmesterh@stanford.edu"),
+authors = [Author("Darren Guan", "dguan@stanford.edu"),
+           Author("Joe Mesterhazy", "jmesterh@stanford.edu"),
            Author("Tyler Tollefson", "ttollefson45@gmail.com")
-          ]
-maintainers = [Author("Research IT: Technology & Digital Solutions, Stanford Medicine","rit-oss-admin@stanford.edu")]
+           ]
+maintainers = [Author(
+    "Research IT: Technology & Digital Solutions, Stanford Medicine", "rit-oss-admin@stanford.edu")]
 license = "Apache License, Version 2.0"
+
 
 @init
 def initialize(project):
@@ -28,7 +29,7 @@ def initialize(project):
         "slacker = utils.slacker:main",
         "mailer = utils.mailer:main"
     ])
-    project.set_property("distutils_readme_file","SUMMARY.md")
+    project.set_property("distutils_readme_file", "SUMMARY.md")
     project.set_property("distutils_readme_description", True)
     project.set_property("distutils_description_overwrite", True)
     project.depends_on_requirements("requirements.txt")

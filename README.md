@@ -36,6 +36,10 @@ You can also build & install directly from GitHub:
 
 `pip3 install git+https://github.com/susom/wdl-kit`
 
+Or install directly from PyPi:
+
+`pip3 install stanford-wdl-kit`
+
 ---
 ## Background
 We needed a method of calling GCP API's via WDL. Most WDL workflow engines require commands to be dockerized, so the natural inclination

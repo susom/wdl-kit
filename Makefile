@@ -1,5 +1,5 @@
 TARGET = wdl-kit
-VERSION=1.2.0
+VERSION=1.2.1
 
 .PHONY: clean docker pip
 

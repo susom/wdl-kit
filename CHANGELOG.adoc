@@ -7,5 +7,8 @@ ifndef::icons[]
 :star: &#9733;
 endif::[]
 
+== Release 2022-08-11 (v1.2.0)
+* ({uri-jira}/PEDS-329[PEDS-329]) - Prepare WDL-Kit for publishing to PyPi
+
 == Release 2022-08-02 (v1.1.0)
 * ({uri-jira}/STAR-5883[STAR-5883]) - BigQuery tool now defaults to Priority.BATCH, to avoid > 100 interactive job quota cancellations

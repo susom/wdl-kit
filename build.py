@@ -1,17 +1,23 @@
-#   -*- coding: utf-8 -*-
-import os
-from pybuilder.core import use_plugin, init, task
+from pybuilder.core import Author, use_plugin, init
 
 use_plugin("python.core")
+use_plugin("python.unittest")
 use_plugin("python.flake8")
-# use_plugin("python.unittest")
 # use_plugin("python.coverage")
 use_plugin("python.distutils")
 
-name = "wdl-kit"
+name = "stanford-wdl-kit"
 default_task = "publish"
-description = "A WDL toolkit with a focus on ETL and Cloud integration"
+summary = "A WDL toolkit with a focus on ETL and Cloud integration"
 version = "1.2.0"
+url = "https://github.com/susom/wdl-kit"
+authors = [Author("Darren Guan", "dguan@stanford.edu"),
+           Author("Joe Mesterhazy", "jmesterh@stanford.edu"),
+           Author("Tyler Tollefson", "ttollefson45@gmail.com")
+           ]
+maintainers = [Author(
+    "Research IT: Technology & Digital Solutions, Stanford Medicine", "rit-oss-admin@stanford.edu")]
+license = "Apache License, Version 2.0"
 
 
 @init
@@ -23,11 +29,19 @@ def initialize(project):
         "slacker = utils.slacker:main",
         "mailer = utils.mailer:main"
     ])
-
-    # -- In case resources are ever needed, this is how to include them
-    # -- use_plugin("copy_resources")
-    # project.get_property("copy_resources_glob").append(
-    #     "src/main/resources/*.txt")
-    # project.set_property("copy_resources_target", "$dir_dist")
-    # # In docker this is /usr/local/share/wdl-kit
-    # project.install_file("share/wdl-kit", "src/main/resources/example.txt")
+    project.set_property("distutils_readme_file", "SUMMARY.md")
+    project.set_property("distutils_readme_description", True)
+    project.set_property("distutils_description_overwrite", True)
+    project.depends_on_requirements("requirements.txt")
+    project.set_property("distutils_classifiers", [
+        "Programming Language :: Python",
+        "Programming Language :: Python :: Implementation :: PyPy",
+        "Programming Language :: Python :: 3",
+        "Operating System :: MacOS :: MacOS X",
+        "Operating System :: POSIX :: Linux",
+        "Operating System :: Microsoft :: Windows",
+        "Operating System :: OS Independent",
+        "Development Status :: 5 - Production/Stable",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Apache Software License"])

@@ -17,7 +17,7 @@ WORKDIR /home/cloudsdk/app
 RUN chown cloudsdk:cloudsdk /home/cloudsdk/app
 RUN apt-get install -y zip
 USER cloudsdk
-COPY --chown=cloudsdk:cloudsdk --from=build /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.2.0/dist/stanford-wdl-kit-1.2.0.tar.gz /home/cloudsdk/app
+COPY --chown=cloudsdk:cloudsdk --from=build /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.2.1/dist/stanford-wdl-kit-1.2.1.tar.gz /home/cloudsdk/app
 ADD --chown=cloudsdk:cloudsdk requirements.txt .
 ENV PATH="${PATH}:/home/cloudsdk/.local/bin"
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1

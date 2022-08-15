@@ -1,15 +1,27 @@
 # Google Cloud SDK docker image with GCP Python libs and helper tools
+
+# Build container
 FROM google/cloud-sdk:395.0.0 AS build
+WORKDIR /home/cloudsdk/app
+RUN chown cloudsdk:cloudsdk /home/cloudsdk/app
+USER cloudsdk
+ADD --chown=cloudsdk:cloudsdk . /home/cloudsdk/app
+ENV PATH="${PATH}:/home/cloudsdk/.local/bin"
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+RUN pip3 install -q pybuilder==0.13.7 flake8==4.0.1
+RUN pyb -q install 
 
-WORKDIR /code
-ADD . /code
-RUN pip3 install pybuilder==0.13.7
-RUN pyb install 
-
+# Final container, copies package from above
 FROM google/cloud-sdk:395.0.0
-WORKDIR /opt/wdl-kit
-COPY --from=build /code/target/dist/stanford-wdl-kit-1.2.0/dist/stanford-wdl-kit-1.2.0.tar.gz /opt/wdl-kit/
-ADD requirements.txt .
-RUN pip3 install -r requirements.txt
-RUN pip3 install stanford-wdl-kit-*.tar.gz
+WORKDIR /home/cloudsdk/app
+RUN chown cloudsdk:cloudsdk /home/cloudsdk/app
 RUN apt-get install -y zip
+USER cloudsdk
+COPY --chown=cloudsdk:cloudsdk --from=build /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.2.0/dist/stanford-wdl-kit-1.2.0.tar.gz /home/cloudsdk/app
+ADD --chown=cloudsdk:cloudsdk requirements.txt .
+ENV PATH="${PATH}:/home/cloudsdk/.local/bin"
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+RUN pip3 install -q -r requirements.txt 
+RUN pip3 install -q stanford-wdl-kit-*.tar.gz
+WORKDIR /home/cloudsdk
+RUN rm -rf app

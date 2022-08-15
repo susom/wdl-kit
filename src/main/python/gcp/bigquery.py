@@ -26,7 +26,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
 
-__version__ = version('wdl-kit')
+__version__ = version('stanford-wdl-kit')
 
 
 @dataclass_json
@@ -211,7 +211,7 @@ class LoadTableConfig():
 
     # Source schema fields
     schemaFields: Optional[List[dict]] = None
-    
+
     # source format can be CSV, NEWLINE_DELIMITED_JSON, AVRO, defaults to CSV
     format: str = "CSV"
     # Number of rows to skip from input file
@@ -230,6 +230,8 @@ class LoadTableConfig():
     location: str = "US"
 
 # get files from bucket/folder
+
+
 def get_bucketfiles(bucketName, sourcePrefix, sourceDelimiter) -> List[str]:
     importUris: List[str] = []
     storageClient = storage.Client()
@@ -244,13 +246,13 @@ def get_bucketfiles(bucketName, sourcePrefix, sourceDelimiter) -> List[str]:
 def load_table(config: LoadTableConfig):
 
     if not config.sourceFile and not config.sourceUris and not config.sourceBucket and not config.sourcePrefix:
-        raise Exception("Loading source is required") 
+        raise Exception("Loading source is required")
 
     client = bigquery.Client()
 
     job_config = bigquery.LoadJobConfig()
     job_config.source_format = config.format
-  
+
     # Only CSV has config for field delimiter, quote character and skip leading row
     if config.format.lower() == "csv":
         job_config.field_delimiter = config.fieldDelimiter
@@ -259,7 +261,6 @@ def load_table(config: LoadTableConfig):
 
     job_config.write_disposition = config.writeDisposition
     job_config.create_disposition = config.createDisposition
-    
 
     if config.schemaFields is not None:
         fields: List[bigquery.SchemaField] = []
@@ -279,34 +280,34 @@ def load_table(config: LoadTableConfig):
     # https://cloud.google.com/bigquery/docs/samples/bigquery-load-table-gcs-avro
     # source loading from Uri gs://
     if config.sourceUris is not None:
-        load_job = client.load_table_from_uri(config.sourceUris, 
-                                               table_ref,
-                                               job_config=job_config, 
-                                               location=config.location, 
-                                               )
+        load_job = client.load_table_from_uri(config.sourceUris,
+                                              table_ref,
+                                              job_config=job_config,
+                                              location=config.location,
+                                              )
     else:
         # get Uris from bucket folder for multiple file loading
         if config.sourceBucket is not None and config.sourcePrefix is not None:
-            importUris = get_bucketfiles(config.sourceBucket, config.sourcePrefix, config.sourceDelimiter)
-      
+            importUris = get_bucketfiles(
+                config.sourceBucket, config.sourcePrefix, config.sourceDelimiter)
+
             # for fileUri in importUris:
-            load_job = client.load_table_from_uri(importUris, 
-                                                table_ref,
-                                                job_config=job_config, 
-                                                location=config.location, 
-                                                )
+            load_job = client.load_table_from_uri(importUris,
+                                                  table_ref,
+                                                  job_config=job_config,
+                                                  location=config.location,
+                                                  )
         else:
             # https://cloud.google.com/bigquery/docs/samples/bigquery-load-table-gcs-csv
             # loading from a local file
             if config.sourceFile is not None:
                 with open(config.sourceFile, 'rb') as source_file:
                     load_job = client.load_table_from_file(source_file,
-                                                        table_ref,
-                                                        job_config=job_config, rewind=True,
-                                                        location=config.location,
-                                                        )
+                                                           table_ref,
+                                                           job_config=job_config, rewind=True,
+                                                           location=config.location,
+                                                           )
 
-                                                    
     load_job.result()
 
     # Call the Job REST API, as query_job.to_api_repr() is missing statistics
@@ -328,7 +329,6 @@ def load_table(config: LoadTableConfig):
         table_info = client.get_table(table_ref)
         json.dump(table_info.to_api_repr(),
                   dest_table_file, indent=2, sort_keys=True)
-
 
 
 @dataclass_json

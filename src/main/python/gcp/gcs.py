@@ -26,7 +26,7 @@ from typing import Iterable, List, Optional
 from google.cloud import storage
 
 
-__version__ = version('wdl-kit')
+__version__ = version('stanford-wdl-kit')
 
 LOG = getLogger(__name__)
 

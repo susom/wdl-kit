@@ -20,6 +20,7 @@ from urllib.parse import urlparse
 from slack_sdk import WebClient
 from google.cloud import storage
 from slack_sdk.errors import SlackApiError
+from pathlib import Path
 
 
 def main(args=None):
@@ -49,15 +50,20 @@ def main(args=None):
         os.environ['GCLOUD_PROJECT'] = args.project_id
 
     slackToken = args.slack_uri
-    if slackToken.startswith("gs://"):
+    if slackToken is None:
+        try:
+            slackToken = os.environ["SLACK_API_TOKEN"]
+        except:
+            parser.error(
+                "Could not read Slack token form $SLACK_API_TOKEN, or use --slack_uri option")
+    elif slackToken.startswith("gs://"):
         parsed = urlparse(slackToken)
         storage_client = storage.Client()
         bucket = storage_client.bucket(parsed.netloc)
         token_blob = bucket.blob(parsed.path[1:])
         slackToken = token_blob.download_as_string().decode('ASCII')
-
-    if slackToken is None:
-        slackToken = os.environ["SLACK_API_TOKEN"]
+    else:
+        slackToken = Path(slackToken).read_text()
 
     message = args.message
     channel = args.channel

@@ -1,0 +1,20 @@
+{
+    "IntegrationTestBq.testCredentials": "/home/dguan2_stanford_edu/cwl/som-rit-phi-starr-dev-key.json",
+    "IntegrationTestBq.testProjectId": "som-rit-phi-starr-dev",
+    "IntegrationTestBq.prefix": "wdlkit_integration_test",
+    "IntegrationTestBq.suffix": "_2022_08_20",
+    "IntegrationTestBq.releaseGroup": "wdlkit_integration_test_dev",
+    "IntegrationTestBq.sourceFile": "/home/dguan2_stanford_edu/github/wdl-kit/tests/resources/data_source.csv",
+    "IntegrationTestBq.testAccessEntries": [
+      {
+        "role": "OWNER",
+        "userByEmail": "pipeline-starr-nav-dev@som-rit-phi-starr-dev.iam.gserviceaccount.com"
+      },
+      {
+        "role": "OWNER",
+        "groupByEmail": "med-research-it_starr-pipeline-developer@stanford.edu"
+      }
+    ],
+
+    "IntegrationTestBq.destinationUri": ""
+}

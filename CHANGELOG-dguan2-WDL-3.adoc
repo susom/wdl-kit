@@ -1,0 +1,1 @@
+* ({uri-jira}/PEDS-351[PEDS-351]) - Avoid redundant rows in location table

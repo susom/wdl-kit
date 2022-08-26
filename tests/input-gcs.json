@@ -1,8 +1,8 @@
 {
-    "IntegrationTestGcs.testCredentials": "/home/xxxxx_stanford_edu/key_file.json",
+    "IntegrationTestGcs.testCredentials": "/home/dguan2_stanford_edu/cwl/som-rit-phi-starr-dev-key.json",
     "IntegrationTestGcs.testProjectId": "som-rit-phi-starr-dev",
-    "IntegrationTestGcs.gcsDestination": "gs://bucket_name/loadfiletest/gcs_result.txt",
+    "IntegrationTestGcs.gcsDestination": "gs://dguan2_test/loadfiletest/gcs_result.txt",
     "IntegrationTestGcs.gcsSourcePrefix": "loadfiletest/data_source",
-    "IntegrationTestGcs.gcsDownloadSourceBucket": "gs://bucket_name",
+    "IntegrationTestGcs.gcsDownloadSourceBucket": "gs://dguan2_test",
     "IntegrationTestGcs.gcsDownloadSourcePrefix": "loadfiletest/gcs_result"    
 }

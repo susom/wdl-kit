@@ -140,8 +140,10 @@ def download(config: DownloadConfig):
     """
     client = storage.Client()
 
+    final_blob = storage.Blob.from_string(config.sourceBucket)
+
     blobs = list(client.list_blobs(
-        config.sourceBucket, prefix=config.sourcePrefix, delimiter=config.sourceDelimiter))
+        final_blob.bucket, prefix=config.sourcePrefix, delimiter=config.sourceDelimiter))
 
     if len(blobs) == 0:
         sys.exit("Could not find any storage objects matching {} using delimiter {}".format(
@@ -155,6 +157,7 @@ def download(config: DownloadConfig):
             destination_uri = blob.name.replace("/", "_")
         else:
             destination_uri = blob.name.split('/')[blob.name.count('/')]
+        
         blob.download_to_filename(destination_uri)
         files.append(destination_uri)
 

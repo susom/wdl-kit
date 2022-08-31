@@ -11,7 +11,7 @@ default_task = "publish"
 summary = "A WDL toolkit with a focus on ETL and Cloud integration"
 version = "1.2.1"
 url = "https://github.com/susom/wdl-kit"
-authors = [Author("Darren Guan", "dguan@stanford.edu"),
+authors = [Author("Darren Guan", "dguan2@stanford.edu"),
            Author("Joe Mesterhazy", "jmesterh@stanford.edu"),
            Author("Tyler Tollefson", "ttollefson45@gmail.com")
            ]

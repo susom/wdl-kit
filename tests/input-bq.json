@@ -1,0 +1,16 @@
+{
+    "IntegrationTestBq.testCredentials": "credentials.json",
+    "IntegrationTestBq.testProjectId": "xxxxxxxxx",
+    "IntegrationTestBq.prefix": "wdlkit_integration_test",
+    "IntegrationTestBq.suffix": "_2022_08_20",
+    "IntegrationTestBq.releaseGroup": "wdlkit_integration_test_dev",
+    "IntegrationTestBq.sourceFile": "data_source.csv",
+    "IntegrationTestBq.testAccessEntries": [
+      {
+        "role": "OWNER",
+        "userByEmail": "xxxxx@xxxxxxxxxxxxxx.com"
+      }
+    ],
+
+    "IntegrationTestBq.destinationUri": ""
+}

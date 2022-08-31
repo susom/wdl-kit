@@ -7,3 +7,5 @@ __pycache__/
 setup.py
 pyproject.toml
 **/*.log
+# Auto-generated WDL should not be committed
+**/*.yaml.wdl

@@ -1,6 +1,6 @@
 {
-    "IntegrationTestGcs.testCredentials": "/home/xxxxxx_stanford_edu/cwl/som-rit-phi-starr-dev-key.json",
-    "IntegrationTestGcs.testProjectId": "som-rit-phi-starr-dev",
+    "IntegrationTestGcs.testCredentials": "credentials.json",
+    "IntegrationTestGcs.testProjectId": "xxxxxxxxx",
     "IntegrationTestGcs.gcsDestination": "gs://xxxxxx_test/loadfiletest/gcs_result.txt",
     "IntegrationTestGcs.gcsSourcePrefix": "loadfiletest/data_source",
     "IntegrationTestGcs.gcsDownloadSourceBucket": "gs://xxxxxx_test",

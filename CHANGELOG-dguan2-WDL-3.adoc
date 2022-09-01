@@ -1,1 +1,0 @@
-* ({uri-jira}/WDL-3[WDL-3]) - WDL-kit integration test workflow

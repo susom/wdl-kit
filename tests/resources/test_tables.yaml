@@ -1,0 +1,45 @@
+# ANCHOR[id=bq_test_table]
+bq_test_table:
+  description: integration table destination table
+  sql: |-
+    --sql
+    select 0 as recid
+      , '' as first_name
+      , '' as last_name;
+  fields:
+    - name: recid
+      type: INTEGER
+    - name: first_name
+      type: STRING
+    - name: last_name
+      type: STRING
+
+# ANCHOR[id=bq_test_source_table]
+bq_test_source_table:
+  description: integration table source table
+  sql: |-
+    --sql
+    select 0 as recid
+      , '' as first_name
+      , '' as last_name;
+  fields:
+    - name: recid
+      type: INTEGER
+    - name: first_name
+      type: STRING
+    - name: last_name
+      type: STRING
+
+# ANCHOR[id=destination_table_data]
+destination_table_data:
+  sql: |-
+    --sql
+    SELECT * --STRING_AGG(CONCAT('"', cast(recid as string), '","', first_name, '","', last_name, '"'),'\n')  as allfields
+    FROM `{bq_test_table}`;
+  fields:
+    - name: recid
+      type: INTEGER
+    - name: first_name
+      type: STRING
+    - name: last_name
+      type: STRING

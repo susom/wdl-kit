@@ -8,8 +8,13 @@ USER cloudsdk
 ADD --chown=cloudsdk:cloudsdk . /home/cloudsdk/app
 ENV PATH="${PATH}:/home/cloudsdk/.local/bin"
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
-RUN pip3 install -q pybuilder==0.13.7 flake8==4.0.1
-RUN pyb -q install 
+RUN pip3 install -q pybuilder==0.13.7 flake8==4.0.1 twine==4.0.1
+RUN pyb -q install
+
+#Upload the built python packge to pypi
+ARG PYPI_USERNAME
+ARG PYPI_PASSWORD
+RUN set -e && if [ "$PYPI_USERNAME" != "" ]; then twine upload /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.2.2/dist/* -u $PYPI_USERNAME -p $PYPI_PASSWORD ; fi;
 
 # Final container, copies package from above
 FROM google/cloud-sdk:395.0.0
@@ -17,7 +22,7 @@ WORKDIR /home/cloudsdk/app
 RUN chown cloudsdk:cloudsdk /home/cloudsdk/app
 RUN apt-get install -y zip
 USER cloudsdk
-COPY --chown=cloudsdk:cloudsdk --from=build /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.2.1/dist/stanford-wdl-kit-1.2.1.tar.gz /home/cloudsdk/app
+COPY --chown=cloudsdk:cloudsdk --from=build /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.2.2/dist/stanford-wdl-kit-1.2.2.tar.gz /home/cloudsdk/app
 ADD --chown=cloudsdk:cloudsdk requirements.txt .
 ENV PATH="${PATH}:/home/cloudsdk/.local/bin"
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1

@@ -1,0 +1,8 @@
+{
+    "IntegrationTestGcs.testCredentials": "credentials.json",
+    "IntegrationTestGcs.testProjectId": "xxxxxxxxx",
+    "IntegrationTestGcs.gcsDestination": "gs://xxxxxx_test/loadfiletest/gcs_result.txt",
+    "IntegrationTestGcs.gcsSourcePrefix": "loadfiletest/data_source",
+    "IntegrationTestGcs.gcsDownloadSourceBucket": "gs://xxxxxx_test",
+    "IntegrationTestGcs.gcsDownloadSourcePrefix": "loadfiletest/gcs_result"    
+}

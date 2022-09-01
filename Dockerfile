@@ -15,7 +15,7 @@ RUN pyb -q install
 ARG PYPI_USERNAME
 ARG PYPI_PASSWORD
 RUN pip3 install -q twine==4.0.1
-RUN if [ "$PYPI_USERNAME" != ""]; then twine upload /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.2.1/dist/* -u $PYPI_USERNAME -p $PYPI_PASSWORD ; fi;
+RUN if [[ "$PYPI_USERNAME" != "" ]]; then twine upload /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.2.1/dist/* -u $PYPI_USERNAME -p $PYPI_PASSWORD ; fi;
 
 # Final container, copies package from above
 FROM google/cloud-sdk:395.0.0

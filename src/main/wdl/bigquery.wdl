@@ -76,7 +76,7 @@ task Query {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.2.2"
+      String dockerImage = "wdl-kit:1.3.0"
     }
 
     QueryConfig config = object {
@@ -140,7 +140,7 @@ task CreateTable {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.2.2"
+      String dockerImage = "wdl-kit:1.3.0"
     }
 
     CreateTableConfig config = object {
@@ -191,7 +191,7 @@ task CopyTable {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.2.2"
+      String dockerImage = "wdl-kit:1.3.0"
     }
 
     CopyTableConfig config = object {
@@ -246,7 +246,7 @@ task ExtractTable {
 
     Int cpu = 1
     String memory = "128 MB"
-    String dockerImage = "wdl-kit:1.2.2"
+    String dockerImage = "wdl-kit:1.3.0"
   }
 
   ExtractTableConfig config = object {
@@ -392,7 +392,7 @@ task CreateDataset {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.2.2"
+      String dockerImage = "wdl-kit:1.3.0"
     }
 
     CreateDatasetConfig config = object {
@@ -442,7 +442,7 @@ task DeleteDataset {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.2.2"
+      String dockerImage = "wdl-kit:1.3.0"
     }
 
     DeleteDatasetConfig config = object {

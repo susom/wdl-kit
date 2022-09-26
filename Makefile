@@ -1,4 +1,4 @@
-TARGET = wdl-kit
+TARGET = install
 VERSION=1.2.2
 
 .PHONY: clean docker pip
@@ -11,7 +11,7 @@ docker:
 install: 
 	pip3 install pybuilder==0.13.5
 	pyb install 
-	pip3 install target/dist/wdl-kit-$(VERSION)/dist/wdl-kit-$(VERSION).tar.gz
+	pip3 install target/dist/stanford-wdl-kit-$(VERSION)/dist/stanford-wdl-kit-$(VERSION).tar.gz
 
 clean:
 	pyb clean

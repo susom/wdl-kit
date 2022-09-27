@@ -14,17 +14,13 @@
 
 import argparse
 import os
+from pathlib import Path
 import time
-from urllib.request import Request
-
+import sys
+from dataclasses_json import dataclass_json
+from dataclasses import dataclass
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
-from pprint import pprint
-
-credentials = GoogleCredentials.get_application_default()
-
-def create_sql_instance(cloudsql, project_id, config):
-    return cloudsql.instances().insert(project=project_id, body=config).execute()
 
 def wait_for_operation(cloudsql, project, operation):
     print("Waiting for operation to finish...")
@@ -46,37 +42,66 @@ def wait_for_operation(cloudsql, project, operation):
         time.sleep(1)
     return operation_complete
 
-def main(project_id, config):
+@dataclass_json
+@dataclass
+class CreateInstanceConfig():
+    project_id: str
+    # Name of the database instance to create
+    instance_name: str
+    # Region in GCP that the instance should be created in
+    region: str = "us-west2"
+    # The type of database instance to create
+    database_version: str = "POSTGRES_12"
+    # Specifications for the machine that the instance will be hosted on
+    tier: str = "db-custom-1-3840"
+    # Setting this to true will give the instance a public IP address
+    enable_ipv4: bool = False
+    # This will require an SSL connection to connect to the db istance
+    require_ssl: bool = False
+    # The private network that is used when allocating the instance a private IP address
+    private_network: str = "projects/som-rit-phi-starr-dev/global/networks/default"
+
+def create_instance(config: CreateInstanceConfig):
+    credentials = GoogleCredentials.get_application_default()
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
-    operation = create_sql_instance(cloudsql, project_id, config)
-    if(wait_for_operation(cloudsql, project_id, operation["name"])):
-        print("SQL Instance creation finished.")
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
-    parser.add_argument("--project_id", help="Your Google Cloud project ID.")
-    parser.add_argument("--instance_name", help="Name of the sql instance.")
-    parser.add_argument("--region", default="us-west2", help="Region where the instance will be located, default is us-west2.")
-    parser.add_argument("--db_version", default="POSTGRES_12", help="Type that the db instance should be, default is POSTGRES_12.")
-    parser.add_argument("--tier", default="db-custom-1-3840", help="Specs for the instance that will be created, default is db-custom-1-3840.")
-
-    args = parser.parse_args()
-
-    # config = { "name": "tjt8712test", "region": "us-west2", "databaseVersion": "POSTGRES_14", "settings": {"tier": "db-custom-1-3840", "ipConfiguration": {"ipv4Enabled": False, "requireSsl": False, "privateNetwork": "projects/som-rit-phi-starr-dev/global/networks/default"}}}
-    config = { 
-        "name": args.instance_name, 
-        "region": args.region, 
-        "databaseVersion": args.db_version, 
+    request_config = {
+        "name": config.instance_name, 
+        "region": config.region, 
+        "databaseVersion": config.db_version, 
         "settings": {
-            "tier": args.tier, 
+            "tier": config.tier, 
             "ipConfiguration": {
-                "ipv4Enabled": False, 
-                "requireSsl": False, 
-                "privateNetwork": "projects/som-rit-phi-starr-dev/global/networks/default"
+                "ipv4Enabled": config.enable_ipv4, 
+                "requireSsl": config.require_ssl, 
+                "privateNetwork": config.private_network
             }
         }
     }
 
-    main(args.project_id, config)
+    operation = cloudsql.instances().insert(project=config.project_id, body=request_config).execute()
+    if(wait_for_operation(cloudsql, config.project_id, operation["name"])):
+        print("SQL Instance creation finished.")
+
+def main():
+    parser = argparse.ArgumentParser(description="Google CloudSql utility")
+
+    parser.add_argument("--project_id", required=False, help="Your Google Cloud project ID.")
+    parser.add_argument('--credentials', required=False, help='Specify path to a GCP JSON credentials file')
+    parser.add_argument('command', choices=['create_instance'], type=str.lower, help='command to execute')
+    parser.add_argument('config', help='JSON configuration file for command')
+    args = parser.parse_args()
+    
+    config = Path(args.config).read_text()
+
+    if args.credentials is not None:
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = args.credentials
+
+    if args.project_id is not None:
+        os.environ['GCLOUD_PROJECT'] = args.project_id
+
+    if args.command == "create_instance":
+        create_instance(config=CreateInstanceConfig.from_json(config))
+
+
+if __name__ == '__main__':
+    sys.exit(main())

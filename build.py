@@ -25,6 +25,7 @@ def initialize(project):
     project.set_property('distutils_console_scripts', [
         "wbq = gcp.bigquery:main",
         "wgcs = gcp.gcs:main",
+        "csql = utils.cloudsql:main"
         "yaml2wdl = utils.yaml2wdl:main",
         "slacker = utils.slacker:main",
         "mailer = utils.mailer:main"

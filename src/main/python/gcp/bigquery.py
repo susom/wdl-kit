@@ -356,6 +356,8 @@ class QueryConfig():
     writeDisposition: str = "WRITE_EMPTY"
     queryPriority: str = "INTERACTIVE"
     useQueryCache: bool = True
+    delimiter: str = ","
+    header: bool = True
 
 
 def query(config: QueryConfig):
@@ -424,7 +426,7 @@ def query(config: QueryConfig):
     if config.format is not None:
         df: DataFrame = result.to_dataframe()
         if config.format == "csv":
-            df.to_csv(sys.stdout, index=False)
+            df.to_csv(sys.stdout, index=False, sep=config.delimiter, header=config.header)
         if config.format == "json":
             df.to_json(sys.stdout, orient="records")
         if config.format == "html":

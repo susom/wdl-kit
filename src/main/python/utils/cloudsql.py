@@ -45,7 +45,6 @@ def wait_for_operation(cloudsql, project, operation):
 @dataclass_json
 @dataclass
 class CreateInstanceConfig():
-    project_id: str
     # Name of the database instance to create
     instance_name: str
     # Region in GCP that the instance should be created in
@@ -61,13 +60,13 @@ class CreateInstanceConfig():
     # The private network that is used when allocating the instance a private IP address
     private_network: str = "projects/som-rit-phi-starr-dev/global/networks/default"
 
-def create_instance(config: CreateInstanceConfig):
+def create_instance(project_id, config: CreateInstanceConfig):
     credentials = GoogleCredentials.get_application_default()
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
     request_config = {
         "name": config.instance_name, 
         "region": config.region, 
-        "databaseVersion": config.db_version, 
+        "databaseVersion": config.database_version, 
         "settings": {
             "tier": config.tier, 
             "ipConfiguration": {
@@ -78,7 +77,7 @@ def create_instance(config: CreateInstanceConfig):
         }
     }
 
-    operation = cloudsql.instances().insert(project=config.project_id, body=request_config).execute()
+    operation = cloudsql.instances().insert(project=project_id, body=request_config).execute()
     if(wait_for_operation(cloudsql, config.project_id, operation["name"])):
         print("SQL Instance creation finished.")
 
@@ -100,7 +99,7 @@ def main():
         os.environ['GCLOUD_PROJECT'] = args.project_id
 
     if args.command == "create_instance":
-        create_instance(config=CreateInstanceConfig.from_json(config))
+        create_instance(args.project_id, config=CreateInstanceConfig.from_json(config))
 
 
 if __name__ == '__main__':

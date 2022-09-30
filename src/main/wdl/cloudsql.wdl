@@ -31,12 +31,12 @@ task CreateInstance {
         String projectId
         File? credentials
         String instanceName
-        String? region
-        String? databaseVersion
-        String? tier
-        Boolean? enableIpv4
-        Boolean? requireSSL
-        String? privateNetwork
+        String? region = "us-west2"
+        String? databaseVersion = "POSTGRES_14"
+        String? tier = "db-custom-1-3840"
+        Boolean? enableIpv4 = false
+        Boolean? requireSSL = false
+        String? privateNetwork = "projects/som-rit-phi-starr-dev/global/networks/default"
 
         Int cpu = 1
         String memory = "128 MB"
@@ -56,7 +56,7 @@ task CreateInstance {
     }
 
     command {
-        csql ${"--project_id=" + projectId} ${"--credentials=" + credentials} create_instance ~{write_json(config)}
+        csql ${"--project_id=" + projectId} ${"--credentials=" + credentials} insert ~{write_json(config)}
     }
 
     output {

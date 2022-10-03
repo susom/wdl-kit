@@ -17,6 +17,7 @@ import os
 from pathlib import Path
 import time
 import sys
+import json
 from googleapiclient import discovery
 from numpy import insert
 from oauth2client.client import GoogleCredentials
@@ -48,6 +49,9 @@ def insert_instance(project_id, config):
     operation = cloudsql.instances().insert(project=project_id, body=config).execute()
     if(wait_for_operation(cloudsql, project_id, operation["name"])):
         print("SQL Instance creation finished.")
+    
+    with open('instance.json', 'w') as instance_file:
+        json.dump(operation.get(), instance_file, indent=2, sort_keys=True)
 
 def main():
     parser = argparse.ArgumentParser(description="Google CloudSql utility")
@@ -57,8 +61,6 @@ def main():
     parser.add_argument('command', choices=['insert'], type=str.lower, help='command to execute')
     parser.add_argument('config', help='JSON configuration file for command')
     args = parser.parse_args()
-    
-    config = Path(args.config).read_text()
 
     if args.credentials is not None:
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = args.credentials

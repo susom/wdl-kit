@@ -60,6 +60,7 @@ task CreateInstance {
     }
 
     output {
+      File isntance = "instance.json"
       File results = stdout()
     }
 

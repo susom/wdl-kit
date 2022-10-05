@@ -225,3 +225,241 @@ struct Blob {
   CustomerEncryption? customerEncryption
   String? kmsKeyName
 }
+
+struct DatabaseInstance {
+  String? kind
+  String? state
+  String? databaseVersion
+  Settings? settings
+  String? etag
+  FailoverReplica? failoverReplica
+  String? masterInstanceName
+  Array[String]? replicaNames
+  String? maxDiskSize
+  String? currentDiskSize
+  Array[IpMapping]? ipAddresses
+  SslCert? serverCaCert
+  String? instanceType
+  String? project
+  String? ipv6Address
+  String? serviceAccountEmailAddress
+  OnPremisesConfiguration? onPremisesConfiguration
+  ReplicaConfiguration? replicaConfiguration
+  String? backendType
+  String? selfLink
+  Array[String]? suspensionReason
+  String? connectionName
+  String? name
+  String? region
+  String? gceZone
+  String? secondaryGceZone
+  DiskEncryptionConfiguration? diskEncryptionConfiguration
+  DiskEncryptionStatus? diskEncryptionStatus
+  String? rootPassword
+  SqlScheduledMaintenance? scheduledMaintenance
+  Boolean? satisfiesPzs
+  String? databaseInstalledVersion
+  String? createTime
+  SqlOutOfDiskReport? outOfDiskReport
+  String? maintenanceVersion
+}
+
+struct InstanceReference {
+  String? name
+  String? region
+  String? project
+}
+
+struct SqlOutOfDiskReport {
+  String? sqlOutOfDiskState
+  Int? sqlMinRecommendedIncreaseSizeGb
+}
+
+struct SqlScheduledMaintenance {
+  String? startTime
+  Boolean? canDefer
+  Boolean? canReschedule
+  String? scheduleDeadlineTime
+}
+
+struct DiskEncryptionStatus {
+  String? kmsKeyVersionName
+  String? kind
+}
+
+struct DiskEncryptionConfiguration {
+  String? kmsKeyName
+  String? kind
+}
+
+struct ReplicaConfiguration {
+  String? kind
+  MySqlReplicaConfiguration? mysqlReplicaConfiguration
+  Boolean? failoverTarget
+}
+
+struct MySqlReplicaConfiguration {
+  String? dumpFilePath
+  String? username
+  String? password
+  String? connectRetryInterval
+  String? masterHeartbeatPeriod
+  String? caCertificate
+  String? clientCertificate
+  String? clientKey
+  String? sslCipher
+  Boolean? verifyServerCertificate
+  String? kind
+}
+
+struct OnPremisesConfiguration {
+  String? hostPort
+  String? kind
+  String? username
+  String? password
+  String? caCertificate
+  String? clientCertificate
+  String? clientKey
+  String? dumpFilePath
+  InstanceReference? sourceInstance
+}
+
+struct SslCert {
+  String? kind
+  String? certSerialNumber
+  String? cert
+  String? createTime
+  String? commonName
+  String? expirationTime
+  String? sha1Fingerprint
+  String? instance
+  String? selfLink
+}
+
+struct FailoverReplica {
+  String? name
+  Boolean? available
+}
+
+struct Settings {
+  String? settingsVersion
+  Array[String]? authorizedGaeApplications
+  String? tier
+  String? kind
+  Map[String, String]? userLabels
+  String? availabilityType
+  String? pricingPlan
+  String? replicationType
+  String? storageAutoResizeLimit
+  String? activationPolicy
+  IpConfiguration? ipConfiguration
+  Boolean? storageAutoResize
+  LocationPreference? locationPreference
+  Array[DatabaseFlags]? databaseFlags
+  String? dataDiskType
+  MaintenanceWindow? maintenanceWindow
+  BackupConfiguration? backupConfiguration
+  Boolean? databaseReplicationEnabled
+  Boolean? crashSafeReplicationEnabled
+  String? dataDiskSizeGb
+  SqlActiveDirectoryConfig? activeDirectoryConfig
+  String? collation
+  Array[DenyMaintenancePeriod]? denyMaintenancePeriods
+  InsightsConfig? insightsConfig
+  PasswordValidationPolicy? passwordValidationPolicy
+  SqlServerAuditConfig? sqlServerAuditConfig
+  String? connectorEnforcement
+  Boolean? deletionProtectionEnabled
+}
+
+struct SqlServerAuditConfig {
+  String? kind
+  String? bucket
+  String? retentionInterval
+  String? uploadInterval
+}
+
+struct PasswordValidationPolicy {
+  Int? minLength
+  String? complexity
+  Int? reuseInterval
+  Boolean? disallowUsernameSubstring
+  String? passwordChangeInterval
+  Boolean? enablePasswordPolicy
+}
+
+struct InsightsConfig {
+  Boolean? queryInsightsEnabled
+  Boolean? recordClientAddress
+  Boolean? recordApplicationTags
+  Int? queryStringLength
+  Int? queryPlansPerMinute
+}
+
+struct DenyMaintenancePeriod {
+  String? startDate
+  String? endDate
+  String? time
+}
+
+struct SqlActiveDirectoryConfig {
+  String? kind
+  String? domain
+}
+
+struct BackupConfiguration {
+  String? startTime
+  Boolean? enabled
+  String? kind
+  Boolean? binaryLogEnabled
+  Boolean? replicationLogArchivingEnabled
+  String? location
+  Boolean? pointInTimeRecoveryEnabled
+  Int? transactionLogRetentionDays
+  BackupRetentionSettings? backupRetentionSettings
+}
+
+struct BackupRetentionSettings {
+  String? retentionUnit
+  Int? retainedBackups
+}
+
+struct MaintenanceWindow {
+  Int? hour
+  Int? day
+  String? updateTrack
+  String? kind
+}
+
+struct DatabaseFlags {
+  String? name
+  String? value
+}
+
+struct LocationPreference {
+  String? followGaeApplication
+  String? zone
+  String? secondaryZone
+  String? kind
+}
+
+struct IpConfiguration {
+  Boolean? ipv4Enabled
+  String? privateNetwork
+  Boolean? requireSsl
+  Array[AclEntry]? authorizedNetworks
+  String? allocatedIpRange
+}
+
+struct AclEntry {
+  String? value
+  String? expirationTime
+  String? name
+  String? kind
+}
+
+struct IpMapping {
+  String? type
+  String? ipAddress
+  String? timeToRetire
+}

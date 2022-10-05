@@ -19,11 +19,9 @@ import time
 import sys
 import json
 from googleapiclient import discovery
-from numpy import insert
 from oauth2client.client import GoogleCredentials
 
 def wait_for_operation(cloudsql, project, operation):
-    print("Waiting for operation to finish...")
     operation_complete = False
     while not operation_complete:
         result = (
@@ -33,25 +31,26 @@ def wait_for_operation(cloudsql, project, operation):
         )
 
         if result["status"] == "DONE":
-            print("done.")
-            operation_complete = True
-            if "error" in result:
-                raise Exception(result["error"])
             return result
 
         time.sleep(1)
-    return operation_complete
+    return result
 
 def insert_instance(project_id, config):
     credentials = GoogleCredentials.get_application_default()
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
+    print(config)
 
-    operation = cloudsql.instances().insert(project=project_id, body=config).execute()
-    if(wait_for_operation(cloudsql, project_id, operation["name"])):
-        print("SQL Instance creation finished.")
+    operation = cloudsql.instances().insert(project=project_id, body=json.loads(config)).execute()
+    result = wait_for_operation(cloudsql, project_id, operation["name"])
+    if "error" in result:
+        raise Exception(result["error"])
     
+    databaseId = result["targetId"]
+    projectId = result["targetProject"]
+
     with open('instance.json', 'w') as instance_file:
-        json.dump(operation.get(), instance_file, indent=2, sort_keys=True)
+        json.dump(cloudsql.instances().get(project=projectId, instance=databaseId).execute(), instance_file, indent=2, sort_keys=True)
 
 def main():
     parser = argparse.ArgumentParser(description="Google CloudSql utility")
@@ -62,6 +61,8 @@ def main():
     parser.add_argument('config', help='JSON configuration file for command')
     args = parser.parse_args()
 
+    config = Path(args.config).read_text()
+
     if args.credentials is not None:
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = args.credentials
 
@@ -69,7 +70,7 @@ def main():
         os.environ['GCLOUD_PROJECT'] = args.project_id
 
     if args.command == "insert":
-        insert_instance(args.project_id, args.config)
+        insert_instance(args.project_id, config)
 
 
 if __name__ == '__main__':

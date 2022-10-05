@@ -11,3 +11,4 @@ boltons==21.0.0
 importlib_metadata
 bump2version==1.0.1
 google-api-python-client==2.63.0
+oauth2client==4.1.3

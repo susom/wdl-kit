@@ -1,1 +1,0 @@
-* ({uri-jira}/STAR-6039[STAR-6039]) - Add options for delimiter and header in output CSV when we run a query using the WDL KIT

@@ -56,7 +56,6 @@ task CreateInstance {
 
     output {
       DatabaseInstance createdInstance = read_json("instance.json")
-      File instance = "instance.json"
       File results = stdout()
     }
 

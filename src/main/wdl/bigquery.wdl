@@ -22,6 +22,8 @@ struct QueryConfig {
   String writeDisposition
   String queryPriority
   Boolean useQueryCache
+  String delimiter
+  Boolean header
 }
 
 # Runs a Query saving result to another table (which is dropped beforehand, by default)
@@ -46,6 +48,8 @@ task Query {
       writeDisposition: { description: "One of [ WRITE_APPEND, WRITE_TRUNCATE, (WRITE_EMPTY) ]" }
       queryPriority: { description: "Query priority [ INTERACTIVE, (BATCH) ]" }
       useQueryCache: { description: "Use BigQuery query cache if possible (default: no)" }
+      delimiter: { description: "What should be the column delimitter for the CSV (default: comma)" }
+      header: { description: "Should there be a header row in the CSV (default: true)" }
     }
 
     input {
@@ -67,10 +71,12 @@ task Query {
       String writeDisposition = "WRITE_EMPTY"
       String queryPriority = "BATCH"
       Boolean useQueryCache = true
+      String delimiter = ","
+      Boolean header = true
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.2.2"
+      String dockerImage = "wdl-kit:1.3.0"
     }
 
     QueryConfig config = object {
@@ -89,7 +95,9 @@ task Query {
       createDisposition: createDisposition,
       writeDisposition: writeDisposition,
       queryPriority: queryPriority,
-      useQueryCache: useQueryCache
+      useQueryCache: useQueryCache, 
+      delimiter: delimiter, 
+      header: header
     }
 
     command {
@@ -132,7 +140,7 @@ task CreateTable {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.2.2"
+      String dockerImage = "wdl-kit:1.3.0"
     }
 
     CreateTableConfig config = object {
@@ -183,7 +191,7 @@ task CopyTable {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.2.2"
+      String dockerImage = "wdl-kit:1.3.0"
     }
 
     CopyTableConfig config = object {
@@ -238,7 +246,7 @@ task ExtractTable {
 
     Int cpu = 1
     String memory = "128 MB"
-    String dockerImage = "wdl-kit:1.2.2"
+    String dockerImage = "wdl-kit:1.3.0"
   }
 
   ExtractTableConfig config = object {
@@ -384,7 +392,7 @@ task CreateDataset {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.2.2"
+      String dockerImage = "wdl-kit:1.3.0"
     }
 
     CreateDatasetConfig config = object {
@@ -434,7 +442,7 @@ task DeleteDataset {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.2.2"
+      String dockerImage = "wdl-kit:1.3.0"
     }
 
     DeleteDatasetConfig config = object {

@@ -463,3 +463,20 @@ struct IpMapping {
   String? ipAddress
   String? timeToRetire
 }
+
+struct Database {
+  String? kind
+  String? charset
+  String? collation
+  String? etag
+  String? name
+  String? instance
+  String? selfLink
+  String? project
+  SqlserverDatabaseDetails? sqlserverDatabaseDetails
+}
+
+struct SqlserverDatabaseDetails {
+  String? compatibilityLevel
+  String? recoveryModel
+}

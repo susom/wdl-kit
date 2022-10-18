@@ -13,6 +13,7 @@ workflow CreateInstanceTest {
         Boolean? enableIpv4
         Boolean? requireSSL
         String? privateNetwork
+        String? databaseId
     }
 
     call csql.CreateInstance as CreateInstanceTestWDL {
@@ -27,7 +28,30 @@ workflow CreateInstanceTest {
             privateNetwork=privateNetwork
     }
 
+    call csql.CreateDatabase as CreateDatabaseTestWDL after CreateInstanceTestWDL {
+        input:
+            projectId = projectId,credentials=credentials, 
+            instanceName = instanceName, 
+            databaseId=databaseId
+    }
+
+    call csql.DeleteDatabase as DeleteDatabaseTestWDL after CreateDatabaseTestWDL {
+        input:
+            projectId = projectId, credentials=credentials, 
+            instanceName = instanceName,
+            databaseId=databaseId
+    }
+
+    call csql.DeleteInstance as DeleteInstanceTestWDL after DeleteDatabaseTestWDL {
+        input:
+            projectId = projectId, credentials=credentials, 
+            instanceName = instanceName    
+    }
+
     output {
-        DatabaseInstance testInstance = CreateInstanceTestWDL.createdInstance
+        DatabaseInstance testInstance = CreateInstanceTestWDL.createdInstance    
+        Database testDatabase = CreateDatabaseTestWDL.createdDatabase
+        String deleteDatabaseResult = DeleteDatabaseTestWDL.deleteDatabase
+        String deleteInstanceResult = DeleteInstanceTestWDL.deleteInstance
     }
 }

@@ -36,13 +36,13 @@ def wait_for_operation(cloudsql, project, operation):
         time.sleep(1)
     return result
 
-def insert_instance(project_id, config):
+def insert_instance(config):
     credentials = GoogleCredentials.get_application_default()
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
-    print(config)
 
-    operation = cloudsql.instances().insert(project=project_id, body=json.loads(config)).execute()
-    result = wait_for_operation(cloudsql, project_id, operation["name"])
+    json_config = json.loads(config)
+    operation = cloudsql.instances().insert(project=json_config["project"], body=json_config).execute()
+    result = wait_for_operation(cloudsql, json_config["project"], operation["name"])
     if "error" in result:
         raise Exception(result["error"])
     
@@ -70,7 +70,7 @@ def main():
         os.environ['GCLOUD_PROJECT'] = args.project_id
 
     if args.command == "insert":
-        insert_instance(args.project_id, config)
+        insert_instance(config)
 
 
 if __name__ == '__main__':

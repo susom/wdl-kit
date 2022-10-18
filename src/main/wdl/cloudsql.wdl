@@ -5,8 +5,9 @@ import "structs.wdl"
 
 task CreateInstance {
     parameter_meta {
-        projectId: { description: "Project to create the instance in" }
+        apiProjectId: { description: "The project ID of the API we will be using (note: can be different than the instance project ID)" }
         credentials: { description: "Optional JSON credential file" }
+        instanceProjectId: { description: "The project ID for where the instance will be created."}
         instanceName: { description: "Name of the database instance to create" }
         region: { description: "Region in GCP that the instance should be created in" }
         databaseVersion: { description: "The type of database instance to create" }
@@ -17,8 +18,9 @@ task CreateInstance {
     }
 
     input {
-        String projectId
+        String apiProjectId
         File? credentials
+        String instanceProjectId
         String instanceName
         String? region
         String? databaseVersion
@@ -44,6 +46,7 @@ task CreateInstance {
     }
 
     DatabaseInstance toCreate = object {
+        project: instanceProjectId,
         name: instanceName,
         region: region,
         databaseVersion: databaseVersion,
@@ -51,7 +54,7 @@ task CreateInstance {
     }
 
     command {
-        csql ${"--project_id=" + projectId} ${"--credentials=" + credentials} insert ~{write_json(toCreate)}
+        csql ${"--project_id=" + apiProjectId} ${"--credentials=" + credentials} insert ~{write_json(toCreate)}
     }
 
     output {

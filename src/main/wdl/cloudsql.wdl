@@ -31,7 +31,7 @@ task CreateInstance {
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.1"
+        String dockerImage = "wdl-kit:1.3.0"
     }
 
     IpConfiguration ipConfig = object {

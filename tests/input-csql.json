@@ -6,5 +6,6 @@
     "CreateInstanceTest.tier": "db-custom-1-3840",
     "CreateInstanceTest.enableIpv4": false,
     "CreateInstanceTest.requireSSL": false,
-    "CreateInstanceTest.privateNetwork": "privatenetwork"
+    "CreateInstanceTest.privateNetwork": "privatenetwork",
+    "CreateInstanceTest.databaseId": "databaseid"
 }

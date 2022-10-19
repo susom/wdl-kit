@@ -40,7 +40,7 @@ def wait_for_operation(cloudsql, project, operation):
 def insert_instance(config):
     credentials = GoogleCredentials.get_application_default()
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
-   
+
     json_config = json.loads(config)
     operation = cloudsql.instances().insert(project=json_config["project"], body=json_config).execute()
     result = wait_for_operation(cloudsql, json_config["project"], operation["name"])

@@ -37,13 +37,13 @@ def wait_for_operation(cloudsql, project, operation):
         time.sleep(1)
     return result
 
-def insert_instance(project_id, config):
+def insert_instance(config):
     credentials = GoogleCredentials.get_application_default()
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
     print(config)
-    
-    operation = cloudsql.instances().insert(project=project_id, body=json.loads(config)).execute()
-    result = wait_for_operation(cloudsql, project_id, operation["name"])
+    instanceConig = json.loads(config)
+    operation = cloudsql.instances().insert(project=instanceConig['project'], body=instanceConig).execute()
+    result = wait_for_operation(cloudsql, instanceConig['project'], operation["name"])
     if "error" in result:
         raise Exception(result["error"])
     
@@ -62,12 +62,15 @@ def instance_get(project_id, instance_name):
         return False 
     return True
 
-def delete_instance(project_id, instance_name):
+def delete_instance(config):
     credentials = GoogleCredentials.get_application_default()
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
-    if instance_get(project_id, instance_name):
-        operation = cloudsql.instances().delete(project=project_id, instance=instance_name).execute()
-        result = wait_for_operation(cloudsql, project_id, operation["name"])
+
+    instanceConfig = json.loads(config)
+
+    if instance_get(instanceConfig['project'], instanceConfig['name']):
+        operation = cloudsql.instances().delete(project=instanceConfig['project'], instance=instanceConfig['name']).execute()
+        result = wait_for_operation(cloudsql, instanceConfig['project'], operation["name"])
         if "error" in result:
             raise Exception(result["error"])
 
@@ -75,6 +78,7 @@ def delete_instance(project_id, instance_name):
             json.dump(result, delete_instance_file, indent=2, sort_keys=True)
     else:
         print("Instance Not Found")
+
 
 def database_get(project_id, instance_name, database_id):
     credentials = GoogleCredentials.get_application_default()
@@ -85,12 +89,12 @@ def database_get(project_id, instance_name, database_id):
         return False 
     return True
 
-def insert_database(project_id, instance_name, database_id, config):
+def insert_database(config):
     credentials = GoogleCredentials.get_application_default()
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
-    
-    operation = cloudsql.databases().insert(project=project_id, instance=instance_name, body=json.loads(config)).execute()
-    result = wait_for_operation(cloudsql, project_id, operation["name"])
+    databaseConfig = json.loads(config)
+    operation = cloudsql.databases().insert(project=databaseConfig['project'], instance=databaseConfig['instance'], body=databaseConfig).execute()
+    result = wait_for_operation(cloudsql, databaseConfig['project'], operation["name"])
     if "error" in result:
         raise Exception(result["error"])
     
@@ -98,14 +102,15 @@ def insert_database(project_id, instance_name, database_id, config):
     projectId = result["targetProject"]
 
     with open('database.json', 'w') as database_file:
-        json.dump(cloudsql.databases().get(project=projectId, instance=instanceName, database=database_id).execute(), database_file, indent=2, sort_keys=True)
+        json.dump(cloudsql.databases().get(project=projectId, instance=instanceName, database=databaseConfig['name']).execute(), database_file, indent=2, sort_keys=True)
 
-def delete_database(project_id, instance_name, database_id):
+def delete_database(config):
     credentials = GoogleCredentials.get_application_default()
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
-    if database_get(project_id, instance_name, database_id):
-        operation = cloudsql.databases().delete(project=project_id, instance=instance_name, database=database_id).execute()
-        result = wait_for_operation(cloudsql, project_id, operation["name"])
+    databaseConfig = json.loads(config)
+    if database_get(databaseConfig['project'], databaseConfig['instance'], databaseConfig['name']):
+        operation = cloudsql.databases().delete(project=databaseConfig['project'], instance=databaseConfig['instance'], database=databaseConfig['name']).execute()
+        result = wait_for_operation(cloudsql, databaseConfig['project'], operation["name"])
         if "error" in result:
             raise Exception(result["error"])
 
@@ -119,10 +124,9 @@ def main():
 
     parser.add_argument("--project_id", required=False, help="Your Google Cloud project ID.")
     parser.add_argument('--credentials', required=False, help='Specify path to a GCP JSON credentials file')
-    parser.add_argument("--instance", required=False, help="Your Google Cloud SQL instance.")
-    parser.add_argument("--database", required=False, help="Your Google Cloud SQL instance database.")
-    parser.add_argument('--config', required=False, help='JSON configuration file for command')
+    
     parser.add_argument('command', choices=['instance_insert', 'instance_delete', 'database_insert', 'database_delete'], type=str.lower, help='command to execute')
+    parser.add_argument('config', help='JSON configuration file for command')
 
     args = parser.parse_args()
 
@@ -132,19 +136,23 @@ def main():
     if args.project_id is not None:
         os.environ['GCLOUD_PROJECT'] = args.project_id
     
+
     if args.command == "instance_insert" and args.config is not None:
-            config = Path(args.config).read_text()
-            insert_instance(args.project_id, config)
-
-    if args.command == "instance_delete" and args.instance is not None:
-        delete_instance(args.project_id, args.instance)
-
-    if args.command == "database_insert" and args.database is not None and args.config is not None:
         config = Path(args.config).read_text()
-        insert_database(args.project_id, args.instance, args.database, config)
+        insert_instance(config)
 
-    if args.command == "database_delete" and args.database is not None:
-        delete_database(args.project_id, args.instance, args.database)
+    if args.command == "instance_delete" and args.config is not None:
+        config = Path(args.config).read_text()
+        delete_instance(config)
+
+    if args.command == "database_insert" and args.config is not None:
+        config = Path(args.config).read_text()
+        insert_database(config)
+
+    if args.command == "database_delete" and args.config is not None:
+        config = Path(args.config).read_text()
+        delete_database(config)
+
 
 if __name__ == '__main__':
     sys.exit(main())

@@ -4,7 +4,7 @@ import "../src/main/wdl/cloudsql.wdl" as csql
 
 workflow CreateInstanceTest {
     input {
-        String apiProjectId
+        String? apiProjectId
         File? credentials
         String instanceProjectId
         String instanceName
@@ -14,12 +14,13 @@ workflow CreateInstanceTest {
         Boolean? enableIpv4
         Boolean? requireSSL
         String? privateNetwork
-        String? databaseId
+        String databaseId
     }
 
     call csql.CreateInstance as CreateInstanceTestWDL {
         input:
-            apiProjectId = apiProjectId,credentials=credentials, 
+            apiProjectId = apiProjectId,
+            credentials=credentials, 
             instanceProjectId = instanceProjectId,
             instanceName = instanceName, 
             region=region,
@@ -32,7 +33,8 @@ workflow CreateInstanceTest {
 
     call csql.CreateDatabase as CreateDatabaseTestWDL {
         input:
-            apiProjectId = apiProjectId,credentials=credentials, 
+            apiProjectId = apiProjectId,
+            credentials=credentials, 
             instanceProjectId = instanceProjectId,
             instanceName = CreateInstanceTestWDL.createdInstance.name, 
             databaseId=databaseId
@@ -40,7 +42,8 @@ workflow CreateInstanceTest {
 
     call csql.DeleteDatabase as DeleteDatabaseTestWDL {
         input:
-            apiProjectId = apiProjectId, credentials=credentials, 
+            apiProjectId = apiProjectId, 
+            credentials=credentials, 
             instanceProjectId = instanceProjectId,
             instanceName = instanceName,
             databaseId=CreateDatabaseTestWDL.createdDatabase.name
@@ -48,7 +51,8 @@ workflow CreateInstanceTest {
 
     call csql.DeleteInstance as DeleteInstanceTestWDL after DeleteDatabaseTestWDL {
         input:
-            apiProjectId = apiProjectId, credentials=credentials, 
+            apiProjectId = apiProjectId, 
+            credentials=credentials, 
             instanceProjectId = instanceProjectId,
             instanceName = CreateDatabaseTestWDL.createdDatabase.instance    
     }

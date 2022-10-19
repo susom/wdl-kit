@@ -5,7 +5,7 @@ import "structs.wdl"
 
 task CreateInstance {
     parameter_meta {
-        apiProjectId: { description: "Project for GCloud API" }
+        apiProjectId: { description: "The project ID of the API we will be using (note: can be different than the instance project ID)" }
         credentials: { description: "Optional JSON credential file" }
         instanceProjectId: { description: "Project to create the instance in" }
         instanceName: { description: "Name of the database instance to create" }
@@ -18,7 +18,7 @@ task CreateInstance {
     }
 
     input {
-        String apiProjectId
+        String? apiProjectId
         File? credentials
         String instanceProjectId
         String instanceName
@@ -31,7 +31,7 @@ task CreateInstance {
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.2-dev"
+        String dockerImage = "wdl-kit:1.3.0"
     }
 
     IpConfiguration ipConfig = object {
@@ -71,21 +71,21 @@ task CreateInstance {
 
 task DeleteInstance {
     parameter_meta {
-        apiProjectId: { description: "Project for GCloud API" }
+        apiProjectId: { description: "The project ID of the API we will be using (note: can be different than the instance project ID)" }
         credentials: { description: "Optional JSON credential file" }
         instanceProjectId: { description: "Project to delete the instance in" }     
         instanceName: { description: "Name of the database instance to delete" }
     }
 
     input {
-        String apiProjectId
+        String? apiProjectId
         File? credentials
         String instanceProjectId
-        String? instanceName
+        String instanceName
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.2-dev"
+        String dockerImage = "wdl-kit:1.3.0"
     }
 
     DatabaseInstance toDelete = object {
@@ -114,7 +114,7 @@ task DeleteInstance {
 
 task CreateDatabase {
     parameter_meta {
-        apiProjectId: { description: "Project for GCloud API" }
+        apiProjectId: { description: "The project ID of the API we will be using (note: can be different than the instance project ID)" }
         credentials: { description: "Optional JSON credential file" }
         instanceProjectId: { description: "Project to create the database in" }    
         instanceName: { description: "Instance to create the database in" }
@@ -127,11 +127,11 @@ task CreateDatabase {
     }
 
     input {
-        String apiProjectId
+        String? apiProjectId
         File? credentials
         String instanceProjectId
-        String? instanceName
-        String? databaseId
+        String instanceName
+        String databaseId
         String kind = "sql#database"
         String charset = "UTF8"
         String collation = "en_US.UTF8"
@@ -140,7 +140,7 @@ task CreateDatabase {
       
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.2-dev"
+        String dockerImage = "wdl-kit:1.3.0"
     }
     
 
@@ -179,7 +179,7 @@ task CreateDatabase {
 
 task DeleteDatabase {
     parameter_meta {
-        apiProjectId: { description: "Project for GCloud API" }
+        apiProjectId: { description: "The project ID of the API we will be using (note: can be different than the instance project ID)" }
         credentials: { description: "Optional JSON credential file" }
         instanceProjectId: { description: "Project to create the database in" }  
         instanceName: { description: "Instance to delete the database in" }
@@ -187,15 +187,15 @@ task DeleteDatabase {
     }
 
     input {
-        String apiProjectId
+        String? apiProjectId
         File? credentials
         String instanceProjectId
-        String? instanceName
-        String? databaseId
+        String instanceName
+        String databaseId
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.2-dev"
+        String dockerImage = "wdl-kit:1.3.0"
     }
 
     Database toDelete = object {

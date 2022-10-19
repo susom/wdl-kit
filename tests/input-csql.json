@@ -1,5 +1,6 @@
 {
-    "CreateInstanceTest.projectId": "projectid",
+    "CreateInstanceTest.apiProjectId": "projectid",
+    "CreateInstanceTest.instanceProjectId": "projectid",
     "CreateInstanceTest.instanceName": "testname",
     "CreateInstanceTest.region": "us-west2",
     "CreateInstanceTest.databaseVersion": "POSTGRES_14",

@@ -40,10 +40,10 @@ def wait_for_operation(cloudsql, project, operation):
 def insert_instance(config):
     credentials = GoogleCredentials.get_application_default()
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
-    print(config)
-    instanceConig = json.loads(config)
-    operation = cloudsql.instances().insert(project=instanceConig['project'], body=instanceConig).execute()
-    result = wait_for_operation(cloudsql, instanceConig['project'], operation["name"])
+   
+    json_config = json.loads(config)
+    operation = cloudsql.instances().insert(project=json_config["project"], body=json_config).execute()
+    result = wait_for_operation(cloudsql, json_config["project"], operation["name"])
     if "error" in result:
         raise Exception(result["error"])
     
@@ -66,11 +66,10 @@ def delete_instance(config):
     credentials = GoogleCredentials.get_application_default()
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
 
-    instanceConfig = json.loads(config)
-
-    if instance_get(instanceConfig['project'], instanceConfig['name']):
-        operation = cloudsql.instances().delete(project=instanceConfig['project'], instance=instanceConfig['name']).execute()
-        result = wait_for_operation(cloudsql, instanceConfig['project'], operation["name"])
+    json_config = json.loads(config)
+    if instance_get(json_config["project"], json_config["name"]):
+        operation = cloudsql.instances().delete(project=json_config["project"], instance=json_config["name"]).execute()
+        result = wait_for_operation(cloudsql, json_config["project"], operation["name"])
         if "error" in result:
             raise Exception(result["error"])
 
@@ -92,9 +91,10 @@ def database_get(project_id, instance_name, database_id):
 def insert_database(config):
     credentials = GoogleCredentials.get_application_default()
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
-    databaseConfig = json.loads(config)
-    operation = cloudsql.databases().insert(project=databaseConfig['project'], instance=databaseConfig['instance'], body=databaseConfig).execute()
-    result = wait_for_operation(cloudsql, databaseConfig['project'], operation["name"])
+
+    json_config = json.loads(config)
+    operation = cloudsql.databases().insert(project=json_config["project"], instance=json_config["instance"], body=json_config).execute()
+    result = wait_for_operation(cloudsql, json_config["project"], operation["name"])
     if "error" in result:
         raise Exception(result["error"])
     
@@ -102,15 +102,16 @@ def insert_database(config):
     projectId = result["targetProject"]
 
     with open('database.json', 'w') as database_file:
-        json.dump(cloudsql.databases().get(project=projectId, instance=instanceName, database=databaseConfig['name']).execute(), database_file, indent=2, sort_keys=True)
+        json.dump(cloudsql.databases().get(project=projectId, instance=instanceName, database=json_config["name"]).execute(), database_file, indent=2, sort_keys=True)
 
 def delete_database(config):
     credentials = GoogleCredentials.get_application_default()
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
-    databaseConfig = json.loads(config)
-    if database_get(databaseConfig['project'], databaseConfig['instance'], databaseConfig['name']):
-        operation = cloudsql.databases().delete(project=databaseConfig['project'], instance=databaseConfig['instance'], database=databaseConfig['name']).execute()
-        result = wait_for_operation(cloudsql, databaseConfig['project'], operation["name"])
+
+    json_config = json.loads(config)
+    if database_get(json_config["project"], json_config["instance"], json_config["name"]):
+        operation = cloudsql.databases().delete(project=json_config["project"], instance=json_config["instance"], database=json_config["name"]).execute()
+        result = wait_for_operation(cloudsql, json_config["project"], operation["name"])
         if "error" in result:
             raise Exception(result["error"])
 

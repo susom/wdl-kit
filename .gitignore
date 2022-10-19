@@ -9,3 +9,12 @@ pyproject.toml
 **/*.log
 # Auto-generated WDL should not be committed
 **/*.yaml.wdl
+
+# Just in case...
+*key*.json
+**/input.yaml
+**/input.json
+
+# MiniWDL output
+**/_LAST
+**/20[0-9][0-9]*_*_*/

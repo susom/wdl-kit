@@ -4,8 +4,9 @@ import "../src/main/wdl/cloudsql.wdl" as csql
 
 workflow CreateInstanceTest {
     input {
-        String projectId
+        String apiProjectId
         File? credentials
+        String instanceProjectId
         String instanceName
         String? region
         String? databaseVersion
@@ -17,7 +18,9 @@ workflow CreateInstanceTest {
 
     call csql.CreateInstance as CreateInstanceTestWDL {
         input:
-            projectId = projectId,credentials=credentials, 
+            apiProjectId = apiProjectId,
+            credentials=credentials,
+            instanceProjectId = instanceProjectId,
             instanceName = instanceName, 
             region=region,
             databaseVersion=databaseVersion,

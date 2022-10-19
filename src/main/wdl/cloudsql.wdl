@@ -7,7 +7,7 @@ task CreateInstance {
     parameter_meta {
         apiProjectId: { description: "The project ID of the API we will be using (note: can be different than the instance project ID)" }
         credentials: { description: "Optional JSON credential file" }
-        instanceProjectId: { description: "Project to create the instance in" }
+        instanceProjectId: { description: "The project ID for where the instance will be created."}
         instanceName: { description: "Name of the database instance to create" }
         region: { description: "Region in GCP that the instance should be created in" }
         databaseVersion: { description: "The type of database instance to create" }

@@ -1,66 +1,48 @@
 version development
 
 import "../src/main/wdl/cloudsql.wdl" as csql
+import "../src/main/wdl/structs.wdl"
 
 workflow CreateInstanceTest {
     input {
         String? apiProjectId
         File? credentials
-        String instanceProjectId
-        String instanceName
-        String? region
-        String? databaseVersion
-        String? tier
-        Boolean? enableIpv4
-        Boolean? requireSSL
-        String? privateNetwork
-        String databaseId
+        DatabaseInstance databaseInstance
+        Database database
     }
 
     call csql.CreateInstance as CreateInstanceTestWDL {
         input:
             apiProjectId = apiProjectId,
             credentials=credentials, 
-            instanceProjectId = instanceProjectId,
-            instanceName = instanceName, 
-            region=region,
-            databaseVersion=databaseVersion,
-            tier=tier,
-            enableIpv4=enableIpv4, 
-            requireSSL=requireSSL, 
-            privateNetwork=privateNetwork
+            databaseInstance = databaseInstance
     }
 
-    call csql.CreateDatabase as CreateDatabaseTestWDL {
+    call csql.CreateDatabase as CreateDatabaseTestWDL after CreateInstanceTestWDL {
         input:
             apiProjectId = apiProjectId,
             credentials=credentials, 
-            instanceProjectId = instanceProjectId,
-            instanceName = CreateInstanceTestWDL.createdInstance.name, 
-            databaseId=databaseId
+            database = database
     }
 
-    call csql.DeleteDatabase as DeleteDatabaseTestWDL {
+    call csql.DeleteDatabase as DeleteDatabaseTestWDL after CreateDatabaseTestWDL {
         input:
             apiProjectId = apiProjectId, 
             credentials=credentials, 
-            instanceProjectId = instanceProjectId,
-            instanceName = instanceName,
-            databaseId=CreateDatabaseTestWDL.createdDatabase.name
+            database = database
     }
 
     call csql.DeleteInstance as DeleteInstanceTestWDL after DeleteDatabaseTestWDL {
         input:
             apiProjectId = apiProjectId, 
             credentials=credentials, 
-            instanceProjectId = instanceProjectId,
-            instanceName = CreateDatabaseTestWDL.createdDatabase.instance    
+            databaseInstance = databaseInstance
     }
 
     output {
         DatabaseInstance testInstance = CreateInstanceTestWDL.createdInstance    
         Database testDatabase = CreateDatabaseTestWDL.createdDatabase
-        String deleteDatabaseResult = DeleteDatabaseTestWDL.deleteDatabase
-        String deleteInstanceResult = DeleteInstanceTestWDL.deleteInstance
+        File deleteDatabaseResult = DeleteDatabaseTestWDL.deleteDatabase
+        File deleteInstanceResult = DeleteInstanceTestWDL.deleteInstance
     }
 }

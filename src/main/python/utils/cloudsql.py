@@ -128,8 +128,9 @@ def main():
     
     parser.add_argument('command', choices=['instance_insert', 'instance_delete', 'database_insert', 'database_delete'], type=str.lower, help='command to execute')
     parser.add_argument('config', help='JSON configuration file for command')
-
+    
     args = parser.parse_args()
+    config = Path(args.config).read_text()
 
     if args.credentials is not None:
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = args.credentials
@@ -137,23 +138,17 @@ def main():
     if args.project_id is not None:
         os.environ['GCLOUD_PROJECT'] = args.project_id
     
-
     if args.command == "instance_insert" and args.config is not None:
-        config = Path(args.config).read_text()
         insert_instance(config)
 
     if args.command == "instance_delete" and args.config is not None:
-        config = Path(args.config).read_text()
         delete_instance(config)
 
     if args.command == "database_insert" and args.config is not None:
-        config = Path(args.config).read_text()
         insert_database(config)
 
     if args.command == "database_delete" and args.config is not None:
-        config = Path(args.config).read_text()
         delete_database(config)
-
 
 if __name__ == '__main__':
     sys.exit(main())

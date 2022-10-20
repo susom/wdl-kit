@@ -249,7 +249,7 @@ struct DatabaseInstance {
   String? selfLink
   Array[String]? suspensionReason
   String? connectionName
-  String? name
+  String name
   String? region
   String? gceZone
   String? secondaryGceZone
@@ -462,4 +462,21 @@ struct IpMapping {
   String? type
   String? ipAddress
   String? timeToRetire
+}
+
+struct Database {
+  String? kind
+  String? charset
+  String? collation
+  String? etag
+  String name
+  String instance
+  String? selfLink
+  String project
+  SqlserverDatabaseDetails? sqlserverDatabaseDetails
+}
+
+struct SqlserverDatabaseDetails {
+  String? compatibilityLevel
+  String? recoveryModel
 }

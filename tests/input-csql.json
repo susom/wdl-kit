@@ -1,10 +1,28 @@
 {
-    "CreateInstanceTest.projectId": "projectid",
-    "CreateInstanceTest.instanceName": "testname",
-    "CreateInstanceTest.region": "us-west2",
-    "CreateInstanceTest.databaseVersion": "POSTGRES_14",
-    "CreateInstanceTest.tier": "db-custom-1-3840",
-    "CreateInstanceTest.enableIpv4": false,
-    "CreateInstanceTest.requireSSL": false,
-    "CreateInstanceTest.privateNetwork": "privatenetwork"
+    "CreateInstanceTest.apiProjectId": "projectid",
+   
+    "CreateInstanceTest.databaseInstance": {
+        "project": "projectid",
+        "name": "instancename",
+        "region": "us-west2",
+        "databaseVersion": "POSTGRES_14",
+        "settings": {
+            "tier": "db-custom-1-3840",
+            "ipConfiguration": {
+                "ipv4Enabled": false,
+                "requireSsl": false,
+                "privateNetwork": "privatenetwork"
+            }
+        }
+    },
+
+    "CreateInstanceTest.database": {
+        "kind": "sql#database",
+        "charset": "UTF8",
+        "collation": "en_US.UTF8",
+        "name": "databaseid",
+        "instance": "instancename",
+        "project": "projectid"
+    }
+
 }

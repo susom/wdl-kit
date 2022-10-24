@@ -134,3 +134,33 @@ task DeleteDatabase {
       memory: memory
     }
 }
+
+task CsqlQuery { 
+    parameter_meta {
+        queryConfig: { description: "CsqlConfig object containing database connection details and query" }
+    }
+    input {
+        CsqlConfig queryConfig
+
+        Int cpu = 1
+        String memory = "128 MB"
+        String dockerImage = "wdl-kit:1.3.0-slimaye9"
+    }
+
+
+    command {
+        csql query ~{write_json(queryConfig)}
+    }
+
+    output {
+        File output_postgres = stdout()
+        File error_postgres = stderr()
+    }
+
+    runtime {
+        docker: dockerImage
+        cpu: cpu
+        memory: memory
+    }
+}
+

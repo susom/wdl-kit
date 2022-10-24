@@ -21,6 +21,66 @@ import json
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 from pyparsing import Optional
+import pg8000
+import sqlalchemy
+from sqlalchemy import insert
+from google.cloud.sql.connector import Connector, IPTypes
+
+
+class CsqlConfig:
+    project: str
+    # kind: str
+    name: str
+    instance: str
+    user: str
+    password: str
+    #email: str
+    query: str
+    connector: Connector
+
+    # initialize Connector object
+    # connector = Connector()
+
+    def __init__(self, project, region, instance, name, user, password, query):
+        self.project = project
+        # self.kind = kind
+        self.name = name
+        self.instance = instance
+        self.region = region
+        self.user = user
+        self.password = password
+        # email: str
+        self.query= query
+        connector = Connector()
+
+    def getconn(self):
+        with Connector() as connector:
+            conn = connector.connect(
+                f'{self.project}:{self.region}:{self.instance}', # Cloud SQL Instance Connection Name
+                "pg8000",
+                user=self.user,
+                password=self.password,
+                db=self.name,
+                ip_type= IPTypes.PUBLIC  # IPTypes.PRIVATE for private IP
+            )
+
+                
+        return conn
+
+    def queryDb(self):
+        
+        engine = sqlalchemy.create_engine(
+            "postgresql+pg8000://",
+            creator=self.getconn,
+        )
+        
+        with engine.connect(self) as db_conn:
+
+            # query database
+            result = db_conn.execute(sqlalchemy.text(self.query))
+
+            # close connection
+            db_conn.close()
 
 def wait_for_operation(cloudsql, project, operation):
     operation_complete = False
@@ -119,14 +179,14 @@ def delete_database(config):
             json.dump(result, delete_database_file, indent=2, sort_keys=True)
     else:
         print("Database Not Found")
-
+   
 def main():
     parser = argparse.ArgumentParser(description="Google CloudSql utility")
 
     parser.add_argument("--project_id", required=False, help="Your Google Cloud project ID.")
     parser.add_argument('--credentials', required=False, help='Specify path to a GCP JSON credentials file')
     
-    parser.add_argument('command', choices=['instance_insert', 'instance_delete', 'database_insert', 'database_delete'], type=str.lower, help='command to execute')
+    parser.add_argument('command', choices=['instance_insert', 'instance_delete', 'database_insert', 'database_delete', 'query'], type=str.lower, help='command to execute')
     parser.add_argument('config', help='JSON configuration file for command')
     
     args = parser.parse_args()
@@ -149,6 +209,14 @@ def main():
 
     if args.command == "database_delete" and args.config is not None:
         delete_database(config)
+
+    if args.command == "query":
+        json_config = json.loads(config)    
+        json_database=json_config["database"]
+        csqlConfig = CsqlConfig( json_database["project"],json_config["region"], json_database["instance"],
+            json_database["name"], json_config["user"],
+            json_config["password"], json_config["query"])
+        csqlConfig.queryDb() 
 
 if __name__ == '__main__':
     sys.exit(main())

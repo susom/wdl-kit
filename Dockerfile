@@ -30,4 +30,3 @@ RUN pip3 install -q -r requirements.txt
 RUN pip3 install -q stanford-wdl-kit-*.tar.gz
 WORKDIR /home/cloudsdk
 RUN rm -rf app
-

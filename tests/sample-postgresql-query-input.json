@@ -1,4 +1,6 @@
 {
+    "apiProjectId" : "som-rit-phi-starr-dev",
+    "credentials" : "/home/slimaye_stanford_edu/cwl/slimaye-som-rit-phi-starr-dev-eb74a19aa631.json",
     "queryConfig" : {
         "database": {
             "name":"peds479",

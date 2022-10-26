@@ -1,0 +1,12 @@
+{
+    "queryConfig" : {
+        "database": {
+            "name":"peds479",
+            "instance": "slpeds479",
+            "project": "som-rit-phi-starr-dev"
+        },
+        "region" : "us-west2",
+        "user" : "pipeline-starr-nav-dev@som-rit-phi-starr-dev.iam.gserviceaccount.com",
+        "query" : "SELECT * FROM my_table_copy_1 LIMIT 20;"
+    }
+}

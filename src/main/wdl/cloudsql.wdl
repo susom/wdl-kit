@@ -144,7 +144,7 @@ task CsqlQuery {
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0-slimaye9"
+        String dockerImage = "wdl-kit:1.3.0"
     }
 
 
@@ -153,8 +153,8 @@ task CsqlQuery {
     }
 
     output {
-        File output_postgres = stdout()
-        File error_postgres = stderr()
+        File stdout = stdout()
+        File stderr = stderr()
     }
 
     runtime {

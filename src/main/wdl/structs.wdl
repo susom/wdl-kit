@@ -485,6 +485,6 @@ struct CsqlConfig {
   Database database
   String region
   String user
-  String password
+  String? password
   String query
 }

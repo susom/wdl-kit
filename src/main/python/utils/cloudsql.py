@@ -26,7 +26,6 @@ import sqlalchemy
 from sqlalchemy import insert
 from google.cloud.sql.connector import Connector, IPTypes
 
-
 class CsqlConfig:
     project: str
     # kind: str
@@ -34,36 +33,27 @@ class CsqlConfig:
     instance: str
     user: str
     password: str
-    #email: str
     query: str
-    connector: Connector
-
-    # initialize Connector object
-    # connector = Connector()
 
     def __init__(self, project, region, instance, name, user, password, query):
         self.project = project
-        # self.kind = kind
         self.name = name
         self.instance = instance
         self.region = region
         self.user = user
         self.password = password
-        # email: str
         self.query= query
-        connector = Connector()
-
+    
     def getconn(self):
         with Connector() as connector:
             conn = connector.connect(
                 f'{self.project}:{self.region}:{self.instance}', # Cloud SQL Instance Connection Name
                 "pg8000",
+                db=self.name,
                 user=self.user,
                 password=self.password,
-                db=self.name,
-                ip_type= IPTypes.PUBLIC  # IPTypes.PRIVATE for private IP
+                enable_iam_auth=True if self.user.endswith('.iam') else False
             )
-
                 
         return conn
 
@@ -213,9 +203,19 @@ def main():
     if args.command == "query":
         json_config = json.loads(config)    
         json_database=json_config["database"]
+
+        # check if password is supplied, if not, chop off anything after .iam in the username 
+        user = json_config["user"]
+
+        password = None
+        if "password" in json_config:
+            password = json_config["password"]
+        else:
+            head, sep, tail = user.partition('.iam')
+            user = f'{head}.iam'
+
         csqlConfig = CsqlConfig( json_database["project"],json_config["region"], json_database["instance"],
-            json_database["name"], json_config["user"],
-            json_config["password"], json_config["query"])
+            json_database["name"], user, password, json_config["query"])
         csqlConfig.queryDb() 
 
 if __name__ == '__main__':

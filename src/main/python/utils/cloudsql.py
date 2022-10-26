@@ -208,12 +208,12 @@ def main():
         user = json_config["user"]
 
         password = None
-        if "password" in json_config:
+        if "password" in json_config and json_config["password"] is not None :
             password = json_config["password"]
         else:
             head, sep, tail = user.partition('.iam')
             user = f'{head}.iam'
-
+            
         csqlConfig = CsqlConfig( json_database["project"],json_config["region"], json_database["instance"],
             json_database["name"], user, password, json_config["query"])
         csqlConfig.queryDb() 

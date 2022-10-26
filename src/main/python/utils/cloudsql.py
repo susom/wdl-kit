@@ -51,8 +51,20 @@ class CsqlConfig:
                 "pg8000",
                 db=self.name,
                 user=self.user,
-                password=self.password,
-                enable_iam_auth=True if self.user.endswith('.iam') else False
+                password=self.password
+            )
+                
+        return conn
+
+    def getconn_iam(self):
+        with Connector() as connector:
+            conn = connector.connect(
+                f'{self.project}:{self.region}:{self.instance}', # Cloud SQL Instance Connection Name
+                "pg8000",
+                db=self.name,
+                user=self.user,
+                password=None,
+                enable_iam_auth=True
             )
                 
         return conn
@@ -61,7 +73,7 @@ class CsqlConfig:
         
         engine = sqlalchemy.create_engine(
             "postgresql+pg8000://",
-            creator=self.getconn,
+            creator=self.getconn if self.password is not None else self.getconn_iam
         )
         
         with engine.connect(self) as db_conn:
@@ -213,7 +225,7 @@ def main():
         else:
             head, sep, tail = user.partition('.iam')
             user = f'{head}.iam'
-            
+
         csqlConfig = CsqlConfig( json_database["project"],json_config["region"], json_database["instance"],
             json_database["name"], user, password, json_config["query"])
         csqlConfig.queryDb() 

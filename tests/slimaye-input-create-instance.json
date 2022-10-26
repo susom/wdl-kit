@@ -1,8 +1,0 @@
-{
-    "instanceName": "slpeds479-2",
-    "region": "us-west2",
-    "databaseVersion": "POSTGRES_14",
-    "instanceProjectId": "som-rit-phi-starr-dev",
-    "apiProjectId": "som-rit-phi-starr-dev",
-    "tier": "db-custom-1-3840"
-}

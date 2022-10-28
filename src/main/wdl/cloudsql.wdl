@@ -116,7 +116,7 @@ task DeleteDatabase {
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0"
+        String dockerImage = "wdl-kit:1.3.0-slimaye14"
     }
 
     command {
@@ -148,7 +148,7 @@ task CsqlQuery {
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0"
+        String dockerImage = "wdl-kit:1.3.0-slimaye15"
     }
 
 

@@ -51,6 +51,7 @@ class CsqlConfig:
                 "pg8000",
                 db=self.name,
                 user=self.user,
+                ip_type=IPTypes.PRIVATE,
                 password=self.password
             )
                 
@@ -64,6 +65,7 @@ class CsqlConfig:
                 db=self.name,
                 user=self.user,
                 password=None,
+                ip_type=IPTypes.PRIVATE,
                 enable_iam_auth=True
             )
                 

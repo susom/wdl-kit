@@ -31,14 +31,16 @@ class CsqlConfig:
     # kind: str
     name: str
     instance: str
+    ipType: str
     user: str
     password: str
     query: str
 
-    def __init__(self, project, region, instance, name, user, password, query):
+    def __init__(self, project, region, instance, ipType, name, user, password, query):
         self.project = project
         self.name = name
         self.instance = instance
+        self.ipType = ipType
         self.region = region
         self.user = user
         self.password = password
@@ -51,21 +53,22 @@ class CsqlConfig:
                 "pg8000",
                 db=self.name,
                 user=self.user,
-                ip_type=IPTypes.PRIVATE,
-                password=self.password
+                password=self.password,
+                ip_type=self.ipType 
             )
                 
         return conn
 
     def getconn_iam(self):
         with Connector() as connector:
+            print(f'Came_here to connect with {self.user} and {self.ipType}')
             conn = connector.connect(
                 f'{self.project}:{self.region}:{self.instance}', # Cloud SQL Instance Connection Name
                 "pg8000",
                 db=self.name,
                 user=self.user,
                 password=None,
-                ip_type=IPTypes.PRIVATE,
+                ip_type=self.ipType,
                 enable_iam_auth=True
             )
                 
@@ -220,7 +223,6 @@ def main():
 
         # check if password is supplied, if not, chop off anything after .iam in the username 
         user = json_config["user"]
-
         password = None
         if "password" in json_config and json_config["password"] is not None :
             password = json_config["password"]
@@ -228,7 +230,11 @@ def main():
             head, sep, tail = user.partition('.iam')
             user = f'{head}.iam'
 
-        csqlConfig = CsqlConfig( json_database["project"],json_config["region"], json_database["instance"],
+        ipType=IPTypes.PRIVATE
+        if "ipType" in json_config and json_config["ipType"] is not None and json_config["ipType"].lower() != "private" :
+            ipType=IPTypes.PUBLIC
+        
+        csqlConfig = CsqlConfig( json_database["project"],json_config["region"], json_database["instance"], ipType, 
             json_database["name"], user, password, json_config["query"])
         csqlConfig.queryDb() 
 

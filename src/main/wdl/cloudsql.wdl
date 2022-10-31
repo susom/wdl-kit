@@ -165,6 +165,7 @@ task CsqlQuery {
         docker: dockerImage
         cpu: cpu
         memory: memory
+        zones: queryConfig.region
     }
 }
 

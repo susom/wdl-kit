@@ -25,8 +25,10 @@ from pathlib import Path
 from typing import Iterable, List, Optional
 from google.cloud import storage
 
-
-__version__ = version('stanford-wdl-kit')
+try:
+    __version__ = version('stanford-wdl-kit')
+except:
+    __version__ = "development"
 
 LOG = getLogger(__name__)
 
@@ -166,6 +168,37 @@ def download(config: DownloadConfig):
 
     print(json.dumps(files, indent=2, sort_keys=True))
 
+@dataclass_json
+@dataclass
+class UploadConfig():
+    # Source bucket
+    sourceBucket: str
+    # prefix used to find source blobs in bucket
+    sourcePrefix: str
+    # source file for upload
+    sourceFile: str
+
+def upload(config: UploadConfig):
+    """
+    Upload a file to a local directory
+    """
+    client = storage.Client()
+    
+    """Uploads a file to the bucket."""
+    # The ID of your GCS bucket
+    # sourceBucket = "your-bucket-name"
+    # The path to your file to upload
+    # sourceFile = "local/path/to/file"
+    # The ID of your GCS object
+    # sourcePrefix = "storage-object-name"
+
+    bucket = client.bucket(config.sourceBucket)
+    blob = bucket.blob(config.sourcePrefix)
+
+    blob.upload_from_filename(config.sourceFile)
+
+    print(json.dumps(blob._properties, indent=2, sort_keys=True))
+
 
 def main(args=None):
     parser = argparse.ArgumentParser(description="JSON GCS utilities")
@@ -177,7 +210,7 @@ def main(args=None):
                         help='JSON credentials file (default: infer from environment)')
 
     parser.add_argument('command', choices=[
-                        'download', 'compose'], type=str.lower, help='command to execute')
+                        'download', 'compose', 'upload'], type=str.lower, help='command to execute')
 
     parser.add_argument('--version', action='version', version=__version__)
 
@@ -197,6 +230,8 @@ def main(args=None):
     if args.command == "download":
         download(config=DownloadConfig.from_json(config))
 
+    if args.command == "upload":
+        upload(config=UploadConfig.from_json(config))
 
 if __name__ == '__main__':
     sys.exit(main())

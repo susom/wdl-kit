@@ -3,6 +3,9 @@
     "IntegrationTestGcs.testProjectId": "xxxxxxxxx",
     "IntegrationTestGcs.gcsDestination": "gs://xxxxxx_test/loadfiletest/gcs_result.txt",
     "IntegrationTestGcs.gcsSourcePrefix": "loadfiletest/data_source",
+    "IntegrationTestGcs.gcsUploadFile": "local path to file to upload",
+    "IntegrationTestGcs.gcsUploadSourceBucket": "gcs_project",
+    "IntegrationTestGcs.gcsUploadSourcePrefix": "test.txt",
     "IntegrationTestGcs.gcsDownloadSourceBucket": "gs://xxxxxx_test",
     "IntegrationTestGcs.gcsDownloadSourcePrefix": "loadfiletest/gcs_result"    
 }

@@ -16,7 +16,7 @@ task CreateInstance {
         DatabaseInstance databaseInstance
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0"
+        String dockerImage = "wdl-kit:1.3.0-dguan2-1"
     }
 
     command {
@@ -49,7 +49,7 @@ task DeleteInstance {
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0"
+        String dockerImage = "wdl-kit:1.3.0-dguan2-1"
     }
 
     command {
@@ -83,7 +83,7 @@ task CreateDatabase {
       
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0"
+        String dockerImage = "wdl-kit:1.3.0-dguan2-1"
     }
     
     command {
@@ -116,7 +116,7 @@ task DeleteDatabase {
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0"
+        String dockerImage = "wdl-kit:1.3.0-dguan2-1"
     }
 
     command {
@@ -148,7 +148,7 @@ task CsqlQuery {
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0"
+        String dockerImage = "wdl-kit:1.3.0-dguan2-1"
     }
 
 

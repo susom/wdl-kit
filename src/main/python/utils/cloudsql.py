@@ -20,23 +20,25 @@ import sys
 import json
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
-from pyparsing import Optional
+# from pyparsing import Optional
+from typing import Optional
 import pg8000
 import sqlalchemy
 from sqlalchemy import insert
 from google.cloud.sql.connector import Connector, IPTypes
+import pandas as pd
 
 class CsqlConfig:
     project: str
-    # kind: str
     name: str
     instance: str
     ipType: str
     user: str
     password: str
     query: str
+    format: Optional[str] = None
 
-    def __init__(self, project, region, instance, ipType, name, user, password, query):
+    def __init__(self, project, region, instance, ipType, name, user, password, query, format):
         self.project = project
         self.name = name
         self.instance = instance
@@ -45,6 +47,7 @@ class CsqlConfig:
         self.user = user
         self.password = password
         self.query= query
+        self.format = format
     
     def getconn(self):
         with Connector() as connector:
@@ -61,7 +64,7 @@ class CsqlConfig:
 
     def getconn_iam(self):
         with Connector() as connector:
-            print(f'Came_here to connect with {self.user} and {self.ipType}')
+            # print(f'Came_here to connect with {self.user} and {self.ipType}')
             conn = connector.connect(
                 f'{self.project}:{self.region}:{self.instance}', # Cloud SQL Instance Connection Name
                 "pg8000",
@@ -86,6 +89,16 @@ class CsqlConfig:
             # query database
             result = db_conn.execute(sqlalchemy.text(self.query))
 
+            if self.format == "csv":
+                df = pd.DataFrame(result.fetchall())
+                df.to_csv(sys.stdout, index=False)
+            if self.format == "json":
+                df = pd.DataFrame(result.fetchall())
+                df.to_json(sys.stdout, orient="records")
+            if self.format == "html":
+                df = pd.DataFrame(result.fetchall())
+                df.to_html(sys.stdout)                
+     
             # close connection
             db_conn.close()
 
@@ -235,7 +248,7 @@ def main():
             ipType=IPTypes.PUBLIC
         
         csqlConfig = CsqlConfig( json_database["project"],json_config["region"], json_database["instance"], ipType, 
-            json_database["name"], user, password, json_config["query"])
+            json_database["name"], user, password, json_config["query"], json_config["format"])
         csqlConfig.queryDb() 
 
 if __name__ == '__main__':

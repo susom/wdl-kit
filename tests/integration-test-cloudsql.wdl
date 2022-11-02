@@ -9,6 +9,9 @@ workflow CreateInstanceTest {
         File? credentials
         DatabaseInstance databaseInstance
         Database database
+        InstancesImportRequest instancesImportRequest
+        CsqlConfig createTableQuery
+        CsqlConfig rowcountTableQuery
     }
 
     call csql.CreateInstance as CreateInstanceTestWDL {
@@ -25,7 +28,28 @@ workflow CreateInstanceTest {
             database = database
     }
 
-    call csql.DeleteDatabase as DeleteDatabaseTestWDL after CreateDatabaseTestWDL {
+    call csql.CsqlQuery as CreateTable after CreateDatabaseTestWDL {
+        input:
+            apiProjectId = apiProjectId,
+            credentials = credentials, 
+            queryConfig = createTableQuery
+    }
+
+    call csql.ImportFile after CreateTable {
+        input:
+            apiProjectId = apiProjectId,
+            credentials=credentials, 
+            instancesImportRequest = instancesImportRequest
+    }
+
+    call csql.CsqlQuery as TableRowCount after ImportFile {
+        input:
+            apiProjectId = apiProjectId,
+            credentials = credentials, 
+            queryConfig = rowcountTableQuery
+    }
+
+    call csql.DeleteDatabase as DeleteDatabaseTestWDL after TableRowCount {
         input:
             apiProjectId = apiProjectId, 
             credentials=credentials, 

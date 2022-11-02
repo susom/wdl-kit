@@ -490,3 +490,23 @@ struct CsqlConfig {
   String? ipType
   String? format
 }
+
+struct InstancesImportRequest {
+  ImportContext importContext
+}
+
+struct ImportContext {
+  String project
+  String instance
+  String kind
+  String uri
+  String database
+  String fileType
+  CsvImportOptions csvImportOptions
+  String? importUser
+}
+
+struct CsvImportOptions {
+  String table
+  Array[String]? columns 
+}

@@ -199,14 +199,30 @@ def delete_database(config):
             json.dump(result, delete_database_file, indent=2, sort_keys=True)
     else:
         print("Database Not Found")
-   
+
+def import_file(config):
+    credentials = GoogleCredentials.get_application_default()
+    cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
+
+    json_config = json.loads(config)
+    operation = cloudsql.instances().import_(project=json_config["importContext"]["project"], instance=json_config["importContext"]["instance"], body=json_config).execute()
+    result = wait_for_operation(cloudsql, json_config["importContext"]["project"], operation["name"])
+    if "error" in result:
+        raise Exception(result["error"])
+    
+    instanceName = result["targetId"]
+    projectId = result["targetProject"]
+
+    with open('import_file.json', 'w') as instance_file:
+        json.dump(cloudsql.instances().get(project=projectId, instance=instanceName).execute(), instance_file, indent=2, sort_keys=True)
+
 def main():
     parser = argparse.ArgumentParser(description="Google CloudSql utility")
 
     parser.add_argument("--project_id", required=False, help="Your Google Cloud project ID.")
     parser.add_argument('--credentials', required=False, help='Specify path to a GCP JSON credentials file')
     
-    parser.add_argument('command', choices=['instance_insert', 'instance_delete', 'database_insert', 'database_delete', 'query'], type=str.lower, help='command to execute')
+    parser.add_argument('command', choices=['instance_insert', 'instance_delete', 'database_insert', 'database_delete', 'query', 'import_file'], type=str.lower, help='command to execute')
     parser.add_argument('config', help='JSON configuration file for command')
     
     args = parser.parse_args()
@@ -230,6 +246,9 @@ def main():
     if args.command == "database_delete" and args.config is not None:
         delete_database(config)
 
+    if args.command == "import_file" and args.config is not None:
+        import_file(config)
+        
     if args.command == "query":
         json_config = json.loads(config)    
         json_database=json_config["database"]

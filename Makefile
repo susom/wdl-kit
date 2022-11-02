@@ -1,5 +1,5 @@
 TARGET = install
-VERSION=1.3.0-jchen-upload
+VERSION=1.3.0
 
 .PHONY: clean docker pip
 

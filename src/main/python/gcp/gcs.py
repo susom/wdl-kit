@@ -190,7 +190,7 @@ def upload(config: UploadConfig):
     # The path to your file to upload
     # sourceFile = "local/path/to/file"
     # The ID of your GCS object
-    # destination_uri = "storage-object-name"
+    # sourcePrefix = "storage-object-name"
 
     bucket = client.bucket(config.sourceBucket)
     blob = bucket.blob(config.sourcePrefix)

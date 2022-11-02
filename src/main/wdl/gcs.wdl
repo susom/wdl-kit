@@ -38,7 +38,7 @@ task Compose {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.3.0-jchen-upload"
+      String dockerImage = "wdl-kit:1.3.0"
     }
 
     ComposeConfig config = object {
@@ -100,7 +100,7 @@ task Download {
       Boolean keepPrefix = false
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.3.0-jchen-upload"
+      String dockerImage = "wdl-kit:1.3.0"
     }
 
     DownloadConfig config = object {
@@ -131,8 +131,8 @@ struct UploadConfig {
   String sourceBucket
   # prefix used to find source blobs in bucket
   String sourcePrefix
-  # Source file directory
-  String sourceFile
+  # Source file 
+  File sourceFile
 }
 
 # wdl-kit:1.3.0-jchen-upload
@@ -154,7 +154,7 @@ task Upload {
       File sourceFile
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.3.0-jchen-upload"
+      String dockerImage = "wdl-kit:1.3.0"
     }
 
     UploadConfig config = object {

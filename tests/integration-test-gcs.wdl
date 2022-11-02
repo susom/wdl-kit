@@ -97,7 +97,8 @@ workflow IntegrationTestGcs {
 
     output {
         String? testGcsCompose = if defined(TEST_GCS_COMPOSE) then 'Passed' else 'Failed'
-        String? testGcsDownload = if defined(TEST_GCS_DOWNLOAD) then 'Passed' else 'Failed'   
+        String? testGcsDownload = if defined(TEST_GCS_DOWNLOAD) then 'Passed' else 'Failed'  
+        String? testGcsUpload = if defined(TEST_GCS_UPLOAD) then 'Passed' else 'Failed'
         String? finalTestResult = finalResult
         # String? downloadFile = ShowSourceFile.fileContent        
     }

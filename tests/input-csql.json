@@ -30,13 +30,13 @@
             "project": "project-id",
             "instance": "instance-name",
             "kind": "sql#importContext",
-            "uri": "gs://dguan2_test/data_source_1.csv",
+            "uri": "gs://xxxxx_test/data_source_1.csv",
             "database": "database-name",
             "fileType": "CSV",
             "csvImportOptions": {
                 "table": "test_table"
             },
-            "importUser": "pipeline-starr-nav-dev@project-id.iam"
+            "importUser": "testv@project-id.iam"
         }
     },
 
@@ -47,7 +47,7 @@
             "project": "project-id"
         },
         "query" : "create table test_table ( recid INTEGER, first_name VARCHAR(255), last_name VARCHAR(255) );",
-        "user" : "pipeline-starr-nav-dev@project-id.iam",
+        "user" : "test@project-id.iam",
         "region" : "us-west1"
     },
 
@@ -58,7 +58,7 @@
             "project": "project-id"
         },
         "query" : "select count(*) from test_table;",
-        "user" : "pipeline-starr-nav-dev@project-id.iam",
+        "user" : "test@project-id.iam",
         "region" : "us-west1",
         "format": "csv"
     }

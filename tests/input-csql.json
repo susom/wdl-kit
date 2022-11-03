@@ -1,17 +1,17 @@
 {
-    "CreateInstanceTest.apiProjectId": "project-id",
-    "CreateInstanceTest.credentials": "/home/user_name/key.json",
+    "CreateInstanceTest.apiProjectId": "projectid",
+   
     "CreateInstanceTest.databaseInstance": {
-        "project": "project-id",
-        "name": "instance-name",
-        "region": "us-west1",
+        "project": "projectid",
+        "name": "instancename",
+        "region": "us-west2",
         "databaseVersion": "POSTGRES_14",
         "settings": {
             "tier": "db-custom-1-3840",
             "ipConfiguration": {
                 "ipv4Enabled": false,
                 "requireSsl": false,
-                "privateNetwork": "projects/project-id/global/networks/default"
+                "privateNetwork": "privatenetwork"
             }
         }
     },
@@ -20,9 +20,9 @@
         "kind": "sql#database",
         "charset": "UTF8",
         "collation": "en_US.UTF8",
-        "name": "database-name",
-        "instance": "instance-name",
-        "project": "project-id"
+        "name": "databaseid",
+        "instance": "instancename",
+        "project": "projectid"
     },
 
     "CreateInstanceTest.instancesImportRequest": {

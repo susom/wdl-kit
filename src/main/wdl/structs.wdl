@@ -488,4 +488,5 @@ struct CsqlConfig {
   String? password
   String query
   String? ipType
+  String? format
 }

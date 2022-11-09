@@ -125,3 +125,55 @@ task Download {
       memory: memory
     }
 }
+
+struct UploadConfig {
+  # Source bucket
+  String sourceBucket
+  # prefix used to find source blobs in bucket
+  String sourcePrefix
+  # Source file 
+  File sourceFile
+}
+
+# wdl-kit:1.3.0-jchen-upload
+# Uploads a file to GCS bucket
+task Upload {
+    parameter_meta {
+      credentials: { description: "Optional JSON credential file" }
+      projectId: { description: "Default project to use for API requests" }
+      sourceBucket: { description: "bucket containing source objects" }
+      sourcePrefix: { description: "upload the object name with this prefix" }
+      sourceFile: { description: "path location of the file" }
+    }
+
+    input {
+      File? credentials
+      String? projectId
+      String sourceBucket
+      String sourcePrefix
+      File sourceFile
+      Int cpu = 1
+      String memory = "128 MB"
+      String dockerImage = "wdl-kit:1.3.0"
+    }
+
+    UploadConfig config = object {
+      sourceBucket: sourceBucket,
+      sourcePrefix: sourcePrefix,
+      sourceFile: sourceFile
+    }
+
+    command {
+      wgcs ${"--project_id=" + projectId} ${"--credentials=" + credentials} upload ~{write_json(config)}
+    }
+
+    output {
+      String blob = read_lines(stdout())
+    }
+
+    runtime {
+      docker: dockerImage
+      cpu: cpu
+      memory: memory
+    }
+}

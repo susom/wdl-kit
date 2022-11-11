@@ -234,7 +234,7 @@ def main():
     if args.project_id is not None:
         os.environ['GCLOUD_PROJECT'] = args.project_id
     
-    if args.command == "instance_insert" and args.config is not None:        
+    if args.command == "instance_insert" and args.config is not None:
         insert_instance(config)
 
     if args.command == "instance_delete" and args.config is not None:

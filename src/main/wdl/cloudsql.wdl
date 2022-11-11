@@ -3,24 +3,24 @@ version development
 # WDL Wrapper for the CloudSQL Python utility
 import "structs.wdl"
 
-task CreateInstance {
+task CreateDatabaseInstance {
     parameter_meta {
         apiProjectId: { description: "The project ID of the API we will be using (note: can be different than the instance project ID)" }
         credentials: { description: "Optional JSON credential file" }
-        databaseInstance: { description: "The database instance to create" }
+        createInstance: { description: "The database instance to create and the service account to add as a DB user it" }
     }
 
     input {
         String? apiProjectId
         File? credentials
-        DatabaseInstance databaseInstance
+        CreateInstance createInstance
         Int cpu = 1
         String memory = "128 MB"
         String dockerImage = "wdl-kit:1.3.0"
     }
 
     command {
-        csql ${"--project_id=" + apiProjectId} ${"--credentials=" + credentials} instance_insert ~{write_json(databaseInstance)}
+        csql ${"--project_id=" + apiProjectId} ${"--credentials=" + credentials} instance_insert ~{write_json(createInstance)}
     }
 
     output {

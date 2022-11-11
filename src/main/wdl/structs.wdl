@@ -490,3 +490,19 @@ struct CsqlConfig {
   String? ipType
   String? format
 }
+
+struct CreateInstance {
+  DatabaseInstance databaseInstance
+  DatabaseUser? databaseUser
+}
+
+struct DatabaseUser {
+  String name
+  String type
+}
+
+struct CreatedDatabaseUser {
+  String? operationType
+  String? user
+  String? status
+}

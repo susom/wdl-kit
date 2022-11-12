@@ -8,6 +8,7 @@ workflow CreateInstanceTest {
         String? apiProjectId
         File? credentials
         DatabaseInstance databaseInstance
+        String? grantBucket
         Database database
     }
 
@@ -15,7 +16,8 @@ workflow CreateInstanceTest {
         input:
             apiProjectId = apiProjectId,
             credentials=credentials, 
-            databaseInstance = databaseInstance
+            databaseInstance = databaseInstance,
+            grantBucket = grantBucket
     }
 
     call csql.CreateDatabase as CreateDatabaseTestWDL after CreateInstanceTestWDL {

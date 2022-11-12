@@ -8,19 +8,21 @@ task CreateInstance {
         apiProjectId: { description: "The project ID of the API we will be using (note: can be different than the instance project ID)" }
         credentials: { description: "Optional JSON credential file" }
         databaseInstance: { description: "The database instance to create" }
+        grantBucket: { description: "The bucket that the service account of instance will be granted to" }
     }
 
     input {
         String? apiProjectId
         File? credentials
         DatabaseInstance databaseInstance
+        String? grantBucket
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0"
+        String dockerImage = "wdl-kit:1.3.0-dguan2-1"
     }
 
     command {
-        csql ${"--project_id=" + apiProjectId} ${"--credentials=" + credentials} instance_insert ~{write_json(databaseInstance)}
+        csql ${"--project_id=" + apiProjectId} ${"--credentials=" + credentials} ${"--grant_bucket=" + grantBucket} instance_insert ~{write_json(databaseInstance)}
     }
 
     output {

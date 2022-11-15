@@ -1,18 +1,29 @@
 {
     "CreateInstanceTest.apiProjectId": "projectid",
    
-    "CreateInstanceTest.databaseInstance": {
-        "project": "projectid",
-        "name": "instancename",
-        "region": "us-west2",
-        "databaseVersion": "POSTGRES_14",
-        "settings": {
-            "tier": "db-custom-1-3840",
-            "ipConfiguration": {
-                "ipv4Enabled": false,
-                "requireSsl": false,
-                "privateNetwork": "privatenetwork"
+    "CreateInstanceTest.createInstance": {
+        "databaseInstance": {
+            "project": "projectid",
+            "name": "instancename",
+            "region": "us-west1",
+            "databaseVersion": "POSTGRES_14",
+            "settings": {
+                "tier": "db-custom-1-3840",
+                "ipConfiguration": {
+                    "ipv4Enabled": false,
+                    "requireSsl": false,
+                    "privateNetwork": "privatenetwork"
+                },
+                "databaseFlags":[{
+                    "name": "cloudsql.iam_authentication",
+                    "value": "on"
+                }]
             }
+        },
+
+        "databaseUser":{
+            "name" : "testv@project-id.iam",
+            "type" : "CLOUD_IAM_SERVICE_ACCOUNT"
         }
     },
 

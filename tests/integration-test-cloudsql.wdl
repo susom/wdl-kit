@@ -7,18 +7,20 @@ workflow CreateInstanceTest {
     input {
         String? apiProjectId
         File? credentials
-        DatabaseInstance databaseInstance
+        CreateInstance createInstance
         Database database
         InstancesImportRequest instancesImportRequest
         CsqlConfig createTableQuery
         CsqlConfig rowcountTableQuery
+        String? grantBucket
     }
 
-    call csql.CreateInstance as CreateInstanceTestWDL {
+    call csql.CreateDatabaseInstance as CreateInstanceTestWDL {
         input:
             apiProjectId = apiProjectId,
             credentials=credentials, 
-            databaseInstance = databaseInstance
+            createInstance = createInstance,
+            grantBucket = grantBucket
     }
 
     call csql.CreateDatabase as CreateDatabaseTestWDL after CreateInstanceTestWDL {
@@ -60,7 +62,7 @@ workflow CreateInstanceTest {
         input:
             apiProjectId = apiProjectId, 
             credentials=credentials, 
-            databaseInstance = databaseInstance
+            databaseInstance = CreateInstanceTestWDL.createdInstance 
     }
 
     output {

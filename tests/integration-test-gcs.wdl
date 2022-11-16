@@ -45,6 +45,9 @@ workflow IntegrationTestGcs {
         String gcsDownloadSourceBucket
         String gcsDownloadSourcePrefix
 
+        String gcsUploadSourceBucket
+        String gcsUploadSourcePrefix
+        File gcsUploadFile
     }
 
     call gcs.Compose as gcsCompose {
@@ -53,10 +56,10 @@ workflow IntegrationTestGcs {
                 destination = gcsDestination,
                 sourcePrefix = gcsSourcePrefix
     }
+
     if (defined(gcsCompose.blob)) {
         Boolean TEST_GCS_COMPOSE = true
     }
-
 
     call gcs.Download as gcsDownload after gcsCompose {
         input:
@@ -69,7 +72,19 @@ workflow IntegrationTestGcs {
         Boolean TEST_GCS_DOWNLOAD = true
     }
 
-    call GetFileContent as ShowSourceFile after gcsDownload {
+    call gcs.Upload as gcsUpload {
+        input:
+                credentials = testCredentials, projectId = testProjectId,
+                sourceFile = gcsUploadFile,
+                sourceBucket = gcsUploadSourceBucket,
+                sourcePrefix = gcsUploadSourcePrefix
+    } 
+
+    if (defined(gcsUpload.blob)) {
+        Boolean TEST_GCS_UPLOAD = true
+    }
+
+    call GetFileContent as ShowSourceFile {
             input:
                 sourceFile = gcsDownload.files[0]
     }
@@ -82,9 +97,10 @@ workflow IntegrationTestGcs {
 
     output {
         String? testGcsCompose = if defined(TEST_GCS_COMPOSE) then 'Passed' else 'Failed'
-        String? testGcsDownload = if defined(TEST_GCS_DOWNLOAD) then 'Passed' else 'Failed'   
+        String? testGcsDownload = if defined(TEST_GCS_DOWNLOAD) then 'Passed' else 'Failed'  
+        String? testGcsUpload = if defined(TEST_GCS_UPLOAD) then 'Passed' else 'Failed'
         String? finalTestResult = finalResult
-        #String? downloadFile = ShowSourceFile.fileContent        
+        # String? downloadFile = ShowSourceFile.fileContent        
     }
 }
 

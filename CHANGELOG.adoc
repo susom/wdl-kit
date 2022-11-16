@@ -7,6 +7,17 @@ ifndef::icons[]
 :star: &#9733;
 endif::[]
 
+== Release 2022-11-16 (v1.4.0)
+* ({uri-jira}/WDL-7[WDL-7]) - Add more functionality to Cloud-SQL support in WDL-kit
+* ({uri-jira}/WDL-8[WDL-8]) - Correct the reference to project_id in cloudsql.py instance creation
+* ({uri-jira}/WDL-9[WDL-9]) - Add GCS functionality to WDL-kit for file upload
+* ({uri-jira}/WDL-10[WDL-10]) - Add Cloud SQL Import CSV file function to WDL-Kit
+* ({uri-jira}/WDL-12[WDL-12]) - Add IAM user option when creating an instance
+* ({uri-jira}/WDL-13[WDL-13]) - Bump cloud SDK to latest version (includes Python 3.9.2)
+* ({uri-jira}/WDL-14[WDL-14]) - Add CSV/JSON/HTML output to CloudSQL query command
+* ({uri-jira}/WDL-15[WDL-15]) - Change the output of the upload object to a struct Blob instead of string on WDL-kit for file upload functionality
+* ({uri-jira}/WDL-16[WDL-16]) - Optional flag for 'bucket' with Instance creation/insertion
+
 == Release 2022-10-06 (v1.3.0)
 * ({uri-jira}/WDL-5[WDL-5]) - Support for GCP Cloud SQL instance creation
 * ({uri-jira}/STAR-6039[STAR-6039]) - Add options for delimiter and header in output CSV for BigQuery

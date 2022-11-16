@@ -135,6 +135,10 @@ struct UploadConfig {
   File sourceFile
 }
 
+<<<<<<< HEAD
+=======
+# wdl-kit:1.3.0-jchen-upload
+>>>>>>> 367127c1ae679c5bad271a3bff79532cd93d891f
 # Uploads a file to GCS bucket
 task Upload {
     parameter_meta {
@@ -167,7 +171,11 @@ task Upload {
     }
 
     output {
+<<<<<<< HEAD
       Blob blob = read_json(stdout())
+=======
+      String blob = read_lines(stdout())
+>>>>>>> 367127c1ae679c5bad271a3bff79532cd93d891f
     }
 
     runtime {

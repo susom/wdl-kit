@@ -480,3 +480,13 @@ struct SqlserverDatabaseDetails {
   String? compatibilityLevel
   String? recoveryModel
 }
+
+struct CsqlConfig {
+  Database database
+  String region
+  String user
+  String? password
+  String query
+  String? ipType
+  String? format
+}

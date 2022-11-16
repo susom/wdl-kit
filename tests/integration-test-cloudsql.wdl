@@ -7,17 +7,19 @@ workflow CreateInstanceTest {
     input {
         String? apiProjectId
         File? credentials
-        DatabaseInstance databaseInstance
-        String? grantBucket
+        CreateInstance createInstance
         Database database
-        CsqlConfig queryConfig
+        InstancesImportRequest instancesImportRequest
+        CsqlConfig createTableQuery
+        CsqlConfig rowcountTableQuery
+        String? grantBucket
     }
 
-    call csql.CreateDatabaseInstance as CreateDatabaseInstanceTestWDL {
+    call csql.CreateDatabaseInstance as CreateInstanceTestWDL {
         input:
             apiProjectId = apiProjectId,
             credentials=credentials, 
-            databaseInstance = databaseInstance,
+            createInstance = createInstance,
             grantBucket = grantBucket
     }
 
@@ -28,14 +30,28 @@ workflow CreateInstanceTest {
             database = database
     }
 
-    call csql.CsqlQuery as CsqlQueryWDL after CreateDatabaseTestWDL{
+    call csql.CsqlQuery as CreateTable after CreateDatabaseTestWDL {
         input:
             apiProjectId = apiProjectId,
             credentials = credentials, 
-            queryConfig = queryConfig
+            queryConfig = createTableQuery
     }
 
-    call csql.DeleteDatabase as DeleteDatabaseTestWDL after CsqlQueryWDL {
+    call csql.ImportFile after CreateTable {
+        input:
+            apiProjectId = apiProjectId,
+            credentials=credentials, 
+            instancesImportRequest = instancesImportRequest
+    }
+
+    call csql.CsqlQuery as TableRowCount after ImportFile {
+        input:
+            apiProjectId = apiProjectId,
+            credentials = credentials, 
+            queryConfig = rowcountTableQuery
+    }
+
+    call csql.DeleteDatabase as DeleteDatabaseTestWDL after TableRowCount {
         input:
             apiProjectId = apiProjectId, 
             credentials=credentials, 
@@ -46,7 +62,7 @@ workflow CreateInstanceTest {
         input:
             apiProjectId = apiProjectId, 
             credentials=credentials, 
-            databaseInstance = createInstance.databaseInstance
+            databaseInstance = CreateInstanceTestWDL.createdInstance 
     }
 
     output {

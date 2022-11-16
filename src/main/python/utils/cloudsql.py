@@ -145,6 +145,19 @@ def insert_instance(config, grantBucket: str = None):
         grantBucket = grantBucket.replace("gs://","")
         add_bucket_iam_member(grantBucket, "serviceAccount:"+instance_config["serviceAccountEmailAddress"])
 
+def add_bucket_iam_member(bucket_name, member, role="roles/storage.objectViewer"):
+    # bucket_name = "your-bucket-name"
+    # role = "IAM role, e.g., roles/storage.objectViewer"
+    # member = "IAM identity, e.g., user: name@example.com"
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+
+    policy = bucket.get_iam_policy(requested_policy_version=3)
+
+    policy.bindings.append({"role": role, "members": {member}})
+
+    bucket.set_iam_policy(policy)
+
 def add_user(instanceName, instance_config, user_config):
     credentials = GoogleCredentials.get_application_default()
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
@@ -224,6 +237,22 @@ def delete_database(config):
     else:
         print("Database Not Found")
 
+def import_file(config):
+    credentials = GoogleCredentials.get_application_default()
+    cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
+
+    json_config = json.loads(config)
+    operation = cloudsql.instances().import_(project=json_config["importContext"]["project"], instance=json_config["importContext"]["instance"], body=json_config).execute()
+    result = wait_for_operation(cloudsql, json_config["importContext"]["project"], operation["name"])
+    if "error" in result:
+        raise Exception(result["error"])
+    
+    instanceName = result["targetId"]
+    projectId = result["targetProject"]
+
+    with open('import_file.json', 'w') as instance_file:
+        json.dump(cloudsql.instances().get(project=projectId, instance=instanceName).execute(), instance_file, indent=2, sort_keys=True)
+
 # https://cloud.google.com/storage/docs/access-control/using-iam-permissions#storage-add-bucket-iam-python
 def add_bucket_iam_member(bucket_name, member, role="roles/storage.objectViewer"):
     # bucket_name = "your-bucket-name"
@@ -238,15 +267,13 @@ def add_bucket_iam_member(bucket_name, member, role="roles/storage.objectViewer"
 
     bucket.set_iam_policy(policy)
 
-
 def main():
     parser = argparse.ArgumentParser(description="Google CloudSql utility")
 
     parser.add_argument("--project_id", required=False, help="Your Google Cloud project ID.")
     parser.add_argument('--credentials', required=False, help='Specify path to a GCP JSON credentials file')
     parser.add_argument('--grant_bucket', required=False, help='Specify bucket to grant to service account')
-    
-    parser.add_argument('command', choices=['instance_insert', 'instance_delete', 'database_insert', 'database_delete', 'query'], type=str.lower, help='command to execute')
+    parser.add_argument('command', choices=['instance_insert', 'instance_delete', 'database_insert', 'database_delete', 'query', 'import_file'], type=str.lower, help='command to execute')
     parser.add_argument('config', help='JSON configuration file for command')
     
     args = parser.parse_args()
@@ -270,6 +297,9 @@ def main():
     if args.command == "database_delete" and args.config is not None:
         delete_database(config)
 
+    if args.command == "import_file" and args.config is not None:
+        import_file(config)
+        
     if args.command == "query":
         json_config = json.loads(config)    
         json_database=json_config["database"]

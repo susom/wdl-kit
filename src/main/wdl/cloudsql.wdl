@@ -7,14 +7,14 @@ task CreateDatabaseInstance {
     parameter_meta {
         apiProjectId: { description: "The project ID of the API we will be using (note: can be different than the instance project ID)" }
         credentials: { description: "Optional JSON credential file" }
-        databaseInstance: { description: "The database instance to create" }
+        createInstance: { description: "The database instance to create and the service account to add as a DB user it" }
         grantBucket: { description: "The bucket that the service account of instance will be granted to" }
     }
 
     input {
         String? apiProjectId
         File? credentials
-        DatabaseInstance databaseInstance
+        CreateInstance createInstance
         String? grantBucket
         Int cpu = 1
         String memory = "128 MB"
@@ -22,7 +22,7 @@ task CreateDatabaseInstance {
     }
 
     command {
-        csql ${"--project_id=" + apiProjectId} ${"--credentials=" + credentials} ${"--grant_bucket=" + grantBucket} instance_insert ~{write_json(databaseInstance)}
+        csql ${"--project_id=" + apiProjectId} ${"--credentials=" + credentials} ${"--grant_bucket=" + grantBucket} instance_insert ~{write_json(createInstance)}
     }
 
     output {
@@ -168,6 +168,39 @@ task CsqlQuery {
         cpu: cpu
         memory: memory
         zones: queryConfig.region
+    }
+}
+
+task ImportFile {
+    parameter_meta {
+        apiProjectId: { description: "The project ID of the API we will be using (note: can be different than the instance project ID)" }
+        credentials: { description: "Optional JSON credential file" }
+        instancesImportRequest: { description: "The import source configuration" }
+    }
+
+    input {
+        String? apiProjectId
+        File? credentials
+        InstancesImportRequest instancesImportRequest
+      
+        Int cpu = 1
+        String memory = "128 MB"
+        String dockerImage = "wdl-kit:1.3.0"
+    }
+    
+    command {
+        csql ${"--project_id=" + apiProjectId} ${"--credentials=" + credentials} import_file  ~{write_json(instancesImportRequest)}
+    }
+
+    output {
+      File importFileResult = "import_file.json"
+      File results = stdout()
+    }
+
+    runtime {
+      docker: dockerImage
+      cpu: cpu
+      memory: memory
     }
 }
 

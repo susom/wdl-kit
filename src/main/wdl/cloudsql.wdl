@@ -18,7 +18,7 @@ task CreateDatabaseInstance {
         String? grantBucket
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0-dguan2-1"
+        String dockerImage = "wdl-kit:1.4.0"
     }
 
     command {
@@ -51,7 +51,7 @@ task DeleteInstance {
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0"
+        String dockerImage = "wdl-kit:1.4.0"
     }
 
     command {
@@ -85,7 +85,7 @@ task CreateDatabase {
       
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0"
+        String dockerImage = "wdl-kit:1.4.0"
     }
     
     command {
@@ -118,7 +118,7 @@ task DeleteDatabase {
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0"
+        String dockerImage = "wdl-kit:1.4.0"
     }
 
     command {
@@ -150,7 +150,7 @@ task CsqlQuery {
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0"
+        String dockerImage = "wdl-kit:1.4.0"
     }
 
 
@@ -167,7 +167,6 @@ task CsqlQuery {
         docker: dockerImage
         cpu: cpu
         memory: memory
-        zones: queryConfig.region
     }
 }
 
@@ -185,7 +184,7 @@ task ImportFile {
       
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0"
+        String dockerImage = "wdl-kit:1.4.0"
     }
     
     command {

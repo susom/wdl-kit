@@ -1,1 +1,0 @@
-* ({uri-jira}/WDL-12[WDL-12]) - Add IAM user option when creating an instance

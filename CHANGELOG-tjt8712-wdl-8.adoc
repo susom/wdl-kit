@@ -1,1 +1,0 @@
-* ({uri-jira}/WDL-8[WDL-8]) - Correct the reference to project_id in cloudsql.py instance creation

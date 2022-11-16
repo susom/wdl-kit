@@ -1,1 +1,0 @@
-* ({uri-jira}/WDL-14[WDL-14]) - Add CSV/JSON/HTML output to CloudSQL query command

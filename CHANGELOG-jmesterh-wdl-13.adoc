@@ -1,1 +1,0 @@
-* ({uri-jira}/WDL-13[WDL-13]) - Bump cloud SDK to latest version (includes Python 3.9.2)

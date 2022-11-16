@@ -1,7 +1,6 @@
 version development
 
 import "../src/main/wdl/cloudsql.wdl" as csql
-import "../src/main/wdl/structs.wdl"
 
 workflow CreateInstanceTest {
     input {
@@ -23,7 +22,7 @@ workflow CreateInstanceTest {
             grantBucket = grantBucket
     }
 
-    call csql.CreateDatabase as CreateDatabaseTestWDL after CreateDatabaseInstanceTestWDL {
+    call csql.CreateDatabase as CreateDatabaseTestWDL after CreateInstanceTestWDL {
         input:
             apiProjectId = apiProjectId,
             credentials=credentials, 
@@ -66,9 +65,9 @@ workflow CreateInstanceTest {
     }
 
     output {
-        DatabaseInstance testInstance = CreateDatabaseInstanceTestWDL.createdInstance    
+        DatabaseInstance testInstance = CreateInstanceTestWDL.createdInstance    
         Database testDatabase = CreateDatabaseTestWDL.createdDatabase
-        File queryOutput = CsqlQueryWDL.stdout
+        File queryOutput = TableRowCount.stdout
         File deleteDatabaseResult = DeleteDatabaseTestWDL.deleteDatabase
         File deleteInstanceResult = DeleteInstanceTestWDL.deleteInstance
     }

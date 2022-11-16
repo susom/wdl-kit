@@ -1,6 +1,6 @@
 {
     "CreateInstanceTest.apiProjectId": "projectid",
-   
+    "CreateInstanceTest.credentials": "key.json",
     "CreateInstanceTest.createInstance": {
         "databaseInstance": {
             "project": "projectid",
@@ -42,7 +42,7 @@
             "project": "project-id",
             "instance": "instance-name",
             "kind": "sql#importContext",
-            "uri": "gs://xxxxx_test/data_source_1.csv",
+            "uri": "gs://xxxxx_test/data_source_noheader.csv",
             "database": "database-name",
             "fileType": "CSV",
             "csvImportOptions": {

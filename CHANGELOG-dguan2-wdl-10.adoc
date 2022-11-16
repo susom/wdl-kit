@@ -1,1 +1,0 @@
-* ({uri-jira}/WDL-10[WDL-10]) - Add Cloud SQL Import CSV file function to WDL-Kit

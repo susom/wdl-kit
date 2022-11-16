@@ -1,0 +1,1 @@
+* ({uri-jira}/WDL-15[WDL-15]) - Change the output of the upload object to a struct Blob instead of string on WDL-kit for file upload functionality

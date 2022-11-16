@@ -220,6 +220,7 @@ def insert_database(config):
     with open('database.json', 'w') as database_file:
         json.dump(cloudsql.databases().get(project=projectId, instance=instanceName, database=json_config["name"]).execute(), database_file, indent=2, sort_keys=True)
 
+
 def delete_database(config):
     credentials = GoogleCredentials.get_application_default()
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
@@ -252,13 +253,26 @@ def import_file(config):
     with open('import_file.json', 'w') as instance_file:
         json.dump(cloudsql.instances().get(project=projectId, instance=instanceName).execute(), instance_file, indent=2, sort_keys=True)
 
+# https://cloud.google.com/storage/docs/access-control/using-iam-permissions#storage-add-bucket-iam-python
+def add_bucket_iam_member(bucket_name, member, role="roles/storage.objectViewer"):
+    # bucket_name = "your-bucket-name"
+    # role = "IAM role, e.g., roles/storage.objectViewer"
+    # member = "IAM identity, e.g., user: name@example.com"
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+
+    policy = bucket.get_iam_policy(requested_policy_version=3)
+
+    policy.bindings.append({"role": role, "members": {member}})
+
+    bucket.set_iam_policy(policy)
+
 def main():
     parser = argparse.ArgumentParser(description="Google CloudSql utility")
 
     parser.add_argument("--project_id", required=False, help="Your Google Cloud project ID.")
     parser.add_argument('--credentials', required=False, help='Specify path to a GCP JSON credentials file')
     parser.add_argument('--grant_bucket', required=False, help='Specify bucket to grant to service account')
-
     parser.add_argument('command', choices=['instance_insert', 'instance_delete', 'database_insert', 'database_delete', 'query', 'import_file'], type=str.lower, help='command to execute')
     parser.add_argument('config', help='JSON configuration file for command')
     

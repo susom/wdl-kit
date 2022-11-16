@@ -18,7 +18,7 @@ task CreateDatabaseInstance {
         String? grantBucket
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.3.0"
+        String dockerImage = "wdl-kit:1.3.0-dguan2-1"
     }
 
     command {

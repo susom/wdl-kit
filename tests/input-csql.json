@@ -26,6 +26,7 @@
             "type" : "CLOUD_IAM_SERVICE_ACCOUNT"
         }
     },
+    "grantBucket": "gs://bucket_name",
 
     "CreateInstanceTest.database": {
         "kind": "sql#database",

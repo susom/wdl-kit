@@ -23,7 +23,7 @@ workflow CreateInstanceTest {
             grantBucket = grantBucket
     }
 
-    call csql.CreateDatabase as CreateDatabaseTestWDL after CreateInstanceTestWDL {
+    call csql.CreateDatabase as CreateDatabaseTestWDL after CreateDatabaseInstanceTestWDL {
         input:
             apiProjectId = apiProjectId,
             credentials=credentials, 
@@ -66,8 +66,9 @@ workflow CreateInstanceTest {
     }
 
     output {
-        DatabaseInstance testInstance = CreateInstanceTestWDL.createdInstance    
+        DatabaseInstance testInstance = CreateDatabaseInstanceTestWDL.createdInstance    
         Database testDatabase = CreateDatabaseTestWDL.createdDatabase
+        File queryOutput = CsqlQueryWDL.stdout
         File deleteDatabaseResult = DeleteDatabaseTestWDL.deleteDatabase
         File deleteInstanceResult = DeleteInstanceTestWDL.deleteInstance
     }

@@ -3,7 +3,7 @@ version development
 # WDL Wrapper for the CloudSQL Python utility
 import "structs.wdl"
 
-task CreateInstance {
+task CreateDatabaseInstance {
     parameter_meta {
         apiProjectId: { description: "The project ID of the API we will be using (note: can be different than the instance project ID)" }
         credentials: { description: "Optional JSON credential file" }

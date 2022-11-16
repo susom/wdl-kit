@@ -123,13 +123,18 @@ def insert_instance(config, grantBucket: str = None):
     cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
 
     json_config = json.loads(config)
-    operation = cloudsql.instances().insert(project=json_config["project"], body=json_config).execute()
-    result = wait_for_operation(cloudsql, json_config["project"], operation["name"])
+    instance_config = json_config["databaseInstance"]
+
+    operation = cloudsql.instances().insert(project=instance_config["project"], body=instance_config).execute()
+    result = wait_for_operation(cloudsql, instance_config["project"], operation["name"])
     if "error" in result:
-        raise Exception(result["error"])
-    
+       raise Exception(result["error"])
+
     instanceName = result["targetId"]
-    projectId = result["targetProject"]
+    projectId = result["targetProject"]    
+
+    if "databaseUser" in json_config and json_config["databaseUser"] is not None :
+        add_user(instanceName, instance_config, json_config["databaseUser"])
 
     with open('instance.json', 'w') as instance_file:
         json.dump(cloudsql.instances().get(project=projectId, instance=instanceName).execute(), instance_file, indent=2, sort_keys=True)
@@ -139,6 +144,17 @@ def insert_instance(config, grantBucket: str = None):
         instance_config = json.load(instanceProfile)
         grantBucket = grantBucket.replace("gs://","")
         add_bucket_iam_member(grantBucket, "serviceAccount:"+instance_config["serviceAccountEmailAddress"])
+
+def add_user(instanceName, instance_config, user_config):
+    credentials = GoogleCredentials.get_application_default()
+    cloudsql = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
+    projectId = instance_config["project"] 
+
+    operation = cloudsql.users().insert(project=projectId, instance=instanceName, body=user_config).execute()
+    result = wait_for_operation(cloudsql, instance_config["project"], operation["name"])
+    if "error" in result:
+        delete_instance(instance_config)
+        raise Exception(result["error"])
 
 def instance_get(project_id, instance_name):
     credentials = GoogleCredentials.get_application_default()

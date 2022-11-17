@@ -12,7 +12,7 @@ install:
 	pip3 install pybuilder==0.13.5
 	pyb install 
 	pip3 install target/dist/stanford-wdl-kit-$(VERSION)/dist/stanford-wdl-kit-$(VERSION).tar.gz
-
+	pip install pysftp
 clean:
 	pyb clean
 	rm -rf __pycache__

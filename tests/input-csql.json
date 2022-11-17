@@ -1,20 +1,32 @@
 {
     "CreateInstanceTest.apiProjectId": "projectid",
-   
-    "CreateInstanceTest.databaseInstance": {
-        "project": "projectid",
-        "name": "instancename",
-        "region": "us-west2",
-        "databaseVersion": "POSTGRES_14",
-        "settings": {
-            "tier": "db-custom-1-3840",
-            "ipConfiguration": {
-                "ipv4Enabled": false,
-                "requireSsl": false,
-                "privateNetwork": "privatenetwork"
+    "CreateInstanceTest.credentials": "key.json",
+    "CreateInstanceTest.createInstance": {
+        "databaseInstance": {
+            "project": "projectid",
+            "name": "instancename",
+            "region": "us-west1",
+            "databaseVersion": "POSTGRES_14",
+            "settings": {
+                "tier": "db-custom-1-3840",
+                "ipConfiguration": {
+                    "ipv4Enabled": false,
+                    "requireSsl": false,
+                    "privateNetwork": "privatenetwork"
+                },
+                "databaseFlags":[{
+                    "name": "cloudsql.iam_authentication",
+                    "value": "on"
+                }]
             }
+        },
+
+        "databaseUser":{
+            "name" : "testv@project-id.iam",
+            "type" : "CLOUD_IAM_SERVICE_ACCOUNT"
         }
     },
+    "grantBucket": "gs://bucket_name",
 
     "CreateInstanceTest.database": {
         "kind": "sql#database",
@@ -23,6 +35,43 @@
         "name": "databaseid",
         "instance": "instancename",
         "project": "projectid"
-    }
+    },
 
+    "CreateInstanceTest.instancesImportRequest": {
+        "importContext": {
+            "project": "project-id",
+            "instance": "instance-name",
+            "kind": "sql#importContext",
+            "uri": "gs://xxxxx_test/data_source_noheader.csv",
+            "database": "database-name",
+            "fileType": "CSV",
+            "csvImportOptions": {
+                "table": "test_table"
+            },
+            "importUser": "testv@project-id.iam"
+        }
+    },
+
+    "CreateInstanceTest.createTableQuery" : {
+        "database": {
+            "name":"database-name",
+            "instance": "instance-name",
+            "project": "project-id"
+        },
+        "query" : "create table test_table ( recid INTEGER, first_name VARCHAR(255), last_name VARCHAR(255) );",
+        "user" : "test@project-id.iam",
+        "region" : "us-west1"
+    },
+
+    "CreateInstanceTest.rowcountTableQuery" : {
+        "database": {
+            "name":"database-name",
+            "instance": "instance-name",
+            "project": "project-id"
+        },
+        "query" : "select count(*) from test_table;",
+        "user" : "test@project-id.iam",
+        "region" : "us-west1",
+        "format": "csv"
+    }
 }

@@ -18,3 +18,4 @@ pyproject.toml
 # MiniWDL output
 **/_LAST
 **/20[0-9][0-9]*_*_*/
+tests/input-csql-dev.json

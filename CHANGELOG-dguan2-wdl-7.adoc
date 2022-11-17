@@ -1,1 +1,0 @@
-* ({uri-jira}/WDL-7[WDL-7]) - Add more functionality to Cloud-SQL support in WDL-kit

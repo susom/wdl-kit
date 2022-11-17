@@ -9,23 +9,24 @@ use_plugin("python.distutils")
 name = "stanford-wdl-kit"
 default_task = "publish"
 summary = "A WDL toolkit with a focus on ETL and Cloud integration"
-version = "1.3.0"
+version = "1.5.0"
 url = "https://github.com/susom/wdl-kit"
 authors = [Author("Darren Guan", "dguan2@stanford.edu"),
            Author("Joe Mesterhazy", "jmesterh@stanford.edu"),
-           Author("Tyler Tollefson", "ttollefson45@gmail.com")
-           ]
+           Author("Tyler Tollefson", "tjt8712@stanford.edu"),
+           Author("Smita Limaye", "slimaye@stanford.edu"),
+           Author("Jay Chen", "jchen313@stanford.edu")
+        ]
 maintainers = [Author(
     "Research IT: Technology & Digital Solutions, Stanford Medicine", "rit-oss-admin@stanford.edu")]
 license = "Apache License, Version 2.0"
-
 
 @init
 def initialize(project):
     project.set_property('distutils_console_scripts', [
         "wbq = gcp.bigquery:main",
         "wgcs = gcp.gcs:main",
-        "csql = utils.cloudsql:main",
+        "csql = gcp.cloudsql:main",
         "yaml2wdl = utils.yaml2wdl:main",
         "slacker = utils.slacker:main",
         "mailer = utils.mailer:main"

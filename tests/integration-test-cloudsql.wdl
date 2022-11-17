@@ -1,21 +1,25 @@
 version development
 
 import "../src/main/wdl/cloudsql.wdl" as csql
-import "../src/main/wdl/structs.wdl"
 
 workflow CreateInstanceTest {
     input {
         String? apiProjectId
         File? credentials
-        DatabaseInstance databaseInstance
+        CreateInstance createInstance
         Database database
+        InstancesImportRequest instancesImportRequest
+        CsqlConfig createTableQuery
+        CsqlConfig rowcountTableQuery
+        String? grantBucket
     }
 
-    call csql.CreateInstance as CreateInstanceTestWDL {
+    call csql.CreateDatabaseInstance as CreateInstanceTestWDL {
         input:
             apiProjectId = apiProjectId,
             credentials=credentials, 
-            databaseInstance = databaseInstance
+            createInstance = createInstance,
+            grantBucket = grantBucket
     }
 
     call csql.CreateDatabase as CreateDatabaseTestWDL after CreateInstanceTestWDL {
@@ -25,7 +29,28 @@ workflow CreateInstanceTest {
             database = database
     }
 
-    call csql.DeleteDatabase as DeleteDatabaseTestWDL after CreateDatabaseTestWDL {
+    call csql.CsqlQuery as CreateTable after CreateDatabaseTestWDL {
+        input:
+            apiProjectId = apiProjectId,
+            credentials = credentials, 
+            queryConfig = createTableQuery
+    }
+
+    call csql.ImportFile after CreateTable {
+        input:
+            apiProjectId = apiProjectId,
+            credentials=credentials, 
+            instancesImportRequest = instancesImportRequest
+    }
+
+    call csql.CsqlQuery as TableRowCount after ImportFile {
+        input:
+            apiProjectId = apiProjectId,
+            credentials = credentials, 
+            queryConfig = rowcountTableQuery
+    }
+
+    call csql.DeleteDatabase as DeleteDatabaseTestWDL after TableRowCount {
         input:
             apiProjectId = apiProjectId, 
             credentials=credentials, 
@@ -36,12 +61,13 @@ workflow CreateInstanceTest {
         input:
             apiProjectId = apiProjectId, 
             credentials=credentials, 
-            databaseInstance = databaseInstance
+            databaseInstance = CreateInstanceTestWDL.createdInstance 
     }
 
     output {
         DatabaseInstance testInstance = CreateInstanceTestWDL.createdInstance    
         Database testDatabase = CreateDatabaseTestWDL.createdDatabase
+        File queryOutput = TableRowCount.stdout
         File deleteDatabaseResult = DeleteDatabaseTestWDL.deleteDatabase
         File deleteInstanceResult = DeleteInstanceTestWDL.deleteInstance
     }

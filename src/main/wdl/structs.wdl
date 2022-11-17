@@ -1,6 +1,6 @@
 version development
 
-# version 1.3.0
+# version 1.5.0
 
 #
 # Datasets
@@ -479,4 +479,50 @@ struct Database {
 struct SqlserverDatabaseDetails {
   String? compatibilityLevel
   String? recoveryModel
+}
+
+struct CsqlConfig {
+  Database database
+  String region
+  String user
+  String? password
+  String query
+  String? ipType
+  String? format
+}
+
+struct CreateInstance {
+  DatabaseInstance databaseInstance
+  DatabaseUser? databaseUser
+}
+
+struct DatabaseUser {
+  String name
+  String type
+}
+
+struct CreatedDatabaseUser {
+  String? operationType
+  String? user
+  String? status
+}
+
+struct InstancesImportRequest {
+  ImportContext importContext
+}
+
+struct ImportContext {
+  String project
+  String instance
+  String kind
+  String uri
+  String database
+  String fileType
+  CsvImportOptions csvImportOptions
+  String? importUser
+}
+
+struct CsvImportOptions {
+  String table
+  Array[String]? columns 
 }

@@ -26,8 +26,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
 
-__version__ = version('stanford-wdl-kit')
-
+try:
+    __version__ = version('stanford-wdl-kit')
+except:
+    __version__ = "development"
 
 @dataclass_json
 @dataclass

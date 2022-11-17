@@ -1,5 +1,5 @@
 TARGET = install
-VERSION=1.3.0
+VERSION = 1.5.0
 
 .PHONY: clean docker pip
 
@@ -9,10 +9,16 @@ docker:
 	docker build -t wdl-kit:$(VERSION) .
 
 install: 
-	pip3 install pybuilder==0.13.5
-	pyb install 
+	pip install -r requirements.txt
 	pip3 install target/dist/stanford-wdl-kit-$(VERSION)/dist/stanford-wdl-kit-$(VERSION).tar.gz
 	pip install pysftp
+	
 clean:
 	pyb clean
 	rm -rf __pycache__
+
+check: 
+	$(MAKE) -C tests check
+
+yaml: 
+	$(MAKE) -C tests yaml

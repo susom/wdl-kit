@@ -29,7 +29,8 @@ def initialize(project):
         "csql = gcp.cloudsql:main",
         "yaml2wdl = utils.yaml2wdl:main",
         "slacker = utils.slacker:main",
-        "mailer = utils.mailer:main"
+        "mailer = utils.mailer:main",
+        "vocabcleaner = vocab.vocab_cleaner:main"
     ])
     project.set_property("distutils_readme_file", "SUMMARY.md")
     project.set_property("distutils_readme_description", True)

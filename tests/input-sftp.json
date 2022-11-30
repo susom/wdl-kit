@@ -1,5 +1,5 @@
 {
-        "sftptest.sftpPortTest" : "##.###.#.##",
+        "sftptest.sftpAddrTest" : "##.###.#.##",
         "sftptest.sftpPasswordTest" : "password",
         "sftptest.sftpLocationTest" : "/home/sftp",
         "sftptest.sourceTest" : "test.txt",

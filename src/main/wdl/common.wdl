@@ -150,14 +150,14 @@ task S3Upload {
 task SFTPUpload {
     input {
         # SFTP credentials
-        String sftpPort
+        String sftpAddr
         String sftpUser
         String sftpPassword
         # SFTP location to upload to
         String? sftpLocation
         # Source file to upload
         File source
-        String dockerImage = "wdl-kit:1.3.0"
+        String dockerImage = "wdl-kit:1.5.0"
     }
 
     command <<<
@@ -165,7 +165,7 @@ task SFTPUpload {
         import pysftp
         cnopts = pysftp.CnOpts()
         cnopts.hostkeys = None
-        with pysftp.Connection('~{sftpPort}', username='~{sftpUser}', password='~{sftpPassword}', cnopts= cnopts) as sftp:
+        with pysftp.Connection('~{sftpAddr}', username='~{sftpUser}', password='~{sftpPassword}', cnopts= cnopts) as sftp:
             sftp.cd('~{sftpLocation}')           # temporarily chdir to sftpLocation
             sftp.put('~{source}')  	# upload file to source on remote
             sftp.close()

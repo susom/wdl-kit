@@ -3,7 +3,7 @@ import "../src/main/wdl/common.wdl" as sftp
 workflow sftptest{
     input {
         # SFTP credentials
-        String sftpPortTest
+        String sftpAddrTest
         String sftpPasswordTest
         String sftpUserTest
         # SFTP location to upload to
@@ -13,12 +13,12 @@ workflow sftptest{
     }
     call sftp.SFTPUpload as SFTPUpload {
         input:
-                sftpPort = sftpPortTest, sftpPassword = sftpPasswordTest,
+                sftpAddr = sftpAddrTest, sftpPassword = sftpPasswordTest,
                 sftpUser = sftpUserTest,
                 sftpLocation = sftpLocationTest,
                 source = sourceTest
     }
     output {
-        String? testSFTPUpload = if defined(SFTPUpload.dir) then 'Successed' else 'Failed'      
+        String? testSFTPUpload = if defined(SFTPUpload.dir) then 'Passed' else 'Failed'      
     }
 }

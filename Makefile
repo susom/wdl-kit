@@ -11,7 +11,6 @@ docker:
 install: 
 	pip install -r requirements.txt
 	pip3 install target/dist/stanford-wdl-kit-$(VERSION)/dist/stanford-wdl-kit-$(VERSION).tar.gz
-	pip install pysftp
 	
 clean:
 	pyb clean

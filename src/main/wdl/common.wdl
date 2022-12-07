@@ -173,7 +173,7 @@ task SFTPUpload {
     >>>
 
     output {
-        String dir = read_string(stdout())
+        String out = read_string(stdout())
     }
 
     runtime {

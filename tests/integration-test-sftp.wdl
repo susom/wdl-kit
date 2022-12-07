@@ -19,6 +19,6 @@ workflow sftptest{
                 source = sourceTest
     }
     output {
-        String? testSFTPUpload = if defined(SFTPUpload.dir) then 'Passed' else 'Failed'      
+        String? testSFTPUpload = if defined(SFTPUpload.out) then 'Passed' else 'Failed'      
     }
 }

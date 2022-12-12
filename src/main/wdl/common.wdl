@@ -145,3 +145,38 @@ task S3Upload {
         docker: "amazon/aws-cli:2.7.7"
     }
 }
+
+# SFTP file uploader
+task SFTPUpload {
+    input {
+        # SFTP credentials
+        String sftpAddr
+        String sftpUser
+        String sftpPassword
+        # SFTP location to upload to
+        String? sftpLocation
+        # Source file to upload
+        File source
+        String dockerImage = "wdl-kit:1.5.0"
+    }
+
+    command <<<
+        python3 <<CODE
+        import pysftp
+        cnopts = pysftp.CnOpts()
+        cnopts.hostkeys = None
+        with pysftp.Connection('~{sftpAddr}', username='~{sftpUser}', password='~{sftpPassword}', cnopts= cnopts) as sftp:
+            sftp.cd('~{sftpLocation}')           # temporarily chdir to sftpLocation
+            sftp.put('~{source}')  	# upload file to source on remote
+            sftp.close()
+        CODE
+    >>>
+
+    output {
+        String out = read_string(stdout())
+    }
+
+    runtime {
+        docker: dockerImage
+    }
+}

@@ -216,7 +216,7 @@ task ModifyCsvFile {
       
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.5.0-dg"
+        String dockerImage = "wdl-kit:1.5.0"
     }
     
     command {

@@ -529,7 +529,7 @@ struct CsvImportOptions {
 
 struct CsvModifyOptions {
   String csvfile
-  Array[Int]? colIndex
+  Array[Int]? dropColIndex
   Boolean removeHeader
   String newFileName
 }

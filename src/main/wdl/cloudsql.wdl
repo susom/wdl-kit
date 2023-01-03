@@ -206,7 +206,7 @@ task ImportFile {
 task ModifyCsvFile {
     parameter_meta {
         csvfile: { description: "CSV file to be modified" }
-        colIndex: { description: "column indexes to be removed" }
+        dropColIndex: { description: "The indexes of columns to be dropped" }
         removeHeader: { description: "remove the header of CSV file" }
         newFileName: { description: "new file name with update"}
     }

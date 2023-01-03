@@ -272,7 +272,7 @@ def modify_csv_file (config):
         json_config = json.loads(config)
         data = pd.read_csv(json_config["csvfile"], dtype=str)
 
-        data.drop(data.columns[json_config["colIndex"]], inplace=True, axis=1)
+        data.drop(data.columns[json_config["dropColIndex"]], inplace=True, axis=1)
         data.to_csv(json_config["newFileName"], index=False)
 
         if json_config["removeHeader"]:

@@ -1,1 +1,1 @@
-* ({uri-jira}/PEDS-528[PEDS-528]) - As a user of the pipeline, I would like to be able to upload the final .tar.gz payload using a workflow script, so that this process is automated. 
+* ({uri-jira}) - As a user of the pipeline, I would like to be able to upload the final .tar.gz payload using a workflow script, so that this process is automated. 

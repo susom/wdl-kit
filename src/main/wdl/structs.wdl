@@ -526,3 +526,10 @@ struct CsvImportOptions {
   String table
   Array[String]? columns 
 }
+
+struct CsvModifyOptions {
+  String csvfile
+  Array[Int]? dropColIndex
+  Boolean removeHeader
+  String newFileName
+}

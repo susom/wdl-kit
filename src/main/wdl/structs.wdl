@@ -526,3 +526,33 @@ struct CsvImportOptions {
   String table
   Array[String]? columns 
 }
+
+struct BackupOptions {
+  String quotaProject
+  String datasetName
+  String backupUri
+  Boolean metadataOnly
+  Boolean printHeader
+  Boolean? createHeaderFile
+  String logLevel
+  Boolean json
+  String destinationFormat
+  String compression
+  Boolean mergeCsv
+  Int threads
+}
+
+struct RestoreOptions {
+  String quotaProject
+  String datasetName
+  String backupRestoreJsonUri
+  Boolean dropDataset
+  Boolean dropTables
+  Boolean metadataOnly
+  String logLevel
+  Boolean json
+  Int threads
+  Int? defaultTableExpiration
+  Int? defaultPartitionExpiration
+  Boolean? keepExpiration
+}

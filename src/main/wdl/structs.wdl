@@ -527,6 +527,13 @@ struct CsvImportOptions {
   Array[String]? columns 
 }
 
+struct CsvModifyOptions {
+  String csvfile
+  Array[Int]? dropColIndex
+  Boolean removeHeader
+  String newFileName
+}
+
 struct BackupOptions {
   String quotaProject
   String datasetName

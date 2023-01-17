@@ -16,14 +16,14 @@ task BackupDataset {
         
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.5.0-dg"
+        String dockerImage = "wdl-kit:1.5.0"
     }
 
     command {
         wbr ${"--project_id=" + apiProjectId} ${"--credentials=" + credentials} backup ~{write_json(backupOptions)}
         if ~{backupOptions.createHeaderFile}
         then
-          wbr ${"--project_id=" + apiProjectId} ${"--credentials=" + credentials} table_header ~{write_json(backupOptions)}
+          wbr ${"--project_id=" + apiProjectId} ${"--credentials=" + credentials} header_file ~{write_json(backupOptions)}
         fi
     }
 

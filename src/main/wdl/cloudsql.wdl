@@ -18,7 +18,7 @@ task CreateDatabaseInstance {
         String? grantBucket
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.4.0"
+        String dockerImage = "wdl-kit:1.5.0"
     }
 
     command {
@@ -51,7 +51,7 @@ task DeleteInstance {
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.4.0"
+        String dockerImage = "wdl-kit:1.5.0"
     }
 
     command {
@@ -85,7 +85,7 @@ task CreateDatabase {
       
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.4.0"
+        String dockerImage = "wdl-kit:1.5.0"
     }
     
     command {
@@ -118,7 +118,7 @@ task DeleteDatabase {
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.4.0"
+        String dockerImage = "wdl-kit:1.5.0"
     }
 
     command {
@@ -150,7 +150,7 @@ task CsqlQuery {
 
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.4.0"
+        String dockerImage = "wdl-kit:1.5.0"
     }
 
 
@@ -184,7 +184,7 @@ task ImportFile {
       
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.4.0"
+        String dockerImage = "wdl-kit:1.5.0"
     }
     
     command {
@@ -203,3 +203,33 @@ task ImportFile {
     }
 }
 
+task ModifyCsvFile {
+    parameter_meta {
+        csvfile: { description: "CSV file to be modified" }
+        dropColIndex: { description: "The indexes of columns to be dropped" }
+        removeHeader: { description: "remove the header of CSV file" }
+        newFileName: { description: "new file name with update"}
+    }
+
+    input {
+        CsvModifyOptions modifyOptions
+      
+        Int cpu = 1
+        String memory = "128 MB"
+        String dockerImage = "wdl-kit:1.5.0"
+    }
+    
+    command {
+        csql csv_update  ~{write_json(modifyOptions)}
+    }
+
+    output {
+      File results = stdout()
+    }
+
+    runtime {
+      docker: dockerImage
+      cpu: cpu
+      memory: memory
+    }
+}

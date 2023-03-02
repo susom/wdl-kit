@@ -1,6 +1,6 @@
 version development
 
-# version 1.4.0
+# version 1.5.0
 
 #
 # Datasets
@@ -525,4 +525,41 @@ struct ImportContext {
 struct CsvImportOptions {
   String table
   Array[String]? columns 
+}
+
+struct CsvModifyOptions {
+  String csvfile
+  Array[Int]? dropColIndex
+  Boolean removeHeader
+  String newFileName
+}
+
+struct BackupOptions {
+  String quotaProject
+  String datasetName
+  String backupUri
+  Boolean metadataOnly
+  Boolean printHeader
+  Boolean? createHeaderFile
+  String logLevel
+  Boolean json
+  String destinationFormat
+  String compression
+  Boolean mergeCsv
+  Int threads
+}
+
+struct RestoreOptions {
+  String quotaProject
+  String datasetName
+  String backupRestoreJsonUri
+  Boolean dropDataset
+  Boolean dropTables
+  Boolean metadataOnly
+  String logLevel
+  Boolean json
+  Int threads
+  Int? defaultTableExpiration
+  Int? defaultPartitionExpiration
+  Boolean? keepExpiration
 }

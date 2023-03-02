@@ -27,7 +27,7 @@ task StringReplace {
     input {
         String toReplace
         File? replacements
-        String dockerImage = "wdl-kit:1.4.0"
+        String dockerImage = "wdl-kit:1.5.0"
     }
 
     command <<<
@@ -55,7 +55,7 @@ task Slacker {
     input {
         SlackConfig? slackConfig
         String replacedMessage
-        String dockerImage = "wdl-kit:1.4.0"
+        String dockerImage = "wdl-kit:1.5.0"
     }
 
     parameter_meta {
@@ -76,7 +76,7 @@ task Mailer {
     input {
         MailerConfig? mailerConfig
         String replacedMessage
-        String dockerImage = "wdl-kit:1.4.0"
+        String dockerImage = "wdl-kit:1.5.0"
     } 
 
     command <<<
@@ -94,7 +94,7 @@ task ZipCompress {
         String destinationFile
         Int cpu = 1
         String memory = "1024MB"
-        String dockerImage = "wdl-kit:1.4.0"
+        String dockerImage = "wdl-kit:1.5.0"
     }
 
     command {
@@ -143,5 +143,40 @@ task S3Upload {
 
     runtime {
         docker: "amazon/aws-cli:2.7.7"
+    }
+}
+
+# SFTP file uploader
+task SFTPUpload {
+    input {
+        # SFTP credentials
+        String sftpAddr
+        String sftpUser
+        String sftpPassword
+        # SFTP location to upload to
+        String? sftpLocation
+        # Source file to upload
+        File source
+        String dockerImage = "wdl-kit:1.5.0"
+    }
+
+    command <<<
+        python3 <<CODE
+        import pysftp
+        cnopts = pysftp.CnOpts()
+        cnopts.hostkeys = None
+        with pysftp.Connection('~{sftpAddr}', username='~{sftpUser}', password='~{sftpPassword}', cnopts= cnopts) as sftp:
+            sftp.cd('~{sftpLocation}')           # temporarily chdir to sftpLocation
+            sftp.put('~{source}')  	# upload file to source on remote
+            sftp.close()
+        CODE
+    >>>
+
+    output {
+        String out = read_string(stdout())
+    }
+
+    runtime {
+        docker: dockerImage
     }
 }

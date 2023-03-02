@@ -101,7 +101,7 @@ task CreateDataset {
       Dataset createdDataset = read_json(stdout())
     }
     runtime {
-      docker: "wdl-kit:1.4.0"
+      docker: "wdl-kit:1.5.0"
     }
 }
 ```

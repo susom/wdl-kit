@@ -267,13 +267,24 @@ def add_bucket_iam_member(bucket_name, member, role="roles/storage.objectViewer"
 
     bucket.set_iam_policy(policy)
 
+def modify_csv_file (config):
+    try:
+        json_config = json.loads(config)
+        data = pd.read_csv(json_config["csvfile"], dtype=str)
+        data.drop(data.columns[json_config["dropColIndex"]], inplace=True, axis=1)
+        data.to_csv(json_config["newFileName"], header=(not json_config["removeHeader"]), index=False)
+    except:
+        return False
+    finally:
+        return True
+
 def main():
     parser = argparse.ArgumentParser(description="Google CloudSql utility")
 
     parser.add_argument("--project_id", required=False, help="Your Google Cloud project ID.")
     parser.add_argument('--credentials', required=False, help='Specify path to a GCP JSON credentials file')
     parser.add_argument('--grant_bucket', required=False, help='Specify bucket to grant to service account')
-    parser.add_argument('command', choices=['instance_insert', 'instance_delete', 'database_insert', 'database_delete', 'query', 'import_file'], type=str.lower, help='command to execute')
+    parser.add_argument('command', choices=['instance_insert', 'instance_delete', 'database_insert', 'database_delete', 'query', 'import_file', 'csv_update'], type=str.lower, help='command to execute')
     parser.add_argument('config', help='JSON configuration file for command')
     
     args = parser.parse_args()
@@ -299,6 +310,9 @@ def main():
 
     if args.command == "import_file" and args.config is not None:
         import_file(config)
+
+    if args.command == "csv_update" and args.config is not None:
+        modify_csv_file(config)
         
     if args.command == "query":
         json_config = json.loads(config)    

@@ -27,6 +27,7 @@ def initialize(project):
         "wbq = gcp.bigquery:main",
         "wgcs = gcp.gcs:main",
         "csql = gcp.cloudsql:main",
+        "wbr = utils.backup:main",
         "yaml2wdl = utils.yaml2wdl:main",
         "slacker = utils.slacker:main",
         "mailer = utils.mailer:main"

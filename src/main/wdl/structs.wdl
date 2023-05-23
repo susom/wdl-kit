@@ -58,6 +58,8 @@ struct Dataset {
   EncryptionConfiguration? defaultEncryptionConfiguration
   Boolean? satisfiesPzs
   String? type
+  String? maxTimeTravelHours
+  Boolean? isCaseInsensitive
 }
 
 struct PolicyTags {

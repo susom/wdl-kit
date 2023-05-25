@@ -1,6 +1,6 @@
 version development
 
-# version 1.5.1
+# version 1.6.0
 
 #
 # Datasets
@@ -58,6 +58,8 @@ struct Dataset {
   EncryptionConfiguration? defaultEncryptionConfiguration
   Boolean? satisfiesPzs
   String? type
+  String? maxTimeTravelHours
+  Boolean? isCaseInsensitive
 }
 
 struct PolicyTags {

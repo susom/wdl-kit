@@ -449,6 +449,7 @@ struct IpConfiguration {
   Boolean? ipv4Enabled
   String? privateNetwork
   Boolean? requireSsl
+  String? sslMode
   Array[AclEntry]? authorizedNetworks
   String? allocatedIpRange
 }

@@ -7,10 +7,14 @@ ifndef::icons[]
 :star: &#9733;
 endif::[]
 
+== Release 2023-10-30 (v1.6.1) 👻
+* ({uri-jira}/PEDS-1051[PEDS-1051]) - Include missing sslMode field to IpConfiguration
+
 == Release 2023-03-02 (v1.5.0)
 * ({uri-jira}/WDL-9[WDL-9]) - Add GCS functionality for file upload
 * ({uri-jira}/WDL-15[WDL-15]) - Change the output of the upload object to a struct Blob instead of string for file upload functionality
 * ({uri-jira}/WDL-22[WDL-22]) - Unplanned: Add CSV File column/row modification function and dockerize it for Pedsnet Postgres Validation
+* ({uri-jira}/WDL-25[WDL-25]) - Add maxTimeTravelHours and isCaseInsensitive to Dataset struct
 * ({uri-jira}/PEDS-697[PEDS-697]) - Integrate Backup Utility (in WDL-kit) to Post-DEID workflow 
 
 == Release 2022-11-16 (v1.4.0)

@@ -7,8 +7,10 @@ ifndef::icons[]
 :star: &#9733;
 endif::[]
 
-== Release 2023-03-02 (v1.6.0)
+== Release 2023-03-02 (v1.7.0)
 * Fix wid-kit to include missing sslMode field to IpConfiguration
+
+== Release 2023-03-02 (v1.6.0)
 
 == Release 2023-03-02 (v1.5.0)
 * ({uri-jira}/WDL-9[WDL-9]) - Add GCS functionality for file upload

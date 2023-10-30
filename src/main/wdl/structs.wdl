@@ -1,6 +1,6 @@
 version development
 
-# version 1.6.0
+# version 1.7.0
 
 #
 # Datasets
@@ -449,6 +449,7 @@ struct IpConfiguration {
   Boolean? ipv4Enabled
   String? privateNetwork
   Boolean? requireSsl
+  String? sslMode
   Array[AclEntry]? authorizedNetworks
   String? allocatedIpRange
 }

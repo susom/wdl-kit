@@ -99,6 +99,8 @@ class CreateDatasetConfig():
     drop: bool = False
     # If dataset already exists, don't return an error
     existsOk: bool = True
+    # https://cloud.google.com/bigquery/docs/updating-datasets#api_5
+    storageBillingModel: str 'PHYSICAL'
 
 
 def create_dataset(config: CreateDatasetConfig):
@@ -119,6 +121,7 @@ def create_dataset(config: CreateDatasetConfig):
                 existing_dataset, not_found_ok=True, delete_contents=True)
     except exceptions.NotFound:
         pass
+    dataset.storageBillingModel = config.storageBillingModel
     dataset = client.create_dataset(
         dataset, exists_ok=config.existsOk, timeout=30)
 

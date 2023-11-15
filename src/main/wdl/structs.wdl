@@ -60,6 +60,7 @@ struct Dataset {
   String? type
   String? maxTimeTravelHours
   Boolean? isCaseInsensitive
+  String? storageBillingModel
 }
 
 struct PolicyTags {

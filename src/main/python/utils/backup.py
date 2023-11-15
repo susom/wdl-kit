@@ -229,7 +229,6 @@ class Dataset:
         if dataset is not None:
             self.scrub(dataset)
             self.dataset = bigquery.Dataset.from_api_repr(dataset)
-            self.dataset.storage_billing_model = 'PHYSICAL'
 
     def scrub(self, d: dict):
         """Removes the identity keys from a dataset created from a restored API representation"""

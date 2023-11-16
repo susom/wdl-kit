@@ -122,10 +122,9 @@ def create_dataset(config: CreateDatasetConfig):
     except exceptions.NotFound:
         pass
     if(config.storageBillingModel is not None):
-        dataset.storageBillingModel = config.storageBillingModel
+        dataset.storage_billing_model = config.storageBillingModel
     dataset = client.create_dataset(
         dataset, exists_ok=config.existsOk, timeout=30)
-
     with open('dataset.json', 'w') as dataset_file:
         json.dump(dataset.to_api_repr(), dataset_file,
                   indent=2, sort_keys=True)

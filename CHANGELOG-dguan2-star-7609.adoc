@@ -1,0 +1,1 @@
+* ({uri-jira}/STAR-7609[STAR-7609]) - Change WDL-kit so that it does not crash when Google introduces new fields to API resources

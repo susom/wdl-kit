@@ -40,6 +40,36 @@ struct_object = """
     "isCaseInsensitive"
   ],
 
+  "DiskEncryptionConfiguration": [
+    "kmsKeyName",
+    "kind"
+  ],
+
+  "SqlOutOfDiskReport": [
+    "sqlOutOfDiskState",
+    "sqlMinRecommendedIncreaseSizeGb"
+  ],
+
+  "TableSchema": [
+    "name",
+    "type",
+    "mode",
+    "fields",
+    "description",
+    "policyTags",
+    "maxLength",
+    "precision",
+    "scale"
+  ],
+
+  "PolicyTags": [
+    "names"
+  ],
+
+  "TableFieldSchema": [
+    "fields"
+  ],
+
   "Table": [
     "kind",
     "etag",
@@ -105,6 +135,80 @@ struct_object = """
     "maintenanceVersion"
   ],
 
+  "InstanceReference": [
+    "name",
+    "region",
+    "project"
+  ],
+
+  "SourceInstance": [
+    "name",
+    "region",
+    "project"
+  ],
+
+  "SqlScheduledMaintenance": [
+    "startTime",
+    "canDefer",
+    "canReschedule",
+    "scheduleDeadlineTime"
+  ],
+
+  "DiskEncryptionStatus": [
+    "kmsKeyVersionName",
+    "kind"
+  ],
+
+  "ReplicaConfiguration": [
+    "kind",
+    "mysqlReplicaConfiguration",
+    "failoverTarget"
+  ],
+
+  "MySqlReplicaConfiguration": [
+    "dumpFilePath",
+    "username",
+    "password",
+    "connectRetryInterval",
+    "masterHeartbeatPeriod",
+    "caCertificate",
+    "clientCertificate",
+    "clientKey",
+    "sslCipher",
+    "verifyServerCertificate",
+    "kind"
+  ],
+
+  "OnPremisesConfiguration": [
+    "hostPort",
+    "kind",
+    "username",
+    "password",
+    "caCertificate",
+    "clientCertificate",
+    "clientCertificate",
+    "clientKey",
+    "dumpFilePath",
+    "sourceInstance"
+  ],
+
+  "SslCert": [
+    "kind",
+    "certSerialNumber",
+    "cert",
+    "createTime",
+    "commonName",
+    "expirationTime",
+    "sha1Fingerprint",
+    "instance",
+    "selfLink"
+  ],
+
+  "FailoverReplica": [
+    "name",
+    "available"
+  ],
+
   "Database": [
     "kind",
     "charset",
@@ -115,7 +219,117 @@ struct_object = """
     "selfLink",
     "project",
     "sqlserverDatabaseDetails"
+  ],
+
+  "EncryptionConfiguration": [
+    "kmsKeyName"
+  ],
+
+  "Settings": [
+    "settingsVersion",
+    "authorizedGaeApplications",
+    "tier",
+    "kind",
+    "userLabels",
+    "availabilityType",
+    "pricingPlan",
+    "replicationType",
+    "storageAutoResizeLimit",
+    "activationPolicy",
+    "ipConfiguration",
+    "storageAutoResize",
+    "locationPreference",
+    "databaseFlags",
+    "dataDiskType",
+    "maintenanceWindow",
+    "backupConfiguration",
+    "databaseReplicationEnabled",
+    "crashSafeReplicationEnabled",
+    "dataDiskSizeGb",
+    "activeDirectoryConfig",
+    "collation",
+    "denyMaintenancePeriods",
+    "insightsConfig",
+    "passwordValidationPolicy",
+    "sqlServerAuditConfig",
+    "connectorEnforcement",
+    "deletionProtectionEnabled"
+  ],
+
+  "IpConfiguration": [
+    "ipv4Enabled",
+    "privateNetwork",
+    "requireSsl",
+    "authorizedNetworks",
+    "allocatedIpRange",
+    "sslMode"
+  ],
+
+  "SqlServerAuditConfig": [
+    "kind",
+    "bucket",
+    "retentionInterval",
+    "uploadInterval"
+  ],
+
+  "PasswordValidationPolicy": [
+    "minLength",
+    "complexity",
+    "reuseInterval",
+    "disallowUsernameSubstring",
+    "passwordChangeInterval",
+    "enablePasswordPolicy"
+  ],
+
+  "InsightsConfig": [
+    "queryInsightsEnabled",
+    "recordClientAddress",
+    "recordApplicationTags",
+    "queryStringLength",
+    "queryPlansPerMinute"
+  ],
+
+  "SqlActiveDirectoryConfig": [
+    "kind",
+    "domain"
+  ],
+
+  "BackupConfiguration": [
+    "startTime",
+    "enabled",
+    "kind",
+    "binaryLogEnabled",
+    "replicationLogArchivingEnabled",
+    "location",
+    "pointInTimeRecoveryEnabled",
+    "transactionLogRetentionDays",
+    "backupRetentionSettings"
+  ],
+
+  "BackupRetentionSettings": [
+    "retentionUnit",
+    "retainedBackups"
+  ],
+
+  "MaintenanceWindow": [
+    "hour",
+    "day",
+    "updateTrack",
+    "kind"
+  ],
+
+  "LocationPreference": [
+    "followGaeApplication",
+    "zone",
+    "secondaryZone",
+    "kind"
+  ],
+  
+  "SqlserverDatabaseDetails": [
+    "compatibilityLevel",
+    "recoveryModel"
   ]
+
 }
 """
 
@@ -125,12 +339,21 @@ def delete_keys_from_dict(dict_del, lst_keys):
     Loops recursively but comment out the code for nested dictionaries.
     """
     dict_foo = dict_del.copy()  
-    for field in dict_foo.keys():
-        if field not in lst_keys:
-            del dict_del[field]
-        # if isinstance(dict_foo[field], dict):
-        #     delete_keys_from_dict(dict_del[field], lst_keys)
+    for key, value in dict_foo.items():
+        if isinstance(value, dict) and struct_exist(key[0].upper() + key[1:]):
+            valid_struct_json = json.loads(struct_object)
+            nested_keys = valid_struct_json[key[0].upper() + key[1:]]
+            delete_keys_from_dict(dict_del[key], nested_keys)
+        else:
+            if key not in lst_keys:
+              del dict_del[key]
     return dict_del
+
+def struct_exist(field_name: str):
+    valid_struct_json = json.loads(struct_object)
+    if field_name in valid_struct_json:
+        return True
+    return False
 
 def valid_object(input_file_path: str, valid_object: str):
     if valid_object is not None and input_file_path is not None:
@@ -144,10 +367,10 @@ def valid_object(input_file_path: str, valid_object: str):
         return modifiedJson
 
 def main(args=None):
-    parser = argparse.ArgumentParser(description="JSON GCS utilities")
+    parser = argparse.ArgumentParser(description="JSON Key Fieltering Utilities")
 
     parser.add_argument('--valid-object', metavar='valid_object', type=str,
-                        help='The selected object in struct file to be validated')
+                        help='The selected object to be validated')
 
     parser.add_argument('--input-json', metavar='input_json', type=str,
                         help='JSON credentials file to be validated')
@@ -161,12 +384,5 @@ def main(args=None):
     if args.input_json and args.valid_object is None:
         parser.error("--input-json requires --valid-object")
  
-    # d1 = {'a': 1, 'b': 2, 'c': 3, 'n': {'n1': 99, 'n2': 100}}
-    # d2 = {'b': 2, 'c': 4, 'd': 5, 'n': {'n1': 99, 'n2': 100}}
-
-    # intersection_keys = d1.keys() & d2.keys()
-    # print(intersection_keys)
-
-
 if __name__ == '__main__':
     sys.exit(main())

@@ -27,7 +27,7 @@ task StringReplace {
     input {
         String toReplace
         File? replacements
-        String dockerImage = "wdl-kit:1.6.2"
+        String dockerImage = "wdl-kit:1.6.1"
     }
 
     command <<<

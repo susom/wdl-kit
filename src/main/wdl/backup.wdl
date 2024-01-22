@@ -16,7 +16,7 @@ task BackupDataset {
         
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.6.1"
+        String dockerImage = "wdl-kit:1.6.2"
     }
 
     command {

@@ -264,6 +264,7 @@ struct DatabaseInstance {
   String? createTime
   SqlOutOfDiskReport? outOfDiskReport
   String? maintenanceVersion
+  # String? sqlNetworkArchitecture
 }
 
 struct InstanceReference {

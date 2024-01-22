@@ -1,5 +1,5 @@
 TARGET = install
-VERSION = 1.6.1
+VERSION = 1.6.2
 
 .PHONY: clean docker pip
 
@@ -21,3 +21,11 @@ check:
 
 yaml: 
 	$(MAKE) -C tests yaml
+
+flush:
+	$(info Flushing the WDL run and call caches)
+	rm -rf _LAST 
+	rm -rf 20[2-9][2-9][0-9][0-9][0-9][0-9]_*_*
+	rm -rf cromwell-executions
+	rm -rf cromwell-workflow-logs
+	rm -rf ~/.cache/miniwdl/*

@@ -1,6 +1,6 @@
 version development
 
-# version 1.6.1
+# version 1.6.2
 
 #
 # Datasets
@@ -265,6 +265,7 @@ struct DatabaseInstance {
   String? createTime
   SqlOutOfDiskReport? outOfDiskReport
   String? maintenanceVersion
+  # String? sqlNetworkArchitecture
 }
 
 struct InstanceReference {

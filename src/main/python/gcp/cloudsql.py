@@ -28,6 +28,7 @@ from sqlalchemy import insert
 from google.cloud.sql.connector import Connector, IPTypes
 import pandas as pd
 from google.cloud import storage
+from .validstruct import valid_object
 
 class CsqlConfig:
     project: str
@@ -136,8 +137,13 @@ def insert_instance(config, grantBucket: str = None):
     if "databaseUser" in json_config and json_config["databaseUser"] is not None :
         add_user(instanceName, instance_config, json_config["databaseUser"])
 
-    with open('instance.json', 'w') as instance_file:
+    with open('raw_instance.json', 'w') as instance_file:
         json.dump(cloudsql.instances().get(project=projectId, instance=instanceName).execute(), instance_file, indent=2, sort_keys=True)
+
+    # filter invalid keys for Json
+    modified_json = valid_object('raw_instance.json', 'DatabaseInstance')
+    with open('instance.json', 'w') as modified_file:
+        json.dump(modified_json, modified_file, indent=2, sort_keys=True)
 
     if grantBucket is not None:
         instanceProfile = open('instance.json', 'r')
@@ -217,9 +223,13 @@ def insert_database(config):
     instanceName = result["targetId"]
     projectId = result["targetProject"]
 
-    with open('database.json', 'w') as database_file:
+    with open('raw_database.json', 'w') as database_file:
         json.dump(cloudsql.databases().get(project=projectId, instance=instanceName, database=json_config["name"]).execute(), database_file, indent=2, sort_keys=True)
 
+    # filter invalid keys for Json
+    modified_json = valid_object('raw_database.json', 'Database')
+    with open('database.json', 'w') as modified_file:
+        json.dump(modified_json, modified_file, indent=2, sort_keys=True)
 
 def delete_database(config):
     credentials = GoogleCredentials.get_application_default()

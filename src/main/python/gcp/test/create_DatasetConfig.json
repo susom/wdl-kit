@@ -1,0 +1,20 @@
+{
+    "dataset": {
+        "datasetReference": {
+            "projectId": "som-rit-phi-starr-dev",
+            "datasetId": "xx_testing_dataset"
+        }
+    },
+    "fields": [],
+    "drop": false,
+    "existsOk": true,
+    "acls":[{
+        "role": "OWNER",
+        "userByEmail": "xxxxx@stanford.edu"
+    },
+    {
+        "role": "OWNER",
+        "userByEmail": "xxxxx@stanford.edu"
+    }
+]
+}

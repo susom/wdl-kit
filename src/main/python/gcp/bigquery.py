@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from google.cloud.bigquery import DEFAULT_RETRY
+from google.cloud.bigquery import DEFAULT_RETRY, AccessEntry
 from google.cloud import bigquery, exceptions, storage
 from dataclasses_json import dataclass_json
 from boltons.iterutils import remap
@@ -25,7 +25,7 @@ from pandas import DataFrame
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
-from .validstruct import valid_object
+from validstruct import valid_object
 
 try:
     __version__ = version('stanford-wdl-kit')
@@ -104,6 +104,8 @@ class CreateDatasetConfig():
     dataset: dict
     # Fields to update if dataset already exists, and is not being dropped
     fields: Optional[List[str]]
+    # list of acl to give access to as the dataset is being created
+    acls: Optional[List[dict]]
     # If dataset already exists, drop it (including contents)
     drop: bool = False
     # If dataset already exists, don't return an error
@@ -132,6 +134,12 @@ def create_dataset(config: CreateDatasetConfig):
         pass
     if(config.storageBillingModel is not None):
         dataset.storage_billing_model = config.storageBillingModel
+    
+    if config.acls != None: 
+        dataset.access_entries = [
+            AccessEntry.from_api_repr(entry) for entry in config.acls
+        ]
+
     dataset = client.create_dataset(
         dataset, exists_ok=config.existsOk, timeout=30)
     with open('raw_dataset.json', 'w') as dataset_file:
@@ -482,6 +490,32 @@ def query(config: QueryConfig):
     with open('table.json', 'w') as modified_file:
         json.dump(modified_json, modified_file, indent=2, sort_keys=True)
 
+@dataclass_json
+@dataclass
+class AccessEntryConfig():
+    # https://cloud.google.com/bigquery/docs/control-access-to-resources-iam#python
+    # https://cloud.google.com/bigquery/docs/access-control-basic-roles#dataset-basic-roles
+    dataset_id: str
+    acls: List[dict]
+    # role: str
+    # * "userByEmail" -- A single user or service account. For example "fred@example.com"
+    # * "groupByEmail" -- A group of users. For example "example@googlegroups.com"
+
+def update_ACL(config: AccessEntryConfig):
+    """
+    update the ACL on the dataset
+    """
+    # Construct a BigQuery client object.
+    client = bigquery.Client()
+    
+    dataset = client.get_dataset(config.dataset_id)  # Make an API request.
+    entries = list(dataset.access_entries)
+        
+    dataset.access_entries = [
+        AccessEntry.from_api_repr(entry) for entry in config.acls
+    ]
+    dataset = client.update_dataset(dataset, ["access_entries"])
+
 def main(args=None):
     parser = argparse.ArgumentParser(description="jGCP BigQuery utility")
 
@@ -492,7 +526,7 @@ def main(args=None):
                         help='JSON credentials file (default: infer from environment)')
 
     parser.add_argument('command', choices=['query', 'create_table', 'copy_table', 'load_table', 'extract_table', 'create_dataset',
-                                            'delete_dataset'], type=str.lower, help='command to execute')
+                                            'delete_dataset', 'update_acl'], type=str.lower, help='command to execute')
 
     parser.add_argument('--version', action='version', version=__version__)
 
@@ -526,6 +560,9 @@ def main(args=None):
 
     if args.command == "query":
         query(config=QueryConfig.from_json(config))
+    
+    if args.command == "update_acl":
+        update_ACL(config=AccessEntryConfig.from_json(config))
 
 
 if __name__ == '__main__':

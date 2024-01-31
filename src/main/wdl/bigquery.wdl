@@ -370,6 +370,7 @@ struct CreateDatasetConfig {
   Dataset dataset
   Boolean drop
   Array[String]? fields
+  Array[AccessEntry]? acls
 }
 
 # Creates a dataset (Dataset)
@@ -381,6 +382,7 @@ task CreateDataset {
       dataset: { description: "Dataset to create" }
       drop: { description: "Drop any existing dataset and contents" }
       fields: { description: "List of fields to update if dataset already exists" }
+      acls: { description: "Add ACL to dataset as created" }
     }
 
     input {
@@ -389,6 +391,7 @@ task CreateDataset {
       Dataset dataset
       Boolean drop = false
       Array[String]? fields
+      Array[AccessEntry]? acls
 
       Int cpu = 1
       String memory = "128 MB"
@@ -398,7 +401,8 @@ task CreateDataset {
     CreateDatasetConfig config = object {
       dataset: dataset,
       drop: drop,
-      fields: fields
+      fields: fields,
+      acls: acls
     }
 
     command {
@@ -449,6 +453,52 @@ task DeleteDataset {
       datasetRef: datasetRef,
       notFoundOk: notFoundOk,
       deleteContents: deleteContents
+    }
+
+    command {
+      wbq ${"--project_id=" + projectId} ${"--credentials=" + credentials} delete_dataset ~{write_json(config)}
+    }
+
+    output {
+      DatasetReference deletedDatasetRef = datasetRef
+    }
+
+    runtime {
+      docker: dockerImage
+      cpu: cpu
+      memory: memory
+    }
+}
+
+struct UpdateACLConfig {
+  String dataset_id
+  Array[AccessEntry] acls
+}
+
+# Update ACL to dataset (DatasetReference)
+task UpdateACL {
+
+    parameter_meta {
+      credentials: { description: "Optional JSON credential file" }
+      projectId: { description: "Default project to use for API requests" }
+      dataset_id: { description: "Dataset to update ACL" }
+      acls: { description: "List of acls" }
+    }
+
+    input {
+      File? credentials
+      String projectId
+      String dataset_id
+      Array[AccessEntry] acls
+
+      Int cpu = 1
+      String memory = "128 MB"
+      String dockerImage = "wdl-kit:1.6.2"
+    }
+
+    UpdateACLConfig config = object {
+      dataset_id: dataset_id,
+      acls: acls
     }
 
     command {

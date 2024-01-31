@@ -7,8 +7,9 @@ ifndef::icons[]
 :star: &#9733;
 endif::[]
 
-== Release 2024-01-22 (v1.6.2)
+== Release 2024-01-31 (v1.7.0)
 * ({uri-jira}/STAR-7609[STAR-7609]) - Change WDL-kit so that it does not crash when Google introduces new fields to API resources
+* ({uri-jira}/STARR-7444[STARR-7444]) - Added storage biling, physical by default
 
 == Release 2023-10-30 (v1.6.1) 👻
 * ({uri-jira}/PEDS-1051[PEDS-1051]) - Include missing sslMode field to IpConfiguration

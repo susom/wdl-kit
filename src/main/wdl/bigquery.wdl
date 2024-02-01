@@ -370,7 +370,7 @@ struct CreateDatasetConfig {
   Dataset dataset
   Boolean drop
   Array[String]? fields
-  Array[AccessEntry]? acls
+  Array[Map[String, String]]? acls
 }
 
 # Creates a dataset (Dataset)
@@ -391,7 +391,7 @@ task CreateDataset {
       Dataset dataset
       Boolean drop = false
       Array[String]? fields
-      Array[AccessEntry]? acls
+      Array[Map[String, String]]? acls
 
       Int cpu = 1
       String memory = "128 MB"
@@ -472,7 +472,7 @@ task DeleteDataset {
 
 struct UpdateACLConfig {
   String dataset_id
-  Array[AccessEntry] acls
+  Array[Map[String, String]] acls
 }
 
 # Update ACL to dataset (DatasetReference)
@@ -489,11 +489,11 @@ task UpdateACL {
       File? credentials
       String projectId
       String dataset_id
-      Array[AccessEntry] acls
+      Array[Map[String, String]] acls
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.6.2"
+      String dockerImage = "wdl-kit:jc_1.6.2"
     }
 
     UpdateACLConfig config = object {
@@ -502,11 +502,11 @@ task UpdateACL {
     }
 
     command {
-      wbq ${"--project_id=" + projectId} ${"--credentials=" + credentials} delete_dataset ~{write_json(config)}
+      wbq ${"--project_id=" + projectId} ${"--credentials=" + credentials} update_acl ~{write_json(config)}
     }
 
     output {
-      DatasetReference deletedDatasetRef = datasetRef
+      String updateAclDatasetRef = dataset_id
     }
 
     runtime {

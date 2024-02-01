@@ -25,7 +25,7 @@ from pandas import DataFrame
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
-from validstruct import valid_object
+from .validstruct import valid_object
 
 try:
     __version__ = version('stanford-wdl-kit')
@@ -105,7 +105,7 @@ class CreateDatasetConfig():
     # Fields to update if dataset already exists, and is not being dropped
     fields: Optional[List[str]]
     # list of acl to give access to as the dataset is being created
-    acls: Optional[List[dict]]
+    acls: Optional[List[dict]] = None
     # If dataset already exists, drop it (including contents)
     drop: bool = False
     # If dataset already exists, don't return an error

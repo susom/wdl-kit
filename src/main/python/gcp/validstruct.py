@@ -37,6 +37,7 @@ struct_object = """
     "satisfiesPzs",
     "type",
     "maxTimeTravelHours",
+    "storageBillingModel",
     "isCaseInsensitive"
   ],
 

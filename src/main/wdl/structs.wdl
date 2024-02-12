@@ -59,6 +59,7 @@ struct Dataset {
   Boolean? satisfiesPzs
   String? type
   String? maxTimeTravelHours
+  String? storageBillingModel
   Boolean? isCaseInsensitive
 }
 

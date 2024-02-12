@@ -1,6 +1,6 @@
 version development
 
-# version 1.6.1
+# version 1.7.0
 
 #
 # Datasets
@@ -61,6 +61,7 @@ struct Dataset {
   String? maxTimeTravelHours
   String? storageBillingModel
   Boolean? isCaseInsensitive
+  String? storageBillingModel
 }
 
 struct PolicyTags {

@@ -53,7 +53,7 @@ def create_table(config: CreateTableConfig):
         client.delete_table(table, not_found_ok=True)
     table = client.create_table(table, exists_ok=config.existsOk, timeout=30)
 
-    with open('raw_table.json', 'w') as table_file:
+    with open('raw_raw_table.json', 'w') as table_file:
         json.dump(table.to_api_repr(), table_file, indent=2, sort_keys=True)
 
     # filter invalid keys for Json
@@ -108,6 +108,8 @@ class CreateDatasetConfig():
     drop: bool = False
     # If dataset already exists, don't return an error
     existsOk: bool = True
+    # https://cloud.google.com/bigquery/docs/updating-datasets#api_5
+    storageBillingModel: Optional[str] = 'PHYSICAL'
 
 
 def create_dataset(config: CreateDatasetConfig):
@@ -128,10 +130,12 @@ def create_dataset(config: CreateDatasetConfig):
                 existing_dataset, not_found_ok=True, delete_contents=True)
     except exceptions.NotFound:
         pass
+    if(config.storageBillingModel is not None):
+        dataset.storage_billing_model = config.storageBillingModel
     dataset = client.create_dataset(
         dataset, exists_ok=config.existsOk, timeout=30)
 
-    with open('raw_dataset.json', 'w') as dataset_file:
+    with open('dataset.json', 'w') as dataset_file:
         json.dump(dataset.to_api_repr(), dataset_file,
                   indent=2, sort_keys=True)
 

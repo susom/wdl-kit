@@ -493,7 +493,7 @@ task UpdateACL {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:jc_1.6.2"
+      String dockerImage = "wdl-kit:1.6.2"
     }
 
     UpdateACLConfig config = object {

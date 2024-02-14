@@ -505,6 +505,8 @@ class AccessEntryConfig():
 def update_ACL(config: AccessEntryConfig):
     """
     update the ACL on the dataset
+    by default, overwrite the acls list with the new list.
+    else append new acls list to current list.
     """
     # Construct a BigQuery client object.
     client = bigquery.Client()

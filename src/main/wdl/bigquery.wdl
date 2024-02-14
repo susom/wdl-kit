@@ -473,6 +473,7 @@ task DeleteDataset {
 struct UpdateACLConfig {
   String dataset_id
   Array[Map[String, String]] acls
+  Boolean? append
 }
 
 # Update ACL to dataset (DatasetReference)
@@ -483,6 +484,7 @@ task UpdateACL {
       projectId: { description: "Default project to use for API requests" }
       dataset_id: { description: "Dataset to update ACL" }
       acls: { description: "List of acls" }
+      append: { description: "Append the acls or overwrite the acls (Default)" }
     }
 
     input {
@@ -491,6 +493,7 @@ task UpdateACL {
       String dataset_id
       Array[Map[String, String]] acls
 
+      Boolean? append
       Int cpu = 1
       String memory = "128 MB"
       String dockerImage = "wdl-kit:1.6.2"
@@ -498,7 +501,8 @@ task UpdateACL {
 
     UpdateACLConfig config = object {
       dataset_id: dataset_id,
-      acls: acls
+      acls: acls,
+      append: append
     }
 
     command {

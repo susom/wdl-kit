@@ -500,6 +500,7 @@ class AccessEntryConfig():
     # role: str
     # * "userByEmail" -- A single user or service account. For example "fred@example.com"
     # * "groupByEmail" -- A group of users. For example "example@googlegroups.com"
+    append: bool = False
 
 def update_ACL(config: AccessEntryConfig):
     """
@@ -514,6 +515,11 @@ def update_ACL(config: AccessEntryConfig):
     dataset.access_entries = [
         AccessEntry.from_api_repr(entry) for entry in config.acls
     ]
+
+    if config.append:
+        entries.extend(dataset.access_entries)
+        dataset.access_entries = entries
+
     dataset = client.update_dataset(dataset, ["access_entries"])
 
 def main(args=None):

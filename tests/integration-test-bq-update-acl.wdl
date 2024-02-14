@@ -11,6 +11,7 @@ workflow IntegrationTestBqUpdateAcl {
         String testProjectId
         String testDataset_id
         Array[Map[String, String]] testAcls
+        Boolean? testAppend
     }
 
     # update test dataset acl
@@ -18,7 +19,8 @@ workflow IntegrationTestBqUpdateAcl {
         input:
             credentials = testCredentials, projectId = testProjectId,
             dataset_id = testDataset_id,
-            acls = testAcls
+            acls = testAcls,
+            append = testAppend
     }
 
     output {    

@@ -1,1 +1,0 @@
-* ({uri-jira}/STAR-7988[STAR-7988]) - Add missing attributes for Dataset in Struct.wdl

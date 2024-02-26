@@ -1,0 +1,10 @@
+{
+    "IntegrationTestBqUpdateAcl.testCredentials": "cred.json",
+    "IntegrationTestBqUpdateAcl.testProjectId": "som-rit-phi-starr-dev",
+    "IntegrationTestBqUpdateAcl.testDataset_id": "xxx_testing_dataset",
+    "IntegrationTestBqUpdateAcl.testAcls":[{
+        "role": "OWNER",
+        "userByEmail": "xxxx@stanford.edu"
+    }],
+    "IntegrationTestBqUpdateAcl.testAppend": false
+}

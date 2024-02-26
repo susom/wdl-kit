@@ -76,7 +76,7 @@ task Query {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.7.0"
+      String dockerImage = "wdl-kit:1.7.1"
     }
 
     QueryConfig config = object {
@@ -140,7 +140,7 @@ task CreateTable {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.7.0"
+      String dockerImage = "wdl-kit:1.7.1"
     }
 
     CreateTableConfig config = object {
@@ -191,7 +191,7 @@ task CopyTable {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.7.0"
+      String dockerImage = "wdl-kit:1.7.1"
     }
 
     CopyTableConfig config = object {
@@ -246,7 +246,7 @@ task ExtractTable {
 
     Int cpu = 1
     String memory = "128 MB"
-    String dockerImage = "wdl-kit:1.7.0"
+    String dockerImage = "wdl-kit:1.7.1"
   }
 
   ExtractTableConfig config = object {
@@ -327,7 +327,7 @@ task LoadTable {
     String writeDisposition = "WRITE_EMPTY"
     Boolean autodetect = false
     String location = "US"
-    String dockerImage = "wdl-kit:1.7.0"
+    String dockerImage = "wdl-kit:1.7.1"
     Int cpu = 1
     String memory = "128 MB"
   }
@@ -370,6 +370,7 @@ struct CreateDatasetConfig {
   Dataset dataset
   Boolean drop
   Array[String]? fields
+  Array[Map[String, String]]? acls
 }
 
 # Creates a dataset (Dataset)
@@ -381,6 +382,7 @@ task CreateDataset {
       dataset: { description: "Dataset to create" }
       drop: { description: "Drop any existing dataset and contents" }
       fields: { description: "List of fields to update if dataset already exists" }
+      acls: { description: "Add ACL to dataset as created" }
     }
 
     input {
@@ -389,16 +391,18 @@ task CreateDataset {
       Dataset dataset
       Boolean drop = false
       Array[String]? fields
+      Array[Map[String, String]]? acls
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.7.0"
+      String dockerImage = "wdl-kit:1.7.1"
     }
 
     CreateDatasetConfig config = object {
       dataset: dataset,
       drop: drop,
-      fields: fields
+      fields: fields,
+      acls: acls
     }
 
     command {
@@ -442,7 +446,7 @@ task DeleteDataset {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.7.0"
+      String dockerImage = "wdl-kit:1.7.1"
     }
 
     DeleteDatasetConfig config = object {
@@ -457,6 +461,56 @@ task DeleteDataset {
 
     output {
       DatasetReference deletedDatasetRef = datasetRef
+    }
+
+    runtime {
+      docker: dockerImage
+      cpu: cpu
+      memory: memory
+    }
+}
+
+struct UpdateACLConfig {
+  String dataset_id
+  Array[Map[String, String]] acls
+  Boolean? append
+}
+
+# Update ACL to dataset (DatasetReference)
+task UpdateACL {
+
+    parameter_meta {
+      credentials: { description: "Optional JSON credential file" }
+      projectId: { description: "Default project to use for API requests" }
+      dataset_id: { description: "Dataset to update ACL" }
+      acls: { description: "List of acls" }
+      append: { description: "Append the acls or overwrite the acls (Default)" }
+    }
+
+    input {
+      File? credentials
+      String projectId
+      String dataset_id
+      Array[Map[String, String]] acls
+
+      Boolean? append
+      Int cpu = 1
+      String memory = "128 MB"
+      String dockerImage = "wdl-kit:1.6.2"
+    }
+
+    UpdateACLConfig config = object {
+      dataset_id: dataset_id,
+      acls: acls,
+      append: append
+    }
+
+    command {
+      wbq ${"--project_id=" + projectId} ${"--credentials=" + credentials} update_acl ~{write_json(config)}
+    }
+
+    output {
+      String updateAclDatasetRef = dataset_id
     }
 
     runtime {

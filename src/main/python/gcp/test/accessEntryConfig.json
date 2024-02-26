@@ -1,0 +1,8 @@
+{
+    "dataset_id": "xxx_testing_dataset",
+    "acls":[{
+        "role": "OWNER",
+        "userByEmail": "xxxx@stanford.edu"
+    }],
+    "append": false
+}

@@ -104,7 +104,7 @@ class CsqlConfig:
             # close connection
             db_conn.close()
 
-def wait_for_operation(cloudsql, project, operation):
+def wait_for_operation(cloudsql, project, operation, recess=None):
     operation_complete = False
     while not operation_complete:
         result = (
@@ -114,6 +114,9 @@ def wait_for_operation(cloudsql, project, operation):
         )
 
         if result["status"] == "DONE":
+            if recess is not None:
+                # Fix the issue: "Operation failed because another operation was already in progress" while importing CSV files. It will allow certain recess time for GCP refresh its status.
+                time.sleep(recess)
             return result
 
         time.sleep(1)
@@ -253,7 +256,7 @@ def import_file(config):
 
     json_config = json.loads(config)
     operation = cloudsql.instances().import_(project=json_config["importContext"]["project"], instance=json_config["importContext"]["instance"], body=json_config).execute()
-    result = wait_for_operation(cloudsql, json_config["importContext"]["project"], operation["name"])
+    result = wait_for_operation(cloudsql, json_config["importContext"]["project"], operation["name"], 30)
     if "error" in result:
         raise Exception(result["error"])
     

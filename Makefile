@@ -1,5 +1,5 @@
 TARGET = install
-VERSION = 1.7.2
+VERSION = 1.7.1
 
 .PHONY: clean docker pip
 

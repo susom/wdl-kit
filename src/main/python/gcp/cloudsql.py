@@ -115,6 +115,7 @@ def wait_for_operation(cloudsql, project, operation, recess=None):
 
         if result["status"] == "DONE":
             if recess is not None:
+                # Fix the issue: "Operation failed because another operation was already in progress" while importing CSV files. It will allow certain recess time for GCP refresh its status.
                 time.sleep(recess)
             return result
 

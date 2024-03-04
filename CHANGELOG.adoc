@@ -7,6 +7,11 @@ ifndef::icons[]
 :star: &#9733;
 endif::[]
 
+== Release 2024-02-26 (v1.7.1)
+* Joe made some changes to fix build issue
+* ({uri-jira}/STAR-7988[STAR-7988]) - Add missing attributes for Dataset in Struct.wdl
+* ({uri-jira}/STAR-7714[STAR-7714]) - Add new function update_acl in wdl-kit and also add acl in create_dataset as optional. wdl + python
+
 == Release 2024-01-31 (v1.7.0)
 * ({uri-jira}/STAR-7609[STAR-7609]) - Change WDL-kit so that it does not crash when Google introduces new fields to API resources
 * ({uri-jira}/STARR-7444[STARR-7444]) - Added storage biling, physical by default

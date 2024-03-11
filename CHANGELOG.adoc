@@ -7,6 +7,10 @@ ifndef::icons[]
 :star: &#9733;
 endif::[]
 
+== Release 2024-03-11 (v1.8.0)
+* ({uri-jira}/PEDS-1178[PEDS-1178]) - Fix Postgres CSV import failure issue for Pedsnet data validation
+* Bumped version of wdl-kit to v1.8.0
+
 == Release 2024-02-26 (v1.7.1)
 * Joe made some changes to fix build issue
 * ({uri-jira}/STAR-7988[STAR-7988]) - Add missing attributes for Dataset in Struct.wdl

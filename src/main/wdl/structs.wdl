@@ -1,6 +1,6 @@
 version development
 
-# version 1.5.1
+# version 1.9.0
 
 #
 # Datasets
@@ -58,6 +58,9 @@ struct Dataset {
   EncryptionConfiguration? defaultEncryptionConfiguration
   Boolean? satisfiesPzs
   String? type
+  String? maxTimeTravelHours
+  Boolean? isCaseInsensitive
+  String? storageBillingModel
 }
 
 struct PolicyTags {
@@ -262,6 +265,7 @@ struct DatabaseInstance {
   String? createTime
   SqlOutOfDiskReport? outOfDiskReport
   String? maintenanceVersion
+  # String? sqlNetworkArchitecture
 }
 
 struct InstanceReference {
@@ -447,6 +451,7 @@ struct IpConfiguration {
   Boolean? ipv4Enabled
   String? privateNetwork
   Boolean? requireSsl
+  String? sslMode
   Array[AclEntry]? authorizedNetworks
   String? allocatedIpRange
 }

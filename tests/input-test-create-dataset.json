@@ -1,0 +1,8 @@
+{
+    "IntegrationTestBqCreateDataset.testCredentials": "cred.json",
+    "IntegrationTestBqCreateDataset.testProjectId": "som-rit-phi-starr-dev",
+    "IntegrationTestBqCreateDataset.testAcls":[{
+        "role": "OWNER",
+        "userByEmail": "xxxx@stanford.edu"
+    }]
+}

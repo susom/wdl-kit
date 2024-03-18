@@ -14,7 +14,7 @@ RUN pyb -q install
 #Upload the built python packge to pypi
 ARG PYPI_USERNAME
 ARG PYPI_PASSWORD
-RUN set -e && if [ "$PYPI_USERNAME" != "" ]; then twine upload /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.6.0/dist/* -u $PYPI_USERNAME -p $PYPI_PASSWORD ; fi;
+RUN set -e && if [ "$PYPI_USERNAME" != "" ]; then twine upload /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.9.0/dist/* -u $PYPI_USERNAME -p $PYPI_PASSWORD ; fi;
 
 # Final container, copies package from above
 FROM google/cloud-sdk:408.0.0
@@ -22,7 +22,7 @@ WORKDIR /home/cloudsdk/app
 RUN chown cloudsdk:cloudsdk /home/cloudsdk/app
 RUN apt-get install -y zip
 USER cloudsdk
-COPY --chown=cloudsdk:cloudsdk --from=build /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.6.0/dist/stanford-wdl-kit-1.6.0.tar.gz /home/cloudsdk/app
+COPY --chown=cloudsdk:cloudsdk --from=build /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.9.0/dist/stanford-wdl-kit-1.9.0.tar.gz /home/cloudsdk/app
 ADD --chown=cloudsdk:cloudsdk requirements.txt .
 ENV PATH="${PATH}:/home/cloudsdk/.local/bin"
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1

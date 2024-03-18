@@ -28,6 +28,7 @@ from sqlalchemy import insert
 from google.cloud.sql.connector import Connector, IPTypes
 import pandas as pd
 from google.cloud import storage
+from .validstruct import valid_object
 
 class CsqlConfig:
     project: str
@@ -103,7 +104,7 @@ class CsqlConfig:
             # close connection
             db_conn.close()
 
-def wait_for_operation(cloudsql, project, operation):
+def wait_for_operation(cloudsql, project, operation, recess=None):
     operation_complete = False
     while not operation_complete:
         result = (
@@ -113,6 +114,9 @@ def wait_for_operation(cloudsql, project, operation):
         )
 
         if result["status"] == "DONE":
+            if recess is not None:
+                # Fix the issue: "Operation failed because another operation was already in progress" while importing CSV files. It will allow certain recess time for GCP refresh its status.
+                time.sleep(recess)
             return result
 
         time.sleep(1)
@@ -136,8 +140,13 @@ def insert_instance(config, grantBucket: str = None):
     if "databaseUser" in json_config and json_config["databaseUser"] is not None :
         add_user(instanceName, instance_config, json_config["databaseUser"])
 
-    with open('instance.json', 'w') as instance_file:
+    with open('raw_instance.json', 'w') as instance_file:
         json.dump(cloudsql.instances().get(project=projectId, instance=instanceName).execute(), instance_file, indent=2, sort_keys=True)
+
+    # filter invalid keys for Json
+    modified_json = valid_object('raw_instance.json', 'DatabaseInstance')
+    with open('instance.json', 'w') as modified_file:
+        json.dump(modified_json, modified_file, indent=2, sort_keys=True)
 
     if grantBucket is not None:
         instanceProfile = open('instance.json', 'r')
@@ -217,9 +226,13 @@ def insert_database(config):
     instanceName = result["targetId"]
     projectId = result["targetProject"]
 
-    with open('database.json', 'w') as database_file:
+    with open('raw_database.json', 'w') as database_file:
         json.dump(cloudsql.databases().get(project=projectId, instance=instanceName, database=json_config["name"]).execute(), database_file, indent=2, sort_keys=True)
 
+    # filter invalid keys for Json
+    modified_json = valid_object('raw_database.json', 'Database')
+    with open('database.json', 'w') as modified_file:
+        json.dump(modified_json, modified_file, indent=2, sort_keys=True)
 
 def delete_database(config):
     credentials = GoogleCredentials.get_application_default()
@@ -243,7 +256,7 @@ def import_file(config):
 
     json_config = json.loads(config)
     operation = cloudsql.instances().import_(project=json_config["importContext"]["project"], instance=json_config["importContext"]["instance"], body=json_config).execute()
-    result = wait_for_operation(cloudsql, json_config["importContext"]["project"], operation["name"])
+    result = wait_for_operation(cloudsql, json_config["importContext"]["project"], operation["name"], 30)
     if "error" in result:
         raise Exception(result["error"])
     

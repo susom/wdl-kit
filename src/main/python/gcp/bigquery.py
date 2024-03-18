@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from google.cloud.bigquery import DEFAULT_RETRY
+from google.cloud.bigquery import DEFAULT_RETRY, AccessEntry
 from google.cloud import bigquery, exceptions, storage
 from dataclasses_json import dataclass_json
 from boltons.iterutils import remap
@@ -25,6 +25,7 @@ from pandas import DataFrame
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
+from .validstruct import valid_object
 
 try:
     __version__ = version('stanford-wdl-kit')
@@ -52,9 +53,13 @@ def create_table(config: CreateTableConfig):
         client.delete_table(table, not_found_ok=True)
     table = client.create_table(table, exists_ok=config.existsOk, timeout=30)
 
-    with open('table.json', 'w') as table_file:
+    with open('raw_table.json', 'w') as table_file:
         json.dump(table.to_api_repr(), table_file, indent=2, sort_keys=True)
 
+    # filter invalid keys for Json
+    modified_json = valid_object('raw_table.json', 'Table')
+    with open('table.json', 'w') as modified_file:
+        json.dump(modified_json, modified_file, indent=2, sort_keys=True)
 
 @dataclass_json
 @dataclass
@@ -84,9 +89,13 @@ def copy_table(config: CopyTableConfig):
     job.result()
     table = client.get_table(dest_table)
 
-    with open('table.json', 'w') as table_file:
+    with open('raw_table.json', 'w') as table_file:
         json.dump(table.to_api_repr(), table_file, indent=2, sort_keys=True)
 
+    # filter invalid keys for Json
+    modified_json = valid_object('raw_table.json', 'Table')
+    with open('table.json', 'w') as modified_file:
+        json.dump(modified_json, modified_file, indent=2, sort_keys=True)
 
 @dataclass_json
 @dataclass
@@ -95,10 +104,14 @@ class CreateDatasetConfig():
     dataset: dict
     # Fields to update if dataset already exists, and is not being dropped
     fields: Optional[List[str]]
+    # list of acl to give access to as the dataset is being created
+    acls: Optional[List[dict]] = None
     # If dataset already exists, drop it (including contents)
     drop: bool = False
     # If dataset already exists, don't return an error
     existsOk: bool = True
+    # https://cloud.google.com/bigquery/docs/updating-datasets#api_5
+    storageBillingModel: Optional[str] = 'PHYSICAL'
 
 
 def create_dataset(config: CreateDatasetConfig):
@@ -119,13 +132,24 @@ def create_dataset(config: CreateDatasetConfig):
                 existing_dataset, not_found_ok=True, delete_contents=True)
     except exceptions.NotFound:
         pass
+    if(config.storageBillingModel is not None):
+        dataset.storage_billing_model = config.storageBillingModel
+    
+    if config.acls != None: 
+        dataset.access_entries = [
+            AccessEntry.from_api_repr(entry) for entry in config.acls
+        ]
+
     dataset = client.create_dataset(
         dataset, exists_ok=config.existsOk, timeout=30)
-
-    with open('dataset.json', 'w') as dataset_file:
+    with open('raw_dataset.json', 'w') as dataset_file:
         json.dump(dataset.to_api_repr(), dataset_file,
                   indent=2, sort_keys=True)
 
+    # filter invalid keys for Json
+    modified_json = valid_object('raw_dataset.json', 'Dataset')
+    with open('dataset.json', 'w') as modified_file:
+        json.dump(modified_json, modified_file, indent=2, sort_keys=True)
 
 @dataclass_json
 @dataclass
@@ -326,12 +350,16 @@ def load_table(config: LoadTableConfig):
         json.dump(job_result, job_result_file, indent=2, sort_keys=True)
 
     # Write the destination table to table.json
-    with open('table.json', 'w') as dest_table_file:
+    with open('raw_table.json', 'w') as dest_table_file:
         # If no destination, this will be a BQ temp table
         table_info = client.get_table(table_ref)
         json.dump(table_info.to_api_repr(),
                   dest_table_file, indent=2, sort_keys=True)
-
+        
+    # filter invalid keys for Json
+    modified_json = valid_object('raw_table.json', 'Table')
+    with open('table.json', 'w') as modified_file:
+        json.dump(modified_json, modified_file, indent=2, sort_keys=True)
 
 @dataclass_json
 @dataclass
@@ -447,7 +475,7 @@ def query(config: QueryConfig):
         json.dump(job_result, job_result_file, indent=2, sort_keys=True)
 
     # Write the updated destination table to table.json
-    with open('table.json', 'w') as dest_table_file:
+    with open('raw_table.json', 'w') as dest_table_file:
         # If no destination, this will be a BQ temp table
         table_ref = job_result.get('configuration').get(
             'query').get('destinationTable')
@@ -457,6 +485,44 @@ def query(config: QueryConfig):
             json.dump(table_info.to_api_repr(),
                       dest_table_file, indent=2, sort_keys=True)
 
+    # filter invalid keys for Json
+    modified_json = valid_object('raw_table.json', 'Table')
+    with open('table.json', 'w') as modified_file:
+        json.dump(modified_json, modified_file, indent=2, sort_keys=True)
+
+@dataclass_json
+@dataclass
+class AccessEntryConfig():
+    # https://cloud.google.com/bigquery/docs/control-access-to-resources-iam#python
+    # https://cloud.google.com/bigquery/docs/access-control-basic-roles#dataset-basic-roles
+    dataset_id: str
+    acls: List[dict]
+    # role: str
+    # * "userByEmail" -- A single user or service account. For example "fred@example.com"
+    # * "groupByEmail" -- A group of users. For example "example@googlegroups.com"
+    append: bool = False
+
+def update_ACL(config: AccessEntryConfig):
+    """
+    update the ACL on the dataset
+    by default, overwrite the acls list with the new list.
+    else append new acls list to current list.
+    """
+    # Construct a BigQuery client object.
+    client = bigquery.Client()
+    
+    dataset = client.get_dataset(config.dataset_id)  # Make an API request.
+    entries = list(dataset.access_entries)
+        
+    dataset.access_entries = [
+        AccessEntry.from_api_repr(entry) for entry in config.acls
+    ]
+
+    if config.append:
+        entries.extend(dataset.access_entries)
+        dataset.access_entries = entries
+
+    dataset = client.update_dataset(dataset, ["access_entries"])
 
 def main(args=None):
     parser = argparse.ArgumentParser(description="jGCP BigQuery utility")
@@ -468,7 +534,7 @@ def main(args=None):
                         help='JSON credentials file (default: infer from environment)')
 
     parser.add_argument('command', choices=['query', 'create_table', 'copy_table', 'load_table', 'extract_table', 'create_dataset',
-                                            'delete_dataset'], type=str.lower, help='command to execute')
+                                            'delete_dataset', 'update_acl'], type=str.lower, help='command to execute')
 
     parser.add_argument('--version', action='version', version=__version__)
 
@@ -502,6 +568,9 @@ def main(args=None):
 
     if args.command == "query":
         query(config=QueryConfig.from_json(config))
+    
+    if args.command == "update_acl":
+        update_ACL(config=AccessEntryConfig.from_json(config))
 
 
 if __name__ == '__main__':

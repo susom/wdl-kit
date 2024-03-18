@@ -27,7 +27,7 @@ task StringReplace {
     input {
         String toReplace
         File? replacements
-        String dockerImage = "wdl-kit:1.6.0"
+        String dockerImage = "wdl-kit:1.9.0"
     }
 
     command <<<
@@ -55,7 +55,7 @@ task Slacker {
     input {
         SlackConfig? slackConfig
         String replacedMessage
-        String dockerImage = "wdl-kit:1.6.0"
+        String dockerImage = "wdl-kit:1.9.0"
     }
 
     parameter_meta {
@@ -76,7 +76,7 @@ task Mailer {
     input {
         MailerConfig? mailerConfig
         String replacedMessage
-        String dockerImage = "wdl-kit:1.6.0"
+        String dockerImage = "wdl-kit:1.9.0"
     } 
 
     command <<<
@@ -94,7 +94,7 @@ task ZipCompress {
         String destinationFile
         Int cpu = 1
         String memory = "1024MB"
-        String dockerImage = "wdl-kit:1.6.0"
+        String dockerImage = "wdl-kit:1.9.0"
     }
 
     command {
@@ -157,7 +157,7 @@ task SFTPUpload {
         String? sftpLocation
         # Source file to upload
         File source
-        String dockerImage = "wdl-kit:1.6.0"
+        String dockerImage = "wdl-kit:1.9.0"
     }
 
     command <<<

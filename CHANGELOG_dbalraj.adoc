@@ -1,1 +1,0 @@
-* ({uri-jira}/WDL-25[WDL-25]) - Add maxTimeTravelHours and isCaseInsensitive to Dataset struct

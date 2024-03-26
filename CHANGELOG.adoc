@@ -7,6 +7,22 @@ ifndef::icons[]
 :star: &#9733;
 endif::[]
 
+== Release 2024-03-26 (v1.9.1)
+* dependabot[bot] - Bump requests from 2.28.1 to 2.31.0
+Bumps [requests](https://github.com/psf/requests) from 2.28.1 to 2.31.0.
+- [Release notes](https://github.com/psf/requests/releases)
+- [Changelog](https://github.com/psf/requests/blob/main/HISTORY.md)
+- [Commits](psf/requests@v2.28.1...v2.31.0)
+* dependabot[bot] - Bump aiohttp from 3.8.3 to 3.8.5
+Bumps [aiohttp](https://github.com/aio-libs/aiohttp) from 3.8.3 to 3.8.5.
+- [Release notes](https://github.com/aio-libs/aiohttp/releases)
+- [Changelog](https://github.com/aio-libs/aiohttp/blob/v3.8.5/CHANGES.rst)
+- [Commits](aio-libs/aiohttp@v3.8.3...v3.8.5)
+* dependabot[bot] - Bump cryptography from 39.0.2 to 41.0.3
+Bumps [cryptography](https://github.com/pyca/cryptography) from 39.0.2 to 41.0.3.
+- [Changelog](https://github.com/pyca/cryptography/blob/main/CHANGELOG.rst)
+- [Commits](pyca/cryptography@39.0.2...41.0.3)
+
 == Release 2024-03-11 (v1.8.0)
 * ({uri-jira}/PEDS-1178[PEDS-1178]) - Fix Postgres CSV import failure issue for Pedsnet data validation
 * Bumped version of wdl-kit to v1.8.0

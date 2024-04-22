@@ -496,7 +496,7 @@ task UpdateACL {
       Boolean? append
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.9.2-dg"
+      String dockerImage = "wdl-kit:1.9.1"
     }
 
     UpdateACLConfig config = object {

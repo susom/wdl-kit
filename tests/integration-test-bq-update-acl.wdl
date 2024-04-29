@@ -10,7 +10,7 @@ workflow IntegrationTestBqUpdateAcl {
         File? testCredentials
         String testProjectId
         String testDataset_id
-        Array[Map[String, String]] testAcls
+        Array[AccessEntry] testAcls
         Boolean? testAppend
     }
 

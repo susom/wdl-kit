@@ -22,11 +22,11 @@ WORKDIR /home/cloudsdk/app
 RUN chown cloudsdk:cloudsdk /home/cloudsdk/app
 RUN apt-get install -y zip
 USER cloudsdk
-COPY --chown=cloudsdk:cloudsdk --from=build /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.9.2/dist/stanford-wdl-kit-1.9.2.tar.gz /home/cloudsdk/app
+COPY --chown=cloudsdk:cloudsdk --from=build /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.9.2/dist/stanford_wdl_kit-1.9.2.tar.gz /home/cloudsdk/app
 ADD --chown=cloudsdk:cloudsdk requirements.txt .
 ENV PATH="${PATH}:/home/cloudsdk/.local/bin"
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 RUN pip3 install -q -r requirements.txt 
-RUN pip3 install -q stanford-wdl-kit-*.tar.gz
+RUN pip3 install -q stanford_wdl_kit-*.tar.gz
 WORKDIR /home/cloudsdk
 RUN rm -rf app

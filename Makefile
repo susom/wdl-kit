@@ -1,5 +1,5 @@
 TARGET = install
-VERSION = 1.9.1
+VERSION = 1.9.2
 
 .PHONY: clean docker pip
 
@@ -10,7 +10,7 @@ docker:
 
 install: 
 	pip install -r requirements.txt
-	pip3 install target/dist/stanford-wdl-kit-$(VERSION)/dist/stanford-wdl-kit-$(VERSION).tar.gz
+	pip3 install target/dist/stanford-wdl-kit-$(VERSION)/dist/stanford_wdl_kit-$(VERSION).tar.gz
 	
 clean:
 	pyb clean

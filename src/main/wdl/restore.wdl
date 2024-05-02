@@ -16,7 +16,7 @@ task RestoreDataset {
         
         Int cpu = 1
         String memory = "128 MB"
-        String dockerImage = "wdl-kit:1.9.2"
+        String dockerImage = "wdl-kit:1.9.3"
     }
 
     command {

@@ -76,7 +76,7 @@ task Query {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.9.1"
+      String dockerImage = "wdl-kit:1.9.2"
     }
 
     QueryConfig config = object {
@@ -140,7 +140,7 @@ task CreateTable {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.9.1"
+      String dockerImage = "wdl-kit:1.9.2"
     }
 
     CreateTableConfig config = object {
@@ -191,7 +191,7 @@ task CopyTable {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.9.1"
+      String dockerImage = "wdl-kit:1.9.2"
     }
 
     CopyTableConfig config = object {
@@ -246,7 +246,7 @@ task ExtractTable {
 
     Int cpu = 1
     String memory = "128 MB"
-    String dockerImage = "wdl-kit:1.9.1"
+    String dockerImage = "wdl-kit:1.9.2"
   }
 
   ExtractTableConfig config = object {
@@ -327,7 +327,7 @@ task LoadTable {
     String writeDisposition = "WRITE_EMPTY"
     Boolean autodetect = false
     String location = "US"
-    String dockerImage = "wdl-kit:1.9.1"
+    String dockerImage = "wdl-kit:1.9.2"
     Int cpu = 1
     String memory = "128 MB"
   }
@@ -395,7 +395,7 @@ task CreateDataset {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.9.1"
+      String dockerImage = "wdl-kit:1.9.2"
     }
 
     CreateDatasetConfig config = object {
@@ -446,7 +446,7 @@ task DeleteDataset {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.9.1"
+      String dockerImage = "wdl-kit:1.9.2"
     }
 
     DeleteDatasetConfig config = object {
@@ -472,7 +472,7 @@ task DeleteDataset {
 
 struct UpdateACLConfig {
   String dataset_id
-  Array[Map[String, String]] acls
+  Array[AccessEntry] acls
   Boolean? append
 }
 
@@ -491,12 +491,12 @@ task UpdateACL {
       File? credentials
       String projectId
       String dataset_id
-      Array[Map[String, String]] acls
+      Array[AccessEntry] acls
 
       Boolean? append
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.6.2"
+      String dockerImage = "wdl-kit:1.9.2"
     }
 
     UpdateACLConfig config = object {

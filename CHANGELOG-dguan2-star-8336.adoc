@@ -1,0 +1,1 @@
+* ({uri-jira}/STAR-8336[STAR-8336]) - Bug fix: Dockerfile for wdl-kit name

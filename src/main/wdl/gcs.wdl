@@ -38,7 +38,7 @@ task Compose {
 
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.9.3"
+      String dockerImage = "wdl-kit:1.9.4"
     }
 
     ComposeConfig config = object {
@@ -100,7 +100,7 @@ task Download {
       Boolean keepPrefix = false
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.9.3"
+      String dockerImage = "wdl-kit:1.9.4"
     }
 
     DownloadConfig config = object {
@@ -153,7 +153,7 @@ task Upload {
       File sourceFile
       Int cpu = 1
       String memory = "128 MB"
-      String dockerImage = "wdl-kit:1.9.3"
+      String dockerImage = "wdl-kit:1.9.4"
     }
 
     UploadConfig config = object {

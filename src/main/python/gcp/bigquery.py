@@ -514,9 +514,27 @@ def update_ACL(config: AccessEntryConfig):
     dataset = client.get_dataset(config.dataset_id)  # Make an API request.
     entries = list(dataset.access_entries)
         
-    dataset.access_entries = [
-        AccessEntry.from_api_repr(entry) for entry in config.acls
-    ]
+    if config.acls != None: 
+        for items in config.acls:
+            if 'domain' in items:
+                del items['domain']
+            if 'iamMember' in items:
+                del items['iamMember']
+            if 'routine' in items:
+                del items['routine']
+            if 'specialGroup' in items:
+                del items['specialGroup']
+            if 'view' in items:
+                del items['view']
+            if 'groupByEmail' in items and not items['groupByEmail']:
+                del items['groupByEmail'] 
+            if 'userByEmail' in items and not items['userByEmail']:
+                del items['userByEmail'] 
+            dataset.access_entries.append(items)
+
+    # dataset.access_entries = [
+    #     AccessEntry.from_api_repr(entry) for entry in config.acls
+    # ]
 
     if config.append:
         entries.extend(dataset.access_entries)

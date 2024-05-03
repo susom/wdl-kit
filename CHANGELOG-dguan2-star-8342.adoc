@@ -1,0 +1,1 @@
+* ({uri-jira}/STAR-8342[STAR-8342]) - Filter extra attributes on dataset access entry for ACL update

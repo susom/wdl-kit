@@ -9,7 +9,7 @@ use_plugin("python.distutils")
 name = "stanford-wdl-kit"
 default_task = "publish"
 summary = "A WDL toolkit with a focus on ETL and Cloud integration"
-version = "1.9.4"
+version = "1.9.5"
 url = "https://github.com/susom/wdl-kit"
 authors = [Author("Darren Guan", "dguan2@stanford.edu"),
            Author("Joe Mesterhazy", "jmesterh@stanford.edu"),

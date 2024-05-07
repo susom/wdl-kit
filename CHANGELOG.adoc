@@ -7,6 +7,11 @@ ifndef::icons[]
 :star: &#9733;
 endif::[]
 
+== Release 2024-05-07 (v1.9.5)
+* ({uri-jira}/STAR-8247[STAR-8247]) - Add ACL and labels to confidential dataset for OMOP and Pedsnet
+* ({uri-jira}/STAR-8336[STAR-8336]) - Bug fix: Dockerfile for wdl-kit name
+* ({uri-jira}/STAR-8342[STAR-8342]) - Filter extra attributes on dataset access entry for ACL update
+
 == Release 2024-03-26 (v1.9.1)
 * dependabot[bot] - Bump requests from 2.28.1 to 2.31.0
 Bumps [requests](https://github.com/psf/requests) from 2.28.1 to 2.31.0.

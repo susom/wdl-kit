@@ -329,7 +329,42 @@ struct_object = """
   "SqlserverDatabaseDetails": [
     "compatibilityLevel",
     "recoveryModel"
+  ],
+
+  "Blob": [
+    "id",
+    "selfLink",
+    "name",
+    "bucket",
+    "generation",
+    "metageneration",
+    "contentType",
+    "timeCreated",
+    "updated",
+    "customTime",
+    "timeDeleted",
+    "temporaryHold",
+    "eventBasedHold",
+    "retentionExpirationTime",
+    "storageClass",
+    "timeStorageClassUpdated",
+    "size",
+    "md5Hash",
+    "mediaLink",
+    "contentEncoding",
+    "contentDisposition",
+    "contentLanguage",
+    "cacheControl",
+    "metadata",
+    "acl",
+    "owner",
+    "crc32c",
+    "componentCount",
+    "etag",
+    "customerEncryption",
+    "kmsKeyName"
   ]
+  
 
 }
 """

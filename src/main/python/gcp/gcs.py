@@ -24,6 +24,7 @@ from importlib_metadata import version
 from pathlib import Path
 from typing import Iterable, List, Optional
 from google.cloud import storage
+from .validstruct import valid_object
 
 try:
     __version__ = version('stanford-wdl-kit')
@@ -197,7 +198,14 @@ def upload(config: UploadConfig):
 
     blob.upload_from_filename(config.sourceFile)
 
-    print(json.dumps(blob._properties, indent=2, sort_keys=True))
+    # print(json.dumps(blob._properties, indent=2, sort_keys=True))
+
+    with open('raw_blob.json', 'w') as blob_file:
+        json.dumps(blob._properties, blob_file, indent=2, sort_keys=True)
+    # filter invalid keys for Json
+    modified_json = valid_object('raw_table.json', 'Blob')
+    with open('blob.json', 'w') as modified_file:
+        json.dump(modified_json, modified_file, indent=2, sort_keys=True)
 
 
 def main(args=None):

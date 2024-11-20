@@ -118,7 +118,13 @@ def compose(config: ComposeConfig):
     if config.deleteSources:
         delete_blobs(blobs, client)
 
-    print(json.dumps(final_blob._properties, indent=2, sort_keys=True))
+    # print(json.dumps(final_blob._properties, indent=2, sort_keys=True))
+
+    # filter invalid keys for Json
+    with open('raw_blob.json', 'w') as blob_file:
+        json.dump(final_blob._properties, blob_file, indent=2, sort_keys=True)
+    modified_json = valid_object('raw_blob.json', 'Blob')
+    print(json.dumps(modified_json, indent=2, sort_keys=True))
 
 
 @dataclass_json
@@ -200,12 +206,12 @@ def upload(config: UploadConfig):
 
     # print(json.dumps(blob._properties, indent=2, sort_keys=True))
 
-    with open('raw_blob.json', 'w') as blob_file:
-        json.dumps(blob._properties, blob_file, indent=2, sort_keys=True)
     # filter invalid keys for Json
-    modified_json = valid_object('raw_table.json', 'Blob')
-    with open('blob.json', 'w') as modified_file:
-        json.dump(modified_json, modified_file, indent=2, sort_keys=True)
+    with open('raw_blob.json', 'w') as blob_file:
+        json.dump(blob._properties, blob_file, indent=2, sort_keys=True)
+    modified_json = valid_object('raw_blob.json', 'Blob')
+    print(json.dumps(modified_json, indent=2, sort_keys=True))
+
 
 
 def main(args=None):

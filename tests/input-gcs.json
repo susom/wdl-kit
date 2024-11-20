@@ -1,11 +1,11 @@
 {
-    "IntegrationTestGcs.testCredentials": "/home/dguan2_stanford_edu/cwl/som-rit-phi-starr-dev-key.json",
-    "IntegrationTestGcs.testProjectId": "som-rit-phi-starr-dev",
-    "IntegrationTestGcs.gcsDestination": "gs://dguan2_test/loadfiletest/gcs_result.txt",
-    "IntegrationTestGcs.gcsSourcePrefix": "data_source_1.csv",
+    "IntegrationTestGcs.testCredentials": "credentials.json",
+    "IntegrationTestGcs.testProjectId": "xxxxxxxxx",
+    "IntegrationTestGcs.gcsDestination": "gs://xxxxxx_test/loadfiletest/gcs_result.txt",
+    "IntegrationTestGcs.gcsSourcePrefix": "loadfiletest/data_source",
     "IntegrationTestGcs.gcsUploadFile": "local path to file to upload",
-    "IntegrationTestGcs.gcsUploadSourceBucket": "dguan2_test",
+    "IntegrationTestGcs.gcsUploadSourceBucket": "gcs_project",
     "IntegrationTestGcs.gcsUploadSourcePrefix": "test.txt",
-    "IntegrationTestGcs.gcsDownloadSourceBucket": "gs://dguan2_test",
+    "IntegrationTestGcs.gcsDownloadSourceBucket": "gs://xxxxxx_test",
     "IntegrationTestGcs.gcsDownloadSourcePrefix": "loadfiletest/gcs_result"    
 }

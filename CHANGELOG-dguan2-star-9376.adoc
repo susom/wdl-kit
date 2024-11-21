@@ -1,0 +1,1 @@
+* ({uri-jira}/STAR-9376[STAR-9376]) - Update the Blob in structs.wdl to have new field timeFinalized

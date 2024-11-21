@@ -24,6 +24,7 @@ from importlib_metadata import version
 from pathlib import Path
 from typing import Iterable, List, Optional
 from google.cloud import storage
+from .validstruct import valid_object
 
 try:
     __version__ = version('stanford-wdl-kit')
@@ -117,7 +118,13 @@ def compose(config: ComposeConfig):
     if config.deleteSources:
         delete_blobs(blobs, client)
 
-    print(json.dumps(final_blob._properties, indent=2, sort_keys=True))
+    # print(json.dumps(final_blob._properties, indent=2, sort_keys=True))
+
+    # filter invalid keys for Json
+    with open('raw_blob.json', 'w') as blob_file:
+        json.dump(final_blob._properties, blob_file, indent=2, sort_keys=True)
+    modified_json = valid_object('raw_blob.json', 'Blob')
+    print(json.dumps(modified_json, indent=2, sort_keys=True))
 
 
 @dataclass_json
@@ -197,7 +204,14 @@ def upload(config: UploadConfig):
 
     blob.upload_from_filename(config.sourceFile)
 
-    print(json.dumps(blob._properties, indent=2, sort_keys=True))
+    # print(json.dumps(blob._properties, indent=2, sort_keys=True))
+
+    # filter invalid keys for Json
+    with open('raw_blob.json', 'w') as blob_file:
+        json.dump(blob._properties, blob_file, indent=2, sort_keys=True)
+    modified_json = valid_object('raw_blob.json', 'Blob')
+    print(json.dumps(modified_json, indent=2, sort_keys=True))
+
 
 
 def main(args=None):

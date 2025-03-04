@@ -7,6 +7,9 @@ ifndef::icons[]
 :star: &#9733;
 endif::[]
 
+== Release 2024-11-21 (v1.9.6)
+* ({uri-jira}/STAR-9376[STAR-9376]) - Add properties filtering for Blob 
+
 == Release 2024-05-07 (v1.9.5)
 * ({uri-jira}/STAR-8247[STAR-8247]) - Add ACL and labels to confidential dataset for OMOP and Pedsnet
 * ({uri-jira}/STAR-8336[STAR-8336]) - Bug fix: Dockerfile for wdl-kit name

@@ -7,6 +7,9 @@ ifndef::icons[]
 :star: &#9733;
 endif::[]
 
+== Release 2025-03-06 (v1.9.7)
+* ({uri-jira}/PEDS-1323[PEDS-1323]) - Update WDL-Kit to backup large size table
+
 == Release 2024-11-21 (v1.9.6)
 * ({uri-jira}/STAR-9376[STAR-9376]) - Add properties filtering for Blob 
 

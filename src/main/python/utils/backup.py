@@ -417,11 +417,37 @@ def __merge_csv(client: Client, bucket_name: str, prefix: str, fields = None) ->
             next_blob.compose(blobs[windex:len(blobs)])
             compositions.append(next_blob)
             logger.debug("Composed from %s-%s -> %s (final)", windex, len(blobs), next_blob.name)
-        # Create aggregate composition
-        destination.compose(compositions)
+        
+        if len(compositions) <= 32:
+            destination.compose(compositions)
+        else:
+            final_compositions = []
+            findex = 0
+            for i, b in enumerate(compositions):
+                if i != 0 and i % 32 == 0:
+                    f_next_blob = Blob("{}-tmp-final-{:02d}-{:02d}.csv".format(prefix[:-1], findex, i - 1), bucket)
+                    f_next_blob.content_type = "text/plain"
+                    f_next_blob.compose(compositions[findex:i])
+                    final_compositions.append(f_next_blob)
+                    logger.debug("Additional composed from %s-%s -> %s", findex, i - 1, f_next_blob.name)
+                    findex = i
+            if findex < len(compositions):
+                f_next_blob = Blob("{}-tmp-final-{:02d}-{:02d}.csv".format(prefix[:-1], findex, len(compositions)), bucket)
+                f_next_blob.content_type = "text/plain"
+                f_next_blob.compose(compositions[findex:len(compositions)])
+                final_compositions.append(f_next_blob)
+                logger.debug("Additional composed from %s-%s -> %s (final)", findex, len(compositions), f_next_blob.name)
+
+            # Create aggregate composition
+            destination.compose(final_compositions)
+            # Delete intermediate compositions
+            for blob in final_compositions:
+                blob.delete()
+
         # Delete intermediate compositions
         for blob in compositions:
             blob.delete()
+        
         # Delete the temporary header file
         if header_file:
             header_file.delete()

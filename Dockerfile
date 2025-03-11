@@ -1,7 +1,7 @@
 # Google Cloud SDK docker image with GCP Python libs and helper tools
 
 # Build container
-FROM google/cloud-sdk:408.0.0 AS build
+FROM google/cloud-sdk:513.0.0 AS build
 WORKDIR /home/cloudsdk/app
 RUN chown cloudsdk:cloudsdk /home/cloudsdk/app
 USER cloudsdk
@@ -17,7 +17,7 @@ ARG PYPI_PASSWORD
 RUN set -e && if [ "$PYPI_USERNAME" != "" ]; then twine upload /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.9.7/dist/* -u $PYPI_USERNAME -p $PYPI_PASSWORD ; fi;
 
 # Final container, copies package from above
-FROM google/cloud-sdk:408.0.0
+FROM google/cloud-sdk:513.0.0
 WORKDIR /home/cloudsdk/app
 RUN chown cloudsdk:cloudsdk /home/cloudsdk/app
 RUN apt-get install -y zip

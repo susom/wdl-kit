@@ -1,32 +1,33 @@
 # Google Cloud SDK docker image with GCP Python libs and helper tools
 
+ARG CLOUD_SDK_VERSION=563.0.0
+
 # Build container
-FROM google/cloud-sdk:408.0.0 AS build
+FROM google/cloud-sdk:${CLOUD_SDK_VERSION} AS build
 WORKDIR /home/cloudsdk/app
 RUN chown cloudsdk:cloudsdk /home/cloudsdk/app
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
 USER cloudsdk
 ADD --chown=cloudsdk:cloudsdk . /home/cloudsdk/app
 ENV PATH="${PATH}:/home/cloudsdk/.local/bin"
-ENV PIP_DISABLE_PIP_VERSION_CHECK=1
-RUN pip3 install -q pybuilder==0.13.7 flake8==4.0.1 twine==4.0.1
-RUN pyb -q install
+ENV UV_COMPILE_BYTECODE=1
+RUN uv build
 
-#Upload the built python packge to pypi
+# Upload the built python package to pypi
 ARG PYPI_USERNAME
 ARG PYPI_PASSWORD
-RUN set -e && if [ "$PYPI_USERNAME" != "" ]; then twine upload /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.9.7/dist/* -u $PYPI_USERNAME -p $PYPI_PASSWORD ; fi;
+RUN set -e && if [ "$PYPI_USERNAME" != "" ]; then uvx twine upload dist/* -u $PYPI_USERNAME -p $PYPI_PASSWORD ; fi
 
 # Final container, copies package from above
-FROM google/cloud-sdk:408.0.0
+ARG CLOUD_SDK_VERSION=563.0.0
+FROM google/cloud-sdk:${CLOUD_SDK_VERSION}
 WORKDIR /home/cloudsdk/app
 RUN chown cloudsdk:cloudsdk /home/cloudsdk/app
 RUN apt-get install -y zip
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+COPY --chown=cloudsdk:cloudsdk --from=build /home/cloudsdk/app/dist/stanford_wdl_kit-1.9.7-*.whl /home/cloudsdk/app/
+RUN uv pip install --system --break-system-packages stanford_wdl_kit-*.whl
 USER cloudsdk
-COPY --chown=cloudsdk:cloudsdk --from=build /home/cloudsdk/app/target/dist/stanford-wdl-kit-1.9.7/dist/stanford_wdl_kit-1.9.7.tar.gz /home/cloudsdk/app
-ADD --chown=cloudsdk:cloudsdk requirements.txt .
 ENV PATH="${PATH}:/home/cloudsdk/.local/bin"
-ENV PIP_DISABLE_PIP_VERSION_CHECK=1
-RUN pip3 install -q -r requirements.txt 
-RUN pip3 install -q stanford_wdl_kit-*.tar.gz
 WORKDIR /home/cloudsdk
 RUN rm -rf app

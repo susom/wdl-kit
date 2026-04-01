@@ -1,20 +1,25 @@
 TARGET = install
 VERSION = 1.9.7
 
-.PHONY: clean docker pip
+.PHONY: clean docker install build publish
 
 all: docker install
 
 docker:
 	docker build -t wdl-kit:$(VERSION) .
 
-install: 
-	pip install -r requirements.txt
-	pip3 install target/dist/stanford-wdl-kit-$(VERSION)/dist/stanford_wdl_kit-$(VERSION).tar.gz
-	
+install:
+	uv sync
+	uv pip install -e .
+
+build:
+	uv build
+
+publish: build
+	uvx twine upload dist/*
+
 clean:
-	pyb clean
-	rm -rf __pycache__
+	rm -rf dist/ .venv/ __pycache__
 
 check: 
 	$(MAKE) -C tests check

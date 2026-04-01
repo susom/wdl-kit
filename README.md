@@ -24,21 +24,37 @@ WDL-kit is a collection of dockerized utilities to simplify the creation of ETL-
 
 ## Building WDL-kit
 
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management and builds.
+
 Create docker image (for use in WDL workflows):
 
-`make docker`
+```bash
+make docker
+```
 
-Install into local pip: (installs yaml2wdl, etc.)
+Install locally for development (creates a `.venv` and installs all dependencies):
 
-`make install`
+```bash
+make install
+```
 
-You can also build & install directly from GitHub:
+Build a distributable wheel/sdist:
 
-`pip3 install git+https://github.com/susom/wdl-kit`
+```bash
+make build
+```
 
-Or install directly from PyPi:
+You can also install directly from GitHub:
 
-`pip3 install stanford-wdl-kit`
+```bash
+uv pip install git+https://github.com/susom/wdl-kit
+```
+
+Or install directly from PyPI:
+
+```bash
+uv pip install stanford-wdl-kit
+```
 
 ---
 ## Background
@@ -163,35 +179,25 @@ The method is 4 lines of code(!):
 The GCP Python `from_api_repr` and `to_api_repr` methods do all the heavy lifting for us.
 ---
 #### Notes
-If your terminal in VSCode has "venv" in front of it do the following:
-* Upgrade to python 3.9.9 via pyenv
-* Add the following into your .bashrc
-```shell
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv 1>/dev/null 2>&1; then
- eval "$(pyenv init -)"
-fi
-export PATH=$(pyenv root)/shims:$PATH
+Requires Python 3.11 or higher. Install [uv](https://docs.astral.sh/uv/getting-started/installation/) to manage the project environment:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
+uv will automatically create and manage a `.venv` virtual environment when you run `uv sync` or `make install`.
+
 ## Release process
-This package uses 'bumpversion' to keep version numbers consistent. For example, to bump the minor version number on the dev branch (say after a new release version)... 
+This package uses `bump2version` to keep version numbers consistent. For example, to bump the minor version number on the dev branch:
+
 ```bash
 git checkout dev
 git pull
-bumpversion minor
+uvx bump2version minor
 ```
-and you will see the changed versions reflected locally in git:
+
+This will update the version in `pyproject.toml`, `Dockerfile`, `Makefile`, `cloudbuild.yaml`, and the relevant WDL files. Publish to PyPI with:
+
 ```bash
-	modified:   .bumpversion.cfg
-	modified:   Dockerfile
-	modified:   Makefile
-	modified:   README.md
-	modified:   build.py
-	modified:   cloudbuild.yaml
-	modified:   src/main/wdl/bigquery.wdl
-	modified:   src/main/wdl/common.wdl
-	modified:   src/main/wdl/gcs.wdl
-	modified:   src/main/wdl/structs.wdl
+make publish
 ```
